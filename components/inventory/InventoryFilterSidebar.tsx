@@ -57,6 +57,7 @@ export function InventoryFilterSidebar({
   onMobileClose,
 }: InventoryFilterSidebarProps) {
   const [brandSearch, setBrandSearch] = useState("")
+  const [hoveredAction, setHoveredAction] = useState<string | null>(null)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Brand: true,
     Condition: true,
@@ -194,19 +195,26 @@ export function InventoryFilterSidebar({
       </ScrollArea>
 
       <div className="flex gap-2 bg-black px-3 pb-3 lg:pr-3 lg:pl-[54px]">
-        {ACTION_ITEMS.map((item) => (
-          <button
-            key={item.label}
-            className={`flex h-16 flex-1 flex-col items-center justify-center gap-2 text-[12px] leading-4 tracking-[0.04px] ${
-              item.highlighted
-                ? "bg-[rgba(0,144,255,0.18)] text-[#70b8ff]"
-                : "bg-[#111113] text-[#edeef0]"
-            }`}
-          >
-            <item.icon className="size-4" />
-            <span>{item.label}</span>
-          </button>
-        ))}
+        {ACTION_ITEMS.map((item) => {
+          const isHighlighted = hoveredAction
+            ? hoveredAction === item.label
+            : item.highlighted
+          return (
+            <button
+              key={item.label}
+              className={`flex h-16 flex-1 flex-col items-center justify-center gap-2 text-[12px] leading-4 tracking-[0.04px] transition-colors duration-200 ${
+                isHighlighted
+                  ? "bg-[#0c2746] text-[#70b8ff]"
+                  : "bg-[#111113] text-[#edeef0]"
+              }`}
+              onMouseEnter={() => setHoveredAction(item.label)}
+              onMouseLeave={() => setHoveredAction(null)}
+            >
+              <item.icon className="size-4" />
+              <span>{item.label}</span>
+            </button>
+          )
+        })}
       </div>
     </>
   )

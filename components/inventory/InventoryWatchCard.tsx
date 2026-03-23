@@ -10,9 +10,9 @@ export function InventoryWatchCard({ watch }: InventoryWatchCardProps) {
   return (
     <Link
       href={`/watch/${watch.id}`}
-      className="group relative h-[493px] min-w-[340px] flex-[1_0_0] overflow-hidden bg-[#111113]"
+      className="group relative h-[493px] overflow-hidden bg-[#111113]"
     >
-      <div className="absolute top-[49px] left-1/2 size-[242px] -translate-x-1/2">
+      <div className="absolute top-0 left-1/2 size-[350px] -translate-x-1/2">
         <img
           src={watch.image}
           alt={watch.name}

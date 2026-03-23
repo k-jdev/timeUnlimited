@@ -198,7 +198,12 @@ export default function InventoryPage() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1">
+        <div
+          className="grid gap-1 lg:pr-0"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          }}
+        >
           {filteredWatches.map((watch) => (
             <InventoryWatchCard key={watch.id} watch={watch} />
           ))}
