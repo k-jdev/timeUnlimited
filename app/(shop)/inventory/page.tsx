@@ -1,7 +1,12 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { RiSearchLine, RiArrowDownSLine, RiFilterLine } from "@remixicon/react"
+import { useState, useMemo, useEffect, useRef } from "react"
+import {
+  RiSearchLine,
+  RiArrowDownSLine,
+  RiFilterLine,
+  RiCheckLine,
+} from "@remixicon/react"
 import { INVENTORY_WATCHES, BRANDS } from "@/data/inventory"
 import { InventoryFilterSidebar } from "@/components/inventory/InventoryFilterSidebar"
 import { InventoryWatchCard } from "@/components/inventory/InventoryWatchCard"
@@ -14,8 +19,33 @@ export default function InventoryPage() {
   const [search, setSearch] = useState("")
   const [selectedBrands, setSelectedBrands] = useState<string[]>([])
   const [selectedConditions, setSelectedConditions] = useState<string[]>([])
+  const [selectedCaseMaterials, setSelectedCaseMaterials] = useState<string[]>(
+    []
+  )
+  const [selectedBraceletMaterials, setSelectedBraceletMaterials] = useState<
+    string[]
+  >([])
+  const [selectedDialColors, setSelectedDialColors] = useState<string[]>([])
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
+  const [selectedSpecials, setSelectedSpecials] = useState<string[]>([])
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000])
   const [sortOrder, setSortOrder] = useState<SortOrder>("new-to-old")
   const [showSortDropdown, setShowSortDropdown] = useState(false)
+  const sortDropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showSortDropdown) return
+    const handleClick = (e: MouseEvent) => {
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(e.target as Node)
+      ) {
+        setShowSortDropdown(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [showSortDropdown])
 
   const [showMobileFilter, setShowMobileFilter] = useState(false)
 
@@ -45,6 +75,39 @@ export default function InventoryPage() {
       )
     }
 
+    if (selectedCaseMaterials.length > 0) {
+      result = result.filter((w) =>
+        selectedCaseMaterials.includes(w.caseMaterial)
+      )
+    }
+
+    if (selectedBraceletMaterials.length > 0) {
+      result = result.filter((w) =>
+        selectedBraceletMaterials.includes(w.braceletMaterial)
+      )
+    }
+
+    if (selectedDialColors.length > 0) {
+      result = result.filter((w) =>
+        selectedDialColors.some(
+          (c) => c.toLowerCase() === w.dialColor.toLowerCase()
+        )
+      )
+    }
+
+    if (selectedSizes.length > 0) {
+      result = result.filter((w) => selectedSizes.includes(w.size))
+    }
+
+    if (priceRange[0] > 0 || priceRange[1] < 200000) {
+      result = result.filter((w) => {
+        const p = parsePrice(w.price)
+        return (
+          p >= priceRange[0] && (priceRange[1] >= 200000 || p <= priceRange[1])
+        )
+      })
+    }
+
     if (selectedConditions.length > 0) {
       result = result.filter((w) => selectedConditions.includes(w.condition))
     }
@@ -71,7 +134,17 @@ export default function InventoryPage() {
     }
 
     return result
-  }, [search, selectedBrands, selectedConditions, sortOrder])
+  }, [
+    search,
+    selectedBrands,
+    selectedConditions,
+    selectedCaseMaterials,
+    selectedBraceletMaterials,
+    selectedDialColors,
+    selectedSizes,
+    priceRange,
+    sortOrder,
+  ])
 
   const sortLabels: Record<SortOrder, string> = {
     "new-to-old": "New to Old",
@@ -87,12 +160,24 @@ export default function InventoryPage() {
         onBrandsChange={setSelectedBrands}
         selectedConditions={selectedConditions}
         onConditionsChange={setSelectedConditions}
+        selectedCaseMaterials={selectedCaseMaterials}
+        onCaseMaterialsChange={setSelectedCaseMaterials}
+        selectedBraceletMaterials={selectedBraceletMaterials}
+        onBraceletMaterialsChange={setSelectedBraceletMaterials}
+        selectedDialColors={selectedDialColors}
+        onDialColorsChange={setSelectedDialColors}
+        selectedSizes={selectedSizes}
+        onSizesChange={setSelectedSizes}
+        selectedSpecials={selectedSpecials}
+        onSpecialsChange={setSelectedSpecials}
+        priceRange={priceRange}
+        onPriceRangeChange={setPriceRange}
         mobileOpen={showMobileFilter}
         onMobileClose={() => setShowMobileFilter(false)}
       />
 
       <div className="lg:pr-[320px]">
-        <div className="flex flex-col gap-8 px-4 pt-10 pb-4 lg:pt-16 lg:pr-0 lg:pl-10">
+        <div className="flex flex-col gap-8 px-4 pt-10 pb-8 lg:pt-16 lg:pr-0 lg:pl-10">
           <div className="flex flex-col gap-6">
             <div className="flex items-start gap-3">
               <h1 className="font-serif text-[48px] leading-none text-[#edeef0] lg:text-[64px] lg:leading-[66px]">
@@ -155,43 +240,87 @@ export default function InventoryPage() {
               <span className="text-[14px] text-[#edeef0]">Filter</span>
             </button>
 
-            <div className="relative hidden shrink-0 lg:block">
+            <div
+              ref={sortDropdownRef}
+              className="relative hidden shrink-0 lg:block"
+            >
               <button
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                className="flex h-10 items-center gap-3 bg-[rgba(255,255,255,0.06)] px-4 whitespace-nowrap"
+                className="flex h-10 items-center gap-2 bg-[rgba(255,255,255,0.06)] px-4 whitespace-nowrap transition-colors hover:bg-[rgba(255,255,255,0.09)]"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-[16px] leading-6 text-[#edeef0]">
-                    {sortOrder.startsWith("price") ? "Price:" : "Date:"}
-                  </span>
-                  <span className="text-[16px] leading-6 text-[#80838d]">
-                    {sortOrder === "new-to-old"
-                      ? "New to Old"
-                      : sortOrder === "old-to-new"
-                        ? "Old to New"
-                        : sortOrder === "price-high"
-                          ? "High to Low"
-                          : "Low to High"}
-                  </span>
-                </div>
-                <RiArrowDownSLine className="size-4 shrink-0 text-[#edeef0]" />
+                <span className="text-[13px] tracking-widest text-[#60646c] uppercase">
+                  Sort
+                </span>
+                <span className="text-[13px] text-[#80838d]">/</span>
+                <span className="text-[13px] text-[#edeef0]">
+                  {sortLabels[sortOrder]}
+                </span>
+                <RiArrowDownSLine
+                  className={`size-4 shrink-0 text-[#60646c] transition-transform duration-200 ${showSortDropdown ? "rotate-180" : ""}`}
+                />
               </button>
+
               {showSortDropdown && (
-                <div className="absolute top-full right-0 z-10 mt-1 flex min-w-full flex-col border border-[#2E3135] bg-[#111113] whitespace-nowrap shadow-lg">
-                  {(Object.keys(sortLabels) as SortOrder[]).map((key) => (
-                    <button
-                      key={key}
-                      onClick={() => {
-                        setSortOrder(key)
-                        setShowSortDropdown(false)
-                      }}
-                      className={`px-4 py-2 text-left text-[14px] leading-5 hover:bg-[rgba(255,255,255,0.06)] ${
-                        sortOrder === key ? "text-[#70b8ff]" : "text-[#edeef0]"
-                      }`}
-                    >
-                      {sortLabels[key]}
-                    </button>
-                  ))}
+                <div className="absolute top-full right-0 z-20 mt-1.5 flex min-w-[200px] flex-col border border-[#1e2024] bg-[#0e0f14] shadow-2xl">
+                  <div className="border-b border-[#1e2024] px-4 py-2.5">
+                    <span className="text-[11px] tracking-widest text-[#40444c] uppercase">
+                      Sort by
+                    </span>
+                  </div>
+                  <div className="py-1">
+                    <div className="px-4 pt-2 pb-1">
+                      <span className="text-[10px] tracking-widest text-[#30343c] uppercase">
+                        Date Added
+                      </span>
+                    </div>
+                    {(["new-to-old", "old-to-new"] as SortOrder[]).map(
+                      (key) => (
+                        <button
+                          key={key}
+                          onClick={() => {
+                            setSortOrder(key)
+                            setShowSortDropdown(false)
+                          }}
+                          className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-[rgba(255,255,255,0.04)]"
+                        >
+                          <span
+                            className={`text-[13px] ${sortOrder === key ? "text-[#edeef0]" : "text-[#60646c]"}`}
+                          >
+                            {sortLabels[key]}
+                          </span>
+                          {sortOrder === key && (
+                            <RiCheckLine className="size-3.5 text-[#70b8ff]" />
+                          )}
+                        </button>
+                      )
+                    )}
+                  </div>
+                  <div className="border-t border-[#1e2024] py-1">
+                    <div className="px-4 pt-2 pb-1">
+                      <span className="text-[10px] tracking-widest text-[#30343c] uppercase">
+                        Price
+                      </span>
+                    </div>
+                    {(["price-high", "price-low"] as SortOrder[]).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          setSortOrder(key)
+                          setShowSortDropdown(false)
+                        }}
+                        className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-[rgba(255,255,255,0.04)]"
+                      >
+                        <span
+                          className={`text-[13px] ${sortOrder === key ? "text-[#edeef0]" : "text-[#60646c]"}`}
+                        >
+                          {sortLabels[key]}
+                        </span>
+                        {sortOrder === key && (
+                          <RiCheckLine className="size-3.5 text-[#70b8ff]" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -208,6 +337,7 @@ export default function InventoryPage() {
             <InventoryWatchCard key={watch.id} watch={watch} />
           ))}
         </div>
+        <div className="pb-16 lg:pb-32" />
         <CtaSection />
 
         <Footer />

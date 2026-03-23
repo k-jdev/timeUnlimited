@@ -70,21 +70,25 @@ export default function WatchDetailPage({
         nextWatch={nextWatch}
       />
 
-      <div className="flex flex-col lg:flex-row lg:gap-0">
-        <WatchGallery images={gallery} watchName={watch.name} />
-        <WatchDetails
-          brand={watch.brand}
-          name={watch.name}
-          price={watch.price}
-          specs={specs}
-          description={description}
-        />
+      <div className="relative mx-auto max-w-[1440px]">
+        <div className="pb-14 lg:pb-0">
+          <div className="flex flex-col lg:flex-row lg:gap-0">
+            <WatchGallery images={gallery} watchName={watch.name} />
+            <WatchDetails
+              brand={watch.brand}
+              name={watch.name}
+              price={watch.price}
+              specs={specs}
+              description={description}
+            />
+          </div>
+
+          <WatchRelated watches={relatedWatches} />
+
+          <CtaSection />
+          <Footer />
+        </div>
       </div>
-
-      <WatchRelated watches={relatedWatches} />
-
-      <CtaSection />
-      <Footer />
     </div>
   )
 }

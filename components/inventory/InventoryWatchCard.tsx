@@ -18,7 +18,7 @@ export function InventoryWatchCard({ watch }: InventoryWatchCardProps) {
           alt={watch.name}
           loading="lazy"
           decoding="async"
-          className="pointer-events-none absolute inset-0 size-full object-cover"
+          className="pointer-events-none absolute inset-0 size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
       </div>
 

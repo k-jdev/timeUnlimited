@@ -24,7 +24,9 @@ export const BRANDS = [
   "Rolex",
 ] as const
 
-export const CONDITIONS = [
+export const CONDITIONS = ["New", "Pre-owned"] as const
+
+export const CASE_MATERIALS = [
   "Ceramic",
   "Platinum",
   "Rose Gold",
@@ -33,13 +35,27 @@ export const CONDITIONS = [
   "White Gold",
 ] as const
 
-export const FILTER_SECTIONS = [
-  "Price range",
-  "Bracelet Material",
-  "Dial Color",
-  "Size",
-  "Case material",
+export const BRACELET_MATERIALS = [
+  "Ceramic",
+  "Fabric/NATO",
+  "Leather",
+  "Platinum",
+  "Rose Gold",
+  "Rubber",
 ] as const
+
+export const DIAL_COLORS = [
+  "Black",
+  "Blue",
+  "Champagne",
+  "Green",
+  "Silver",
+  "Skeleton",
+] as const
+
+export const SIZES = ["36mm", "38mm", "39mm", "40mm", "41mm", "42mm"] as const
+
+export const SPECIAL_FEATURES = ["Limited Edition", "Precious Stones"] as const
 
 export const INVENTORY_WATCHES: InventoryWatch[] = [
   {
