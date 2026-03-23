@@ -6,6 +6,11 @@ export interface InventoryWatch extends Watch {
   dialColor: string
   caseMaterial: string
   dateAdded: string
+  referenceNumber?: string
+  dial?: string
+  completeSet?: string
+  description?: string
+  galleryImages?: string[]
 }
 
 export const BRANDS = [
@@ -52,6 +57,16 @@ export const INVENTORY_WATCHES: InventoryWatch[] = [
     dialColor: "Blue",
     caseMaterial: "Stainless Steel",
     dateAdded: "2026-03-20",
+    referenceNumber: "5740/1G-001",
+    dial: "Blue",
+    completeSet: "Box & Papers",
+    description: `The Patek Philippe Nautilus 5740/1G-001 represents the pinnacle of the Nautilus collection, combining the iconic Gerald Genta-designed case with a grand complication perpetual calendar. The blue dial features the signature horizontal embossed pattern that has defined the Nautilus since 1976.\n\nWith its 40mm white gold case, exposed screws, and alternating brushed and polished finishes, this reference retains the design DNA that made the Nautilus legendary — but with the added complexity of a perpetual calendar that tracks the date, day, month, and leap year cycle.\n\n*This model was discontinued in 2022.\n\nPlease Note: All product details, including pricing and availability, reflect current market conditions at the time of listing and may change without notice due to market shifts, tariffs, or sourcing costs.`,
+    galleryImages: [
+      "/images/watches/patek-nautilus.webp",
+      "/images/watches/patek-nautilus.webp",
+      "/images/watches/patek-nautilus.webp",
+      "/images/watches/patek-nautilus.webp",
+    ],
   },
   {
     id: "patek-nautilus-2",
@@ -100,6 +115,16 @@ export const INVENTORY_WATCHES: InventoryWatch[] = [
     dialColor: "Blue",
     caseMaterial: "Stainless Steel",
     dateAdded: "2026-03-17",
+    referenceNumber: "15450ST.OO.1256ST.03",
+    dial: "White",
+    completeSet: "Box & Papers",
+    description: `The Audemars Piguet Royal Oak 15450ST.OO.1256ST.03 puts the classic Royal Oak design into a more compact 37mm stainless steel case, offering an ideal balance between sportiness and wrist-friendly proportions. The blue "Grande Tapisserie" dial gives the watch a refined yet relaxed presence, and the integrated steel bracelet preserves the iconic Royal Oak silhouette.\n\nWith its octagonal bezel, exposed screws, and alternating brushed and polished finishes, this reference retains the design DNA that made the Royal Oak legendary — but in a size that fits more wrists comfortably. The applied white-gold hour markers and matching Royal Oak hands provide clarity and understated elegance. For collectors who value proportions, versatility, and full-steel execution without unnecessary embellishment, the 15450ST delivers a clean, authentic expression of the Royal Oak spirit.\n\n*This model was discontinued in 2022.\n\nPlease Note: All product details, including pricing and availability, reflect current market conditions at the time of listing and may change without notice due to market shifts, tariffs, or sourcing costs.`,
+    galleryImages: [
+      "/images/watches/ap-royal-oak.webp",
+      "/images/watches/ap-royal-oak.webp",
+      "/images/watches/ap-royal-oak.webp",
+      "/images/watches/ap-royal-oak.webp",
+    ],
   },
   {
     id: "ap-perpetual-1",

@@ -92,7 +92,7 @@ export default function InventoryPage() {
       />
 
       <div className="lg:pr-[320px]">
-        <div className="flex flex-col gap-8 px-4 pt-10 pb-4 lg:px-10 lg:pt-16">
+        <div className="flex flex-col gap-8 px-4 pt-10 pb-4 lg:pt-16 lg:pr-0 lg:pl-10">
           <div className="flex flex-col gap-6">
             <div className="flex items-start gap-3">
               <h1 className="font-serif text-[48px] leading-none text-[#edeef0] lg:text-[64px] lg:leading-[66px]">
@@ -198,7 +198,7 @@ export default function InventoryPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="flex flex-wrap gap-1">
           {filteredWatches.map((watch) => (
             <InventoryWatchCard key={watch.id} watch={watch} />
           ))}

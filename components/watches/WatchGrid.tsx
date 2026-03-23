@@ -1,12 +1,82 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback } from "react"
+import Link from "next/link"
 import { motion } from "motion/react"
 import { RiAddLine } from "@remixicon/react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { WATCHES } from "@/data/watches"
-import type { Watch } from "@/types"
+
+interface WatchCard {
+  id: string
+  href: string
+  brand: string
+  name: string
+  ref: string
+  size: string
+  price: string
+  image: string
+  featured?: boolean
+  imageClassName?: string
+  glowColor: string
+  borderColor: string
+}
+
+const WATCHES: WatchCard[] = [
+  {
+    id: "patek-nautilus",
+    href: "/watch/patek-nautilus-1",
+    brand: "PATEK PHILIPPE",
+    name: "Nautilus Perpetual",
+    ref: "Ref. 5740/1G-001",
+    size: "40mm",
+    price: "$32,000",
+    image: "/images/watches/patek-nautilus.webp",
+    featured: true,
+
+    glowColor: "#0090FF",
+    borderColor: "#5eb1ef",
+  },
+  {
+    id: "ap-royal-oak",
+    href: "/watch/ap-royal-oak-1",
+    brand: "AUDEMARS PIGUET",
+    name: "Royal Oak",
+    ref: "Ref. 15500ST",
+    size: "41mm",
+    price: "$38,500",
+    image: "/images/watches/ap-royal-oak.webp",
+
+    glowColor: "#ac871c",
+    borderColor: "#ac871c",
+  },
+  {
+    id: "ap-perpetual",
+    href: "/watch/ap-perpetual-1",
+    brand: "AUDEMARS PIGUET",
+    name: "Royal Oak Perpetual",
+    ref: "Ref. 26579CE",
+    size: "41mm",
+    price: "$95,000",
+    image: "/images/watches/ap-perpetual.webp",
+    imageClassName: "scale-130",
+    glowColor: "#eb8e90",
+    borderColor: "#eb8e90",
+  },
+  {
+    id: "patek-aquanaut",
+    href: "/watch/patek-aquanaut-1",
+    brand: "PATEK PHILIPPE",
+    name: "Aquanaut Travel Time",
+    ref: "Ref. 5164A-001",
+    size: "40.8mm",
+    price: "$45,000",
+    image: "/images/watches/patek-aquanaut.webp",
+
+    glowColor: "#60646c",
+    borderColor: "#60646c",
+  },
+]
 
 export function WatchGrid() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
@@ -75,25 +145,29 @@ export function WatchGrid() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
           >
-            <WatchCardItem
-              watch={watch}
-              isActive={watch.id === activeId}
-              onHover={() => setHoveredId(watch.id)}
-            />
+            <Link href={watch.href} className="block">
+              <WatchCardItem
+                watch={watch}
+                isActive={watch.id === activeId}
+                onHover={() => setHoveredId(watch.id)}
+              />
+            </Link>
           </motion.div>
         ))}
       </div>
 
-      <motion.button
-        className="flex h-12 w-full items-center justify-center gap-3 bg-[#111213] text-base font-medium text-[#60646c] transition-colors hover:bg-[#111213]/90 hover:text-[#edeef0]"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        Show more
-        <RiAddLine className="size-4.5" />
-      </motion.button>
+      <Link href="/inventory">
+        <motion.div
+          className="flex h-12 w-full items-center justify-center gap-3 bg-[#111213] text-base font-medium text-[#60646c] transition-colors hover:bg-[#111213]/90 hover:text-[#edeef0]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          Show more
+          <RiAddLine className="size-4.5" />
+        </motion.div>
+      </Link>
     </div>
   )
 }
@@ -103,7 +177,7 @@ function WatchCardItem({
   isActive,
   onHover,
 }: {
-  watch: Watch
+  watch: WatchCard
   isActive: boolean
   onHover: () => void
 }) {
@@ -161,6 +235,7 @@ function WatchCardItem({
             <p className="text-xl leading-7 font-light tracking-[-0.12px] text-[#edeef0] lg:text-[28px] lg:leading-9">
               {watch.name}
             </p>
+
             <div className="flex flex-wrap gap-2">
               <Badge className="rounded-none bg-white/8 text-xs font-medium text-white/70">
                 {watch.ref}

@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { RiArrowRightLine } from "@remixicon/react"
 import { motion } from "motion/react"
 import { Button } from "@/components/ui/button"
@@ -34,9 +35,12 @@ export function InventorySection() {
           <Button
             size="lg"
             className="bg-[#edeef0] text-[#020208] hover:bg-[#edeef0]/90"
+            asChild
           >
-            <RiArrowRightLine data-icon="inline-start" />
-            Our Inventory
+            <Link href="/inventory">
+              <RiArrowRightLine data-icon="inline-start" />
+              Our Inventory
+            </Link>
           </Button>
         </motion.div>
       </div>

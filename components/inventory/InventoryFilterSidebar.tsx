@@ -193,11 +193,11 @@ export function InventoryFilterSidebar({
         </div>
       </ScrollArea>
 
-      <div className="flex gap-2 bg-black px-3 py-3 lg:pr-3 lg:pl-[54px]">
+      <div className="flex gap-2 bg-black px-3 pb-3 lg:pr-3 lg:pl-[54px]">
         {ACTION_ITEMS.map((item) => (
           <button
             key={item.label}
-            className={`flex flex-1 flex-col items-center justify-center gap-2 py-3 text-[12px] leading-4 tracking-[0.04px] ${
+            className={`flex h-16 flex-1 flex-col items-center justify-center gap-2 text-[12px] leading-4 tracking-[0.04px] ${
               item.highlighted
                 ? "bg-[rgba(0,144,255,0.18)] text-[#70b8ff]"
                 : "bg-[#111113] text-[#edeef0]"
