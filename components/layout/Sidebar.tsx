@@ -11,21 +11,8 @@ import {
 } from "@remixicon/react"
 import { AnimatePresence, motion } from "motion/react"
 import { cn } from "@/lib/utils"
+import { NAV_ITEMS } from "@/data/navigation"
 import { BrandLogo } from "./BrandLogo"
-
-interface NavItem {
-  label: string
-  href: string
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "#home" },
-  { label: "Inventory", href: "#inventory" },
-  { label: "Source a Watch", href: "#source" },
-  { label: "Sell Your Piece", href: "#sell" },
-  { label: "Insurance", href: "#insurance" },
-  { label: "Contact", href: "#contact" },
-]
 
 const ACTION_ITEMS = [
   {

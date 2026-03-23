@@ -2,26 +2,12 @@
 
 import { useState } from "react"
 import { motion } from "motion/react"
-
-interface NavItem {
-  label: string
-  href: string
-  active?: boolean
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "#", active: true },
-  { label: "Inventory", href: "#inventory" },
-  { label: "Source a Watch", href: "#source" },
-  { label: "Sell Your Piece", href: "#sell" },
-  { label: "Insurance", href: "#insurance" },
-  { label: "Contact", href: "#contact" },
-]
+import { NAV_ITEMS } from "@/data/navigation"
 
 export function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
-  const activeLabel = hoveredItem ?? NAV_ITEMS.find((i) => i.active)?.label
+  const activeLabel = hoveredItem ?? NAV_ITEMS[0]?.label
 
   return (
     <nav className="fixed top-14 right-16 z-30 flex flex-col gap-3">
@@ -54,7 +40,7 @@ export function Navigation() {
               color: { duration: 0.4, ease: "easeOut" },
             }}
             style={{
-              fontWeight: item.active ? 500 : 300,
+              fontWeight: item.label === NAV_ITEMS[0]?.label ? 500 : 300,
             }}
           >
             <motion.span
