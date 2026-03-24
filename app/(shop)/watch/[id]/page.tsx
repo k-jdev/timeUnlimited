@@ -64,19 +64,19 @@ export default function WatchDetailPage({
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#020208]">
-      <WatchTopBar
-        watchName={watch.name}
-        prevWatch={prevWatch}
-        nextWatch={nextWatch}
-      />
-
       <div className="relative mx-auto max-w-[1440px]">
+        <WatchTopBar
+          watchName={watch.name}
+          prevWatch={prevWatch}
+          nextWatch={nextWatch}
+        />
+
         <div className="flex flex-col lg:h-[calc(100vh-78px)] lg:flex-row">
-          <div className="lg:h-full lg:scrollbar lg:w-[732px] lg:shrink-0 lg:overflow-y-auto">
+          <div className="lg:scrollbar-none lg:h-full lg:w-[732px] lg:shrink-0 lg:overflow-y-auto">
             <WatchGallery images={gallery} watchName={watch.name} />
           </div>
 
-          <div className="lg:h-full lg:scrollbar lg:flex-1 lg:overflow-y-auto">
+          <div className="lg:scrollbar-none lg:h-full lg:flex-1 lg:overflow-y-auto">
             <WatchDetails
               brand={watch.brand}
               name={watch.name}
@@ -86,9 +86,9 @@ export default function WatchDetailPage({
             />
           </div>
         </div>
-
+        <div className="py-16"></div>
         <WatchRelated watches={relatedWatches} />
-
+        <div className="py-16"></div>
         <CtaSection />
         <Footer />
       </div>

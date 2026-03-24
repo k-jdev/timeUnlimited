@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Link from "next/link"
 import {
   RiCloseLine,
   RiArrowLeftSLine,
@@ -81,7 +82,7 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
           />
         </button>
 
-        <div className="grid grid-cols-2 gap-0.5 lg:flex lg:flex-wrap">
+        <div className="grid grid-cols-2 gap-0.5">
           {images.map((img, i) => (
             <button
               key={i}
@@ -89,7 +90,7 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
                 setSelectedImage(i)
                 openLightbox(i)
               }}
-              className={`relative h-[160px] overflow-hidden bg-[#111113] transition-opacity lg:h-[364.5px] lg:min-w-[200px] lg:flex-[1_0_0] ${
+              className={`relative h-[160px] overflow-hidden bg-[#111113] transition-opacity lg:h-[320px] ${
                 selectedImage === i
                   ? "opacity-100"
                   : "opacity-60 hover:opacity-80"
