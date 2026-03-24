@@ -253,10 +253,8 @@ export function InventoryFilterSidebar({
                 max={PRICE_MAX}
                 step={1000}
                 value={priceRange}
-                onValueChange={(v) =>
-                  onPriceRangeChange(v as [number, number])
-                }
-                className="**:data-[slot=slider-track]:border-0 **:data-[slot=slider-track]:bg-[#2E3135] **:data-[slot=slider-track]:shadow-none **:data-[slot=slider-range]:bg-[#70b8ff]"
+                onValueChange={(v) => onPriceRangeChange(v as [number, number])}
+                className="**:data-[slot=slider-range]:bg-[#70b8ff] **:data-[slot=slider-track]:border-0 **:data-[slot=slider-track]:bg-[#2E3135] **:data-[slot=slider-track]:shadow-none"
               />
               <div className="flex items-center justify-between">
                 <span className="text-[13px] text-[#80838d]">
@@ -350,7 +348,7 @@ export function InventoryFilterSidebar({
         </div>
       </ScrollArea>
 
-      <div className="flex gap-2 bg-black px-3 pb-3 lg:pr-3 lg:pl-13.5">
+      <div className="flex gap-2 bg-black px-3 pb-3 lg:px-6 lg:pr-10 lg:pl-8">
         {ACTION_ITEMS.map((item) => {
           const isHighlighted = hoveredAction
             ? hoveredAction === item.label

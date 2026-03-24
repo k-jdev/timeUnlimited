@@ -68,7 +68,7 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-0.5 pt-4 lg:w-[732px] lg:shrink-0 lg:pt-[30px]">
+      <div className="flex flex-col gap-0.5 pt-4 lg:pt-[30px]">
         <button
           onClick={() => openLightbox(selectedImage)}
           className="relative h-[300px] w-full overflow-hidden bg-[#111113] sm:h-[400px] lg:h-[682px]"

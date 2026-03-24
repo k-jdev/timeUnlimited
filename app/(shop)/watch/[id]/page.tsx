@@ -71,9 +71,12 @@ export default function WatchDetailPage({
       />
 
       <div className="relative mx-auto max-w-[1440px]">
-        <div className="pb-14 lg:pb-0">
-          <div className="flex flex-col lg:flex-row lg:gap-0">
+        <div className="flex flex-col lg:h-[calc(100vh-78px)] lg:flex-row">
+          <div className="lg:h-full lg:scrollbar lg:w-[732px] lg:shrink-0 lg:overflow-y-auto">
             <WatchGallery images={gallery} watchName={watch.name} />
+          </div>
+
+          <div className="lg:h-full lg:scrollbar lg:flex-1 lg:overflow-y-auto">
             <WatchDetails
               brand={watch.brand}
               name={watch.name}
@@ -82,12 +85,12 @@ export default function WatchDetailPage({
               description={description}
             />
           </div>
-
-          <WatchRelated watches={relatedWatches} />
-
-          <CtaSection />
-          <Footer />
         </div>
+
+        <WatchRelated watches={relatedWatches} />
+
+        <CtaSection />
+        <Footer />
       </div>
     </div>
   )
