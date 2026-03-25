@@ -51,10 +51,10 @@ export function ProductsToolbar({
             type="button"
             onClick={() => onTabChange(tab.value)}
             className={cn(
-              "px-4 py-3 text-sm transition-colors duration-200",
+              "h-10 px-4 text-base font-medium transition-colors duration-200",
               activeTab === tab.value
-                ? "border-b-2 border-[#edeef0] text-[#edeef0]"
-                : "border-b-2 border-transparent text-[#8b8d98] hover:text-[#edeef0]"
+                ? "bg-[#191c1e] text-[#edeef0]"
+                : "bg-[#111213] text-[#b0b4ba] hover:text-[#edeef0]"
             )}
           >
             {tab.label}
@@ -78,7 +78,7 @@ export function ProductsToolbar({
         )}
       </div>
 
-      <div className="flex items-center pb-1">
+      <div className="flex items-center">
         {isSearchOpen ? (
           <input
             ref={inputRef}
@@ -93,10 +93,10 @@ export function ProductsToolbar({
           <button
             type="button"
             onClick={openSearch}
-            className="p-1 text-[#8b8d98] transition-colors duration-200 hover:text-[#edeef0]"
+            className="flex size-10 items-center justify-center text-[#b0b4ba] transition-colors duration-200 hover:text-[#edeef0]"
             aria-label="Search"
           >
-            <RiSearchLine className="size-4" />
+            <RiSearchLine className="size-4.5" />
           </button>
         )}
       </div>

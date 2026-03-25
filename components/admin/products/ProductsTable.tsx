@@ -40,8 +40,8 @@ export function ProductsTable({
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
-          <TableRow className="border-b border-[#2e3135] hover:bg-transparent">
-            <TableHead className="w-10 py-3">
+          <TableRow className="border border-[#d6ebfd30] bg-[#171818] hover:bg-[#171818]/90">
+            <TableHead className="w-10">
               <Checkbox
                 checked={allSelected}
                 data-state={
@@ -56,28 +56,28 @@ export function ProductsTable({
                 className={someSelected ? "opacity-60" : ""}
               />
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Model
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Status
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Serial number
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Price
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Case material
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Dial
             </TableHead>
-            <TableHead className="py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="text-sm font-medium text-[#edeef0]">
               Case Size
             </TableHead>
-            <TableHead className="w-12 py-3 text-xs font-medium text-[#8b8d98]">
+            <TableHead className="w-12 text-sm font-medium text-[#edeef0]">
               Action
             </TableHead>
           </TableRow>
@@ -86,7 +86,7 @@ export function ProductsTable({
           {products.map((product) => (
             <TableRow
               key={product.id}
-              className="border-b border-[#2e3135] hover:bg-white/2"
+              className="border border-[#d6ebfd30] bg-[#101010] hover:bg-[#101010]/90"
               data-selected={selectedIds.has(product.id)}
             >
               <TableCell className="py-3">
@@ -110,31 +110,31 @@ export function ProductsTable({
                       <div className="size-full" />
                     )}
                   </div>
-                  <span className="text-sm text-[#edeef0]">{product.name}</span>
+                  <span className="text-sm text-[#b0b4ba]">{product.name}</span>
                 </div>
               </TableCell>
               <TableCell className="py-3">
                 <ProductStatusBadge status={product.status} />
               </TableCell>
-              <TableCell className="py-3 text-sm text-[#8b8d98]">
+              <TableCell className="py-3 text-xs font-medium text-[#b0b4ba]">
                 {product.ref || "—"}
               </TableCell>
               <TableCell className="py-3 text-sm font-medium text-[#30a46c]">
                 {formatPrice(product.price)}
               </TableCell>
-              <TableCell className="py-3 text-sm text-[#8b8d98]">
+              <TableCell className="py-3 text-sm text-[#b0b4ba]">
                 {product.caseMaterial || "—"}
               </TableCell>
-              <TableCell className="py-3 text-sm text-[#8b8d98]">
+              <TableCell className="py-3 text-sm text-[#b0b4ba]">
                 {product.dialColor || "—"}
               </TableCell>
-              <TableCell className="py-3 text-sm text-[#8b8d98]">
+              <TableCell className="py-3 text-sm text-[#b0b4ba]">
                 {product.size || "—"}
               </TableCell>
               <TableCell className="py-3">
                 <button
                   type="button"
-                  className="p-1 text-[#8b8d98] transition-colors duration-200 hover:text-[#edeef0]"
+                  className="p-1 text-[#b0b4ba] transition-colors duration-200 hover:text-[#edeef0]"
                   aria-label={`Edit ${product.name}`}
                 >
                   <RiPencilLine className="size-4" />

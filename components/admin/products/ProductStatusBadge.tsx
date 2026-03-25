@@ -9,10 +9,10 @@ export function ProductStatusBadge({ status }: ProductStatusBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center px-1.5 py-0.5 text-xs font-medium",
         status === "active"
-          ? "bg-[#30a46c]/15 text-[#30a46c]"
-          : "bg-[#8b8d98]/15 text-[#8b8d98]"
+          ? "bg-[#22ff991f] text-[#46fea5d4]"
+          : "border border-[#d9edff40] text-[#f1f7feb5]"
       )}
     >
       {status === "active" ? "Active" : "Archived"}

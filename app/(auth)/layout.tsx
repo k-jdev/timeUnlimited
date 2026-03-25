@@ -14,7 +14,6 @@ export default function AuthLayout({
         backgroundPosition: "center",
       }}
     >
-      {/* Logo */}
       <Link href="/" className="absolute top-7 left-16 z-20">
         <svg
           width="211"
@@ -34,7 +33,6 @@ export default function AuthLayout({
         </svg>
       </Link>
 
-      {/* Content */}
       <div className="relative z-10">{children}</div>
     </div>
   )

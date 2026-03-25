@@ -28,7 +28,7 @@ export function ProductsPagination({
 }: ProductsPaginationProps) {
   return (
     <div className="flex items-center justify-between border-t border-[#2e3135] py-4">
-      <span className="text-sm text-[#8b8d98]">
+      <span className="text-sm text-[#b0b4ba]">
         All products: <span className="text-[#edeef0]">{totalItems}</span>
       </span>
 
@@ -37,18 +37,18 @@ export function ProductsPagination({
           type="button"
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="p-1 text-[#8b8d98] transition-colors duration-200 hover:text-[#edeef0] disabled:cursor-not-allowed disabled:opacity-30"
+          className="p-1 text-[#b0b4ba] transition-colors duration-200 hover:text-[#edeef0] disabled:cursor-not-allowed disabled:opacity-30"
           aria-label="Previous page"
         >
           <RiArrowLeftSLine className="size-4" />
         </button>
         <span className="text-sm text-[#edeef0]">{currentPage}</span>
-        <span className="text-sm text-[#8b8d98]">From {totalPages}</span>
+        <span className="text-sm text-[#b0b4ba]">From {totalPages}</span>
         <button
           type="button"
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="p-1 text-[#8b8d98] transition-colors duration-200 hover:text-[#edeef0] disabled:cursor-not-allowed disabled:opacity-30"
+          className="p-1 text-[#b0b4ba] transition-colors duration-200 hover:text-[#edeef0] disabled:cursor-not-allowed disabled:opacity-30"
           aria-label="Next page"
         >
           <RiArrowRightSLine className="size-4" />
@@ -56,7 +56,7 @@ export function ProductsPagination({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm text-[#8b8d98]">In this page</span>
+        <span className="text-sm text-[#b0b4ba]">In this page</span>
         <Select
           value={String(itemsPerPage)}
           onValueChange={(v) => onItemsPerPageChange(Number(v))}

@@ -20,7 +20,7 @@ export function AdminHeader() {
   }
 
   return (
-    <header className="flex h-[78px] items-center justify-between px-8 lg:px-10">
+    <header className="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between px-8 lg:px-10">
       <Link href="/admin/inventory">
         <svg
           width="211"
