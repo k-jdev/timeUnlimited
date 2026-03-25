@@ -41,9 +41,23 @@ export function BrandsSection() {
                 className="flex items-center gap-2 whitespace-nowrap lg:gap-4"
               >
                 {i > 0 && <span className="select-none">·</span>}
-                <span className="cursor-pointer border-b border-transparent pb-1 hover:border-[#edeef0] hover:italic">
+                <motion.span
+                  className="relative cursor-pointer pb-1"
+                  initial="rest"
+                  whileHover="hover"
+                  animate="rest"
+                >
                   {brand.name}
-                </span>
+                  <motion.span
+                    className="absolute bottom-0 left-0 h-px w-full bg-[#edeef0]"
+                    variants={{
+                      rest: { scaleX: 0 },
+                      hover: { scaleX: 1 },
+                    }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    style={{ transformOrigin: "left" }}
+                  />
+                </motion.span>
               </span>
             ))}
           </motion.div>

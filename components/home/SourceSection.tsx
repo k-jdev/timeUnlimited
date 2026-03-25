@@ -37,7 +37,7 @@ export function SourceSection() {
           >
             Don&apos;t See
             <br />
-            <span className="ml-10 italic lg:ml-16">Your Watch?</span>
+            <span className="ml-10 italic lg:ml-16">Your</span> Watch?
           </motion.h2>
           <motion.p
             className="max-w-110 text-base leading-6 font-light text-[#60646c]"
