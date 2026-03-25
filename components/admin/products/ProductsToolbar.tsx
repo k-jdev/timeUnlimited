@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { RiDeleteBinLine, RiSearchLine } from "@remixicon/react"
+import { RiSearchLine } from "@remixicon/react"
 import { cn } from "@/lib/utils"
 import type { ProductTab } from "@/hooks/useProducts"
 
@@ -16,8 +16,6 @@ interface ProductsToolbarProps {
   onTabChange: (tab: ProductTab) => void
   searchQuery: string
   onSearchChange: (query: string) => void
-  selectedCount: number
-  onDeleteSelected: () => void
 }
 
 export function ProductsToolbar({
@@ -25,8 +23,6 @@ export function ProductsToolbar({
   onTabChange,
   searchQuery,
   onSearchChange,
-  selectedCount,
-  onDeleteSelected,
 }: ProductsToolbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -60,22 +56,6 @@ export function ProductsToolbar({
             {tab.label}
           </button>
         ))}
-
-        {selectedCount > 0 && (
-          <div className="ml-4 flex items-center gap-3">
-            <span className="text-sm text-[#8b8d98]">
-              {selectedCount} selected
-            </span>
-            <button
-              type="button"
-              onClick={onDeleteSelected}
-              className="flex items-center gap-1.5 text-sm text-[#e54d4d] transition-colors duration-200 hover:text-[#ff6b6b]"
-            >
-              <RiDeleteBinLine className="size-4" />
-              Delete
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="flex items-center">

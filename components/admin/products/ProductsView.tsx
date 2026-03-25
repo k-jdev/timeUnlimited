@@ -8,6 +8,7 @@ import { useProducts, type ProductTab } from "@/hooks/useProducts"
 import { ProductsToolbar } from "./ProductsToolbar"
 import { ProductsTable } from "./ProductsTable"
 import { ProductsPagination } from "./ProductsPagination"
+import { ProductsSelectionBar } from "./ProductsSelectionBar"
 
 export function ProductsView() {
   const { isLoaded, counts, deleteProducts, getFilteredProducts } =
@@ -108,8 +109,12 @@ export function ProductsView() {
         onTabChange={handleTabChange}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+      />
+
+      <ProductsSelectionBar
         selectedCount={selectedIds.size}
-        onDeleteSelected={handleDeleteSelected}
+        onDelete={handleDeleteSelected}
+        onClear={() => setSelectedIds(new Set())}
       />
 
       {paginatedProducts.length === 0 ? (
