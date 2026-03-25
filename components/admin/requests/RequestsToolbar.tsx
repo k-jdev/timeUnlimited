@@ -28,10 +28,10 @@ export function RequestsToolbar({
             type="button"
             onClick={() => onTabChange(tab.value)}
             className={cn(
-              "h-10 px-4 text-sm font-medium transition-colors duration-200",
+              "h-10 px-4 text-[16px] font-medium transition-colors duration-200",
               activeTab === tab.value
-                ? "bg-white/10 text-[#edeef0]"
-                : "bg-white/4 text-[#8b8d98] hover:bg-white/8 hover:text-[#edeef0]"
+                ? "bg-[#191c1e] text-[#edeef0]"
+                : "bg-[#111213] text-[#8b8d98] hover:bg-white/8 hover:text-[#edeef0]"
             )}
           >
             {tab.label}
@@ -43,7 +43,7 @@ export function RequestsToolbar({
       <button
         type="button"
         onClick={onOpenFilter}
-        className="flex size-10 items-center justify-center text-[#8b8d98] transition-colors hover:text-[#edeef0]"
+        className="flex size-10 items-center justify-center bg-[#191c1e] text-[#8b8d98] transition-colors hover:text-[#edeef0]"
         aria-label="Open filters"
       >
         <RiFilterLine className="size-4.5" />
