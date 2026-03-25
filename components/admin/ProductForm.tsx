@@ -164,7 +164,17 @@ export function ProductForm({ initialData, onSave }: ProductFormProps) {
       const existing = JSON.parse(
         localStorage.getItem("admin_products") ?? "[]"
       )
-      existing.push({ ...data, id: Date.now().toString() })
+      const newProduct = {
+        ...data,
+        id: Date.now().toString(),
+        status: "active",
+        image: "",
+        dialColor: data.dial,
+        ref: data.referenceNumber ?? "",
+        glowColor: "",
+        borderColor: "",
+      }
+      existing.push(newProduct)
       localStorage.setItem("admin_products", JSON.stringify(existing))
       router.push("/admin/inventory")
     }
