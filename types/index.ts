@@ -29,6 +29,7 @@ export interface AdminProduct {
   referenceNumber?: string
   description?: string
   galleryImages?: string[]
+  hoverColor?: string
 }
 
 export interface NavItem {

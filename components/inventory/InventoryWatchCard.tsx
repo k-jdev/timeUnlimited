@@ -1,3 +1,4 @@
+import { useState } from "react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import type { InventoryWatch } from "@/data/inventory"
@@ -7,10 +8,19 @@ interface InventoryWatchCardProps {
 }
 
 export function InventoryWatchCard({ watch }: InventoryWatchCardProps) {
+  const [hovered, setHovered] = useState(false)
+
   return (
     <Link
       href={`/watch/${watch.id}`}
-      className="group relative h-[493px] overflow-hidden bg-[#111113]"
+      className="group relative h-[493px] overflow-hidden bg-[#111113] transition-colors duration-500"
+      style={
+        watch.hoverColor && hovered
+          ? { backgroundColor: watch.hoverColor }
+          : undefined
+      }
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div className="absolute top-0 left-1/2 size-[350px] -translate-x-1/2">
         <img

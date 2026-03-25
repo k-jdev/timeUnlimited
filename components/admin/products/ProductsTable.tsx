@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { RiPencilLine } from "@remixicon/react"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -132,13 +133,13 @@ export function ProductsTable({
                 {product.size || "—"}
               </TableCell>
               <TableCell className="py-3">
-                <button
-                  type="button"
-                  className="p-1 text-[#b0b4ba] transition-colors duration-200 hover:text-[#edeef0]"
+                <Link
+                  href={`/admin/inventory/${product.id}`}
+                  className="inline-flex p-1 text-[#b0b4ba] transition-colors duration-200 hover:text-[#edeef0]"
                   aria-label={`Edit ${product.name}`}
                 >
                   <RiPencilLine className="size-4" />
-                </button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

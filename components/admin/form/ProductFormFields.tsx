@@ -34,7 +34,7 @@ export function ProductFormFields({
         <Select name="brand" defaultValue={defaultValues.brand}>
           <SelectTrigger
             id="brand"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-[placeholder]:text-[#dfebfd6e]"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
           >
             <SelectValue placeholder="e.g. Patek Philippe" />
           </SelectTrigger>
@@ -55,7 +55,7 @@ export function ProductFormFields({
         <Select name="condition" defaultValue={defaultValues.condition}>
           <SelectTrigger
             id="condition"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-[placeholder]:text-[#dfebfd6e]"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
           >
             <SelectValue placeholder="Select" />
           </SelectTrigger>
@@ -76,7 +76,7 @@ export function ProductFormFields({
         <Select name="caseMaterial" defaultValue={defaultValues.caseMaterial}>
           <SelectTrigger
             id="caseMaterial"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-[placeholder]:text-[#dfebfd6e]"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
           >
             <SelectValue placeholder="Select" />
           </SelectTrigger>
@@ -110,7 +110,7 @@ export function ProductFormFields({
         <Select name="caseSize" defaultValue={defaultValues.caseSize}>
           <SelectTrigger
             id="caseSize"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-[placeholder]:text-[#dfebfd6e]"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
           >
             <SelectValue placeholder="Select" />
           </SelectTrigger>
@@ -131,7 +131,7 @@ export function ProductFormFields({
         <Select name="dial" defaultValue={defaultValues.dial}>
           <SelectTrigger
             id="dial"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-[placeholder]:text-[#dfebfd6e]"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
           >
             <SelectValue placeholder="Select" />
           </SelectTrigger>
@@ -171,7 +171,7 @@ export function ProductFormFields({
         <Select name="completeSet" defaultValue={defaultValues.completeSet}>
           <SelectTrigger
             id="completeSet"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-[placeholder]:text-[#dfebfd6e]"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
           >
             <SelectValue placeholder="Select" />
           </SelectTrigger>

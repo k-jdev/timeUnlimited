@@ -1,13 +1,20 @@
 "use client"
 
-import { useRef, useState, useCallback } from "react"
-import { RiUploadLine, RiAddLine, RiCloseLine } from "@remixicon/react"
+import { useRef, useState, useCallback, useEffect } from "react"
+import {
+  RiUploadLine,
+  RiAddLine,
+  RiCloseLine,
+  RiContrastDropLine,
+} from "@remixicon/react"
 
 interface ImageUploadSectionProps {
   mainImage: File | null
   additionalImages: File[]
   onMainImageChange: (file: File | null) => void
   onAdditionalImagesChange: (files: File[]) => void
+  existingImage?: string
+  initialHoverColor?: string
 }
 
 function UploadZone({
@@ -96,8 +103,35 @@ export function ImageUploadSection({
   additionalImages,
   onMainImageChange,
   onAdditionalImagesChange,
+  existingImage,
+  initialHoverColor,
 }: ImageUploadSectionProps) {
-  const mainPreview = mainImage ? URL.createObjectURL(mainImage) : undefined
+  const colorPickerRef = useRef<HTMLInputElement>(null)
+  const colorButtonRef = useRef<HTMLButtonElement>(null)
+  const hiddenInputRef = useRef<HTMLInputElement>(null)
+
+  // Sync initial value into DOM refs after mount
+  useEffect(() => {
+    const color = initialHoverColor || ""
+    if (colorButtonRef.current)
+      colorButtonRef.current.style.backgroundColor = color || "#111113"
+    if (hiddenInputRef.current) hiddenInputRef.current.value = color
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleColorChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const color = e.target.value
+      // Direct DOM mutation — no React state, no re-render
+      if (colorButtonRef.current)
+        colorButtonRef.current.style.backgroundColor = color
+      if (hiddenInputRef.current) hiddenInputRef.current.value = color
+    },
+    []
+  )
+  const mainPreview = mainImage
+    ? URL.createObjectURL(mainImage)
+    : existingImage || undefined
 
   const addAdditional = (file: File) => {
     onAdditionalImagesChange([...additionalImages, file])
@@ -133,12 +167,43 @@ export function ImageUploadSection({
 
   return (
     <div className="flex flex-col">
-      <UploadZone
-        onFile={onMainImageChange}
-        preview={mainPreview}
-        onRemove={mainImage ? () => onMainImageChange(null) : undefined}
-        className="h-[300px] lg:h-[450px]"
-      />
+      <div className="relative">
+        <UploadZone
+          onFile={onMainImageChange}
+          preview={mainPreview}
+          onRemove={mainImage ? () => onMainImageChange(null) : undefined}
+          className="h-75 lg:h-112.5"
+        />
+        {
+          <button
+            ref={colorButtonRef}
+            type="button"
+            onClick={() => colorPickerRef.current?.click()}
+            className="absolute right-3 bottom-3 flex size-8 items-center justify-center border-2 border-white/20 transition-all hover:scale-110 hover:border-white/50"
+            style={{ backgroundColor: initialHoverColor || "#111113" }}
+            title="Card hover color"
+          >
+            <RiContrastDropLine
+              className="size-3.5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
+              style={{ color: "rgba(255,255,255,0.7)" }}
+            />
+            <input
+              ref={colorPickerRef}
+              type="color"
+              defaultValue={initialHoverColor || "#111113"}
+              onChange={handleColorChange}
+              className="sr-only"
+            />
+          </button>
+        }
+        <input
+          ref={hiddenInputRef}
+          type="hidden"
+          name="hoverColor"
+          defaultValue={initialHoverColor || ""}
+          form="product-form"
+        />
+      </div>
 
       <div className="mt-0.5 grid grid-cols-2 gap-0.5">
         {slots.map(({ key, file }) => {
@@ -149,7 +214,7 @@ export function ImageUploadSection({
               onFile={addAdditional}
               preview={preview}
               onRemove={file ? () => removeAdditional(key) : undefined}
-              className="h-[150px] lg:h-[180px]"
+              className="h-37.5 lg:h-45"
             />
           )
         })}

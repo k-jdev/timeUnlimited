@@ -19,6 +19,7 @@ export interface ProductFormData {
   caseSize: string
   dial: string
   completeSet: string
+  hoverColor: string
 }
 
 const EMPTY_FORM: ProductFormData = {
@@ -32,14 +33,20 @@ const EMPTY_FORM: ProductFormData = {
   caseSize: "",
   dial: "",
   completeSet: "",
+  hoverColor: "",
 }
 
 interface ProductFormProps {
   initialData?: Partial<ProductFormData>
   onSave?: (data: ProductFormData) => void
+  mode?: "add" | "edit"
 }
 
-export function ProductForm({ initialData, onSave }: ProductFormProps) {
+export function ProductForm({
+  initialData,
+  onSave,
+  mode = "add",
+}: ProductFormProps) {
   const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,6 +63,7 @@ export function ProductForm({ initialData, onSave }: ProductFormProps) {
       caseSize: formData.get("caseSize") as string,
       dial: formData.get("dial") as string,
       completeSet: formData.get("completeSet") as string,
+      hoverColor: formData.get("hoverColor") as string,
     }
     if (onSave) {
       onSave(data)
@@ -70,6 +78,7 @@ export function ProductForm({ initialData, onSave }: ProductFormProps) {
         image: "",
         dialColor: data.dial,
         ref: data.referenceNumber ?? "",
+        hoverColor: data.hoverColor,
         glowColor: "",
         borderColor: "",
       }
@@ -82,9 +91,13 @@ export function ProductForm({ initialData, onSave }: ProductFormProps) {
   const defaultValues = { ...EMPTY_FORM, ...initialData }
 
   return (
-    <form onSubmit={handleSubmit} className="flex h-full flex-col">
+    <form
+      id="product-form"
+      onSubmit={handleSubmit}
+      className="flex h-full flex-col"
+    >
       <h1 className="mb-8 font-serif text-[40px] leading-tight text-[#edeef0] lg:text-[48px]">
-        Add product
+        {mode === "edit" ? "Edit product" : "Add product"}
       </h1>
 
       <div className="grid flex-1 grid-cols-1 content-start gap-x-6 gap-y-5 md:grid-cols-3">
