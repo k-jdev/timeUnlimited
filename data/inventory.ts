@@ -6,6 +6,7 @@ export interface InventoryWatch extends Watch {
   dialColor: string
   caseMaterial: string
   dateAdded: string
+  hoverColor?: string
   referenceNumber?: string
   dial?: string
   completeSet?: string
