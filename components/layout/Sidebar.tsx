@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { RequestWatchModal } from "@/components/home/RequestWatchModal"
+import { SellWatchModal } from "@/components/home/SellWatchModal"
 import {
   RiUploadLine,
   RiMailLine,
@@ -42,6 +44,8 @@ export function Sidebar() {
   const [hoveredAction, setHoveredAction] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false)
 
   useEffect(() => {
     const sectionIds = NAV_ITEMS.map((item) => item.href.replace("#", ""))
@@ -126,6 +130,10 @@ export function Sidebar() {
               key={item.label}
               onMouseEnter={() => setHoveredAction(item.label)}
               onMouseLeave={() => setHoveredAction(null)}
+              onClick={() => {
+                if (item.label === "Request") setIsModalOpen(true)
+                if (item.label === "Sell") setIsSellModalOpen(true)
+              }}
               className={cn(
                 "flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 py-3 text-xs transition-all duration-200",
                 activeAction === item.label
@@ -166,6 +174,10 @@ export function Sidebar() {
           {ACTION_ITEMS.map((item) => (
             <button
               key={item.label}
+              onClick={() => {
+                if (item.label === "Request") setIsModalOpen(true)
+                if (item.label === "Sell") setIsSellModalOpen(true)
+              }}
               className={cn(
                 "flex h-13.5 flex-1 items-center justify-center gap-2 text-xs tracking-[0.04px]",
                 item.highlighted
@@ -255,6 +267,14 @@ export function Sidebar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <RequestWatchModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+      <SellWatchModal
+        isOpen={isSellModalOpen}
+        onClose={() => setIsSellModalOpen(false)}
+      />
     </>
   )
 }
