@@ -33,7 +33,7 @@ export function ResetPasswordView() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-120 flex-col gap-6 bg-[#111217]/80 p-10 backdrop-blur-sm"
+      className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
     >
       {/* Title */}
       <div className="flex flex-col gap-2">
@@ -61,7 +61,7 @@ export function ResetPasswordView() {
             placeholder="Enter verification code"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="h-8 w-full border border-[#2e3135] bg-white/5 px-2 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
+            className="h-8 w-full border border-[#2e3135] px-2 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
           />
         </div>
 
@@ -81,7 +81,7 @@ export function ResetPasswordView() {
               autoComplete="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="h-8 w-full border border-[#2e3135] bg-white/5 px-2 pr-8 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
+              className="h-8 w-full border border-[#2e3135] px-2 pr-8 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
             />
             <button
               type="button"
@@ -115,7 +115,7 @@ export function ResetPasswordView() {
               autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="h-8 w-full border border-[#2e3135] bg-white/5 px-2 pr-8 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
+              className="h-8 w-full border border-[#2e3135] px-2 pr-8 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
             />
             <button
               type="button"

@@ -44,7 +44,7 @@ export function LoginView() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-120 flex-col gap-6 bg-[#111217]/80 p-10 backdrop-blur-sm"
+      className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
     >
       {/* Title */}
       <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
@@ -68,7 +68,7 @@ export function LoginView() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-8 w-full border border-[#2e3135] bg-white/5 px-2 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
+            className="h-8 w-full border border-[#2e3135] px-2 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
           />
         </div>
 
@@ -88,7 +88,7 @@ export function LoginView() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-8 w-full border border-[#2e3135] bg-white/5 px-2 pr-8 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
+              className="h-8 w-full border border-[#2e3135] px-2 pr-8 text-sm text-[#edeef0] placeholder:text-[#8b8d98] focus:border-[#8b8d98] focus:outline-none"
             />
             <button
               type="button"
