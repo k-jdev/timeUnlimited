@@ -342,9 +342,11 @@ export default function InventoryPage() {
           </div>
         </div>
         <div className="pb-16 lg:pb-32" />
-        <CtaSection />
-
-        <Footer />
+        <div className="mx-auto max-w-[1440px]">
+          {" "}
+          <CtaSection />
+          <Footer />
+        </div>
       </div>
     </div>
   )
