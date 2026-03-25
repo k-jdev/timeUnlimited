@@ -4,8 +4,7 @@ import { BrandLogo } from "@/components/layout/BrandLogo"
 
 const NAV_LINKS = [
   { label: "Inventory", href: "/admin/inventory" },
-  { label: "Source a Watch", href: "/admin/source" },
-  { label: "Sell Your Piece", href: "/admin/sell" },
+  { label: "Requests", href: "/admin/requests" },
 ]
 
 export function AdminHeader() {
