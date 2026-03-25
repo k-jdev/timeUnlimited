@@ -95,7 +95,7 @@ function FilterField({
         <SelectTrigger className="h-8 w-full rounded-none border-[#2e3135] bg-white/5 text-sm text-[#edeef0] data-placeholder:text-[#8b8d98]">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent className="border-[#2e3135] bg-[#111217]">
+        <SelectContent className="border-[#2e3135] bg-[#111214]">
           {options.map((opt) => (
             <SelectItem
               key={opt}
@@ -158,7 +158,8 @@ export function RequestsFilterModal({
       onClick={handleOverlayClick}
     >
       <div
-        className="relative flex w-[500px] flex-col gap-6 bg-[#0d1117] p-8"
+        className="relative flex w-[500px] flex-col gap-6 bg-[#111113] p-8"
+        style={{ boxShadow: "0 4px 18.6px 0 #000" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}

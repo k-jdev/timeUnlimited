@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { RiDeleteBinLine } from "@remixicon/react"
 import {
@@ -20,9 +20,13 @@ const STATUS_OPTIONS: { value: RequestStatus; label: string }[] = [
 
 function Field({ label, value }: { label: string; value?: string }) {
   return (
-    <div className="flex flex-col gap-1.25">
-      <span className="text-xs text-[#8b8d98]">{label}</span>
-      <span className="text-xs font-medium text-[#edeef0]">{value || "—"}</span>
+    <div className="flex flex-col gap-[5px]">
+      <span className="text-[12px] leading-4 tracking-[0.04px] text-[#43484E]">
+        {label}
+      </span>
+      <span className="overflow-hidden text-[12px] leading-4 font-medium tracking-[0.04px] text-ellipsis whitespace-nowrap text-[#edeef0]">
+        {value || "вЂ”"}
+      </span>
     </div>
   )
 }
@@ -37,50 +41,35 @@ interface RequestCardProps {
 
 export function RequestCard({
   request,
-  isExpanded,
-  onToggleExpand,
   onStatusChange,
   onDelete,
 }: RequestCardProps) {
   return (
-    <div className="border border-[#2e3135] bg-white/2">
-      {/* Header */}
-      <div
-        className="flex cursor-pointer items-center justify-between p-6 select-none"
-        onClick={onToggleExpand}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault()
-            onToggleExpand()
-          }
-        }}
-      >
+    <div className="flex flex-col gap-3 border border-[#d6ebfd30] bg-[#101010] px-6 py-5">
+      <div className="flex items-center justify-between">
         {/* Left: request number + date */}
         <div className="flex items-end gap-2">
-          <span className="text-xl text-[#edeef0]">
+          <span className="text-[20px] leading-7 tracking-[-0.08px] text-[#edeef0]">
             Request #{request.requestNumber}
           </span>
-          <span className="pb-0.75 text-xs text-[#8b8d98]">
+          <span className="pb-[3px] text-[12px] leading-4 tracking-[0.04px] text-[#43484E]">
             Created: {request.createdAt}
           </span>
         </div>
 
-        {/* Right: badge + status + delete (stop propagation so clicks don't toggle) */}
-        <div
-          className="flex items-center gap-3"
-          onClick={(e) => e.stopPropagation()}
-        >
+        {/* Right: badge + status + delete */}
+        <div className="flex items-center gap-3">
           <RequestTypeBadge type={request.type} />
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#8b8d98]">Status</span>
+            <span className="text-[12px] leading-4 tracking-[0.04px] text-[#cdced6]">
+              Status
+            </span>
             <Select
               value={request.status}
               onValueChange={(v) => onStatusChange(v as RequestStatus)}
             >
-              <SelectTrigger className="h-6 w-auto gap-1 rounded-none border-[#2e3135] bg-transparent px-2 text-xs text-[#edeef0] focus-visible:border-[#5eb1ef] focus-visible:ring-0">
+              <SelectTrigger className="h-6 w-auto gap-1 rounded-none border-[#2e3135] bg-transparent px-2 text-[12px] font-medium text-[#edeef0] focus-visible:border-[#5eb1ef] focus-visible:ring-0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -96,7 +85,7 @@ export function RequestCard({
           <button
             type="button"
             onClick={onDelete}
-            className="flex size-8 items-center justify-center text-[#8b8d98] transition-colors duration-200 hover:text-[#e54d4d]"
+            className="flex size-8 items-center justify-center text-[#cdced6] transition-colors duration-200 hover:text-[#e54d4d]"
             aria-label="Delete request"
           >
             <RiDeleteBinLine className="size-4" />
@@ -104,73 +93,62 @@ export function RequestCard({
         </div>
       </div>
 
-      {/* Body — accordion */}
-      {isExpanded && (
-        <div className="px-6 pb-6">
-          {request.type === "specific" ? (
-            /* Specific: single row of 6 fields */
-            <div className="flex items-start">
-              {/* First field: fixed width, less left padding */}
-              <div className="w-73.75 shrink-0 pr-3 pl-1">
-                <Field
-                  label="Watch Name / Model / Reference"
-                  value={request.watchReference}
-                />
-              </div>
-              <div className="flex flex-1 items-start">
-                <div className="flex-1 px-3">
-                  <Field label="Budget Range" value={request.budgetRange} />
-                </div>
-                <div className="flex-1 px-3">
-                  <Field label="Timeframe" value={request.timeframe} />
-                </div>
-                <div className="flex-1 px-3">
-                  <Field label="Email" value={request.email} />
-                </div>
-                <div className="flex-1 px-3">
-                  <Field label="Name" value={request.name} />
-                </div>
-                <div className="flex-1 px-3">
-                  <Field label="Phone" value={request.phone} />
-                </div>
-              </div>
+      {/* Fields row */}
+      {request.type === "specific" ? (
+        <div className="flex items-start">
+          <div className="w-[295px] shrink-0 pr-3 pl-1">
+            <Field
+              label="Watch Name / Model / Reference"
+              value={request.watchReference}
+            />
+          </div>
+          <div className="flex min-w-0 flex-1 items-start">
+            <div className="min-w-0 flex-1 px-3">
+              <Field label="Budget Range" value={request.budgetRange} />
             </div>
-          ) : (
-            /* Assisted: 3 columns of stacked fields + Purpose textarea on the right */
-            <div className="flex gap-6">
-              {/* Left: 3 columns */}
-              <div className="flex flex-1 items-start">
-                {/* Col 1 */}
-                <div className="flex w-55 shrink-0 flex-col gap-6 pr-3 pl-1">
-                  <Field
-                    label="Brand Preferences"
-                    value={request.brandPreferences}
-                  />
-                  <Field label="Budget Range" value={request.budgetRange} />
-                  <Field label="Material" value={request.material} />
-                </div>
-                {/* Col 2 */}
-                <div className="flex flex-1 flex-col gap-6 px-3">
-                  <Field label="Timeframe" value={request.timeframe} />
-                  <Field label="Name" value={request.name} />
-                  <Field label="Region" value={request.region} />
-                </div>
-                {/* Col 3 */}
-                <div className="flex flex-1 flex-col gap-6 px-3">
-                  <Field label="Phone" value={request.phone} />
-                  <Field label="Email" value={request.email} />
-                </div>
-              </div>
-
-              {/* Right: Purpose box */}
-              <div className="flex w-95 shrink-0 flex-col gap-1.25">
-                <span className="text-xs text-[#8b8d98]">Purpose</span>
-                <div className="min-h-30 border border-[#2e3135] p-3 text-xs leading-5 text-[#edeef0]">
-                  {request.purpose || "—"}
-                </div>
-              </div>
+            <div className="min-w-0 flex-1 px-3">
+              <Field label="Timeframe" value={request.timeframe} />
             </div>
-          )}
+            <div className="min-w-0 flex-1 px-3">
+              <Field label="Email" value={request.email} />
+            </div>
+            <div className="min-w-0 flex-1 px-3">
+              <Field label="Name" value={request.name} />
+            </div>
+            <div className="min-w-0 flex-1 px-3">
+              <Field label="Phone" value={request.phone} />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex gap-6">
+          <div className="flex min-w-0 flex-1 items-start">
+            <div className="flex w-[220px] shrink-0 flex-col gap-5 pr-3 pl-1">
+              <Field
+                label="Brand Preferences"
+                value={request.brandPreferences}
+              />
+              <Field label="Budget Range" value={request.budgetRange} />
+              <Field label="Material" value={request.material} />
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-5 px-3">
+              <Field label="Timeframe" value={request.timeframe} />
+              <Field label="Name" value={request.name} />
+              <Field label="Region" value={request.region} />
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-5 px-3">
+              <Field label="Phone" value={request.phone} />
+              <Field label="Email" value={request.email} />
+            </div>
+          </div>
+          <div className="flex w-[380px] shrink-0 flex-col gap-[5px]">
+            <span className="text-[12px] leading-4 tracking-[0.04px] text-[#cdced6]">
+              Purpose
+            </span>
+            <div className="min-h-[120px] border border-[#2e3135] p-3 text-[12px] leading-5 text-[#edeef0]">
+              {request.purpose || "вЂ”"}
+            </div>
+          </div>
         </div>
       )}
     </div>

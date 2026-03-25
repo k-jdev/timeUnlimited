@@ -24,7 +24,7 @@ export default function AddProductPage() {
         />
       </div>
 
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-6">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-6">
         <div className="w-full lg:w-[380px] lg:shrink-0">
           <ImageUploadSection
             mainImage={mainImage}
@@ -34,7 +34,7 @@ export default function AddProductPage() {
           />
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 flex-col">
           <ProductForm />
         </div>
       </div>

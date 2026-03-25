@@ -90,10 +90,6 @@ export function ProductsView() {
 
   return (
     <div className="mx-auto max-w-360 px-6 pt-8 pb-16 lg:px-10">
-      <div className="mb-8">
-        <AdminBreadcrumb items={[{ label: "All products" }]} />
-      </div>
-
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-[40px] text-[#edeef0] lg:text-[48px]">
           Products
