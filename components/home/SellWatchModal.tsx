@@ -6,10 +6,10 @@ import {
   RiArrowRightUpLine,
   RiCheckLine,
   RiCloseLine,
-  RiFlashlightLine,
   RiArrowLeftRightLine,
-  RiQuestionLine,
   RiUpload2Line,
+  RiFlashlightFill,
+  RiAuctionLine,
 } from "@remixicon/react"
 import {
   Select,
@@ -19,8 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-
-// --- Options ----------------------------------------------------------------
 
 const BRAND_OPTIONS = [
   "A. Lange & Söhne",
@@ -101,20 +99,33 @@ const SELL_TYPES: {
     id: "outright",
     label: "Sell Outright",
     description: "Instant liquidity, fast quote, fast payment",
-    icon: <RiFlashlightLine className="size-5" />,
+    icon: <RiFlashlightFill className="size-5" />,
   },
   {
     id: "consignment",
     label: "Consignment",
     description:
       "We list it and sell it for top dollar, you set the floor price",
-    icon: <RiArrowLeftRightLine className="size-5" />,
+    icon: <RiAuctionLine className="size-5" />,
   },
   {
     id: "not-sure",
     label: "Not Sure Yet",
     description: "We'll help you decide",
-    icon: <RiQuestionLine className="size-5" />,
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+      >
+        <path
+          d="M9 14.25C9.621 14.25 10.125 14.754 10.125 15.375C10.125 15.996 9.621 16.5 9 16.5C8.379 16.5 7.875 15.996 7.875 15.375C7.875 14.754 8.379 14.25 9 14.25ZM9 1.5C11.4855 1.5 13.5 3.5145 13.5 6C13.5 7.62375 12.9353 8.4675 11.4945 9.69225C10.0493 10.92 9.75 11.4728 9.75 12.75H8.25C8.25 10.8945 8.84025 9.97875 10.5233 8.54925C11.661 7.5825 12 7.0755 12 6C12 4.3425 10.6575 3 9 3C7.3425 3 6 4.3425 6 6V6.75H4.5V6C4.5 3.5145 6.5145 1.5 9 1.5Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
   },
 ]
 
@@ -179,7 +190,7 @@ function ModalSelect({
 }) {
   return (
     <Select value={value || undefined} onValueChange={onChange}>
-      <SelectTrigger className="h-8 w-full rounded-none border-[#2e3135] bg-white/5 text-[14px] text-[#edeef0] data-placeholder:text-[#8b8d98]">
+      <SelectTrigger className="h-8 w-full rounded-none border-[#2e3135] bg-[#111113] text-[14px] text-[#edeef0] data-placeholder:text-[#8b8d98]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="border-[#2e3135] bg-[#111214]">
@@ -201,7 +212,7 @@ function ModalInput(props: React.ComponentProps<typeof Input>) {
   return (
     <Input
       {...props}
-      className="h-8 rounded-none border-[#2e3135] bg-white/5 text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
+      className="h-8 rounded-none border-[#2e3135] bg-[#111113] text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
     />
   )
 }
@@ -224,7 +235,7 @@ function FooterButtons({
   return (
     <div className="flex items-center justify-between gap-3">
       {note ? (
-        <span className="text-[12px] leading-5 font-light text-[#8b8d98]">
+        <span className="text-[12px] leading-5 font-light text-[#B0B4BA]">
           {note}
         </span>
       ) : (
@@ -282,8 +293,8 @@ function Step1SellType({
               onClick={() => onChange(type.id)}
               className={`flex items-center gap-4 border p-4 text-left transition-colors ${
                 isSelected
-                  ? "border-[#2e3135] bg-white/5"
-                  : "border-[#2e3135] bg-transparent hover:bg-white/3"
+                  ? "border-[#2e3135] bg-[#0d0d0e]"
+                  : "border-[#2e3135] bg-[#0d0d0e] hover:bg-white/3"
               }`}
             >
               <div

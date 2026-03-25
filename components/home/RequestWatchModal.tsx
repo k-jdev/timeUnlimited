@@ -148,7 +148,7 @@ function ModalSelect({
 }) {
   return (
     <Select value={value || undefined} onValueChange={onChange}>
-      <SelectTrigger className="h-8 w-full rounded-none border-[#2e3135] bg-white/5 text-[14px] text-[#edeef0] data-placeholder:text-[#8b8d98]">
+      <SelectTrigger className="h-8 w-full rounded-none border-[#2e3135] bg-[#111113] text-[14px] text-[#edeef0] data-placeholder:text-[#8b8d98]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="border-[#2e3135] bg-[#111214]">
@@ -170,7 +170,7 @@ function ModalInput(props: React.ComponentProps<typeof Input>) {
   return (
     <Input
       {...props}
-      className="h-8 rounded-none border-[#2e3135] bg-white/5 text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
+      className="h-8 rounded-none border-[#2e3135] bg-[#111113] text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
     />
   )
 }
@@ -179,7 +179,7 @@ function ModalTextarea(props: React.ComponentProps<"textarea">) {
   return (
     <Textarea
       {...props}
-      className="min-h-24 resize-none rounded-none border-[#2e3135] bg-white/5 text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
+      className="min-h-24 resize-none rounded-none border-[#2e3135] bg-[#0d0d0e] text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
     />
   )
 }
@@ -202,7 +202,7 @@ function FooterButtons({
   return (
     <div className="flex items-center justify-between gap-3">
       {note ? (
-        <span className="text-[12px] leading-5 font-light text-[#8b8d98]">
+        <span className="text-[12px] leading-5 font-light text-[#B0B4BA]">
           {note}
         </span>
       ) : (

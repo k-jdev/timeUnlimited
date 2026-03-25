@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { RiSearchLine } from "@remixicon/react"
 import { motion } from "motion/react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { RequestWatchModal } from "./RequestWatchModal"
 
@@ -94,8 +95,9 @@ export function HeroSection() {
               variant="outline"
               size="lg"
               className="flex-1 cursor-pointer border-[#edeef0]/20 text-[#edeef0] hover:bg-[#edeef0]/10 hover:text-[#edeef0] lg:flex-none"
+              asChild
             >
-              Browse Inventory
+              <Link href="/inventory">Browse Inventory</Link>
             </Button>
           </div>
         </motion.div>

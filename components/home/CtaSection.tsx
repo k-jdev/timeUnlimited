@@ -1,15 +1,15 @@
 "use client"
 
-import { useState } from "react"
+// import { useState } from "react"
 import { RiArrowRightLine } from "@remixicon/react"
 import { motion, useAnimationControls } from "motion/react"
 import { Button } from "@/components/ui/button"
-import { RequestWatchModal } from "./RequestWatchModal"
+// import { RequestWatchModal } from "./RequestWatchModal"
 
 export function CtaSection() {
   const fillControls = useAnimationControls()
   const textControls = useAnimationControls()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  // const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleHoverStart = () => {
     fillControls.start({
@@ -54,7 +54,7 @@ export function CtaSection() {
             className="group relative h-12 cursor-pointer overflow-hidden bg-[#111213] px-6 text-[18px] leading-6.5 font-medium tracking-[-0.04px]"
             onMouseEnter={handleHoverStart}
             onMouseLeave={handleHoverEnd}
-            onClick={() => setIsModalOpen(true)}
+            // onClick={() => setIsModalOpen(true)}
           >
             <motion.span
               className="pointer-events-none absolute inset-0 origin-left bg-[#edeef0]"
@@ -73,10 +73,10 @@ export function CtaSection() {
         </motion.div>
       </section>
 
-      <RequestWatchModal
+      {/* <RequestWatchModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
+      /> */}
     </>
   )
 }
