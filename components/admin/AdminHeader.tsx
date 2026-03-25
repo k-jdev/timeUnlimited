@@ -1,6 +1,9 @@
+"use client"
+
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { RiLogoutBoxRLine } from "@remixicon/react"
-import { BrandLogo } from "@/components/layout/BrandLogo"
+import { useAuth } from "@/hooks/useAuth"
 
 const NAV_LINKS = [
   { label: "Inventory", href: "/admin/inventory" },
@@ -8,6 +11,14 @@ const NAV_LINKS = [
 ]
 
 export function AdminHeader() {
+  const router = useRouter()
+  const { logout } = useAuth()
+
+  function handleLogout() {
+    logout()
+    router.push("/login")
+  }
+
   return (
     <header className="flex h-[78px] items-center justify-between px-8 lg:px-10">
       <Link href="/admin/inventory">
@@ -41,13 +52,14 @@ export function AdminHeader() {
         ))}
       </nav>
 
-      <Link
-        href="/"
+      <button
+        type="button"
+        onClick={handleLogout}
         className="flex items-center gap-2 text-sm text-[#8b8d98] transition-colors duration-200 hover:text-[#edeef0]"
       >
         <RiLogoutBoxRLine className="size-4" />
         Log out
-      </Link>
+      </button>
     </header>
   )
 }

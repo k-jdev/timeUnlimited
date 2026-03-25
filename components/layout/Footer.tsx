@@ -4,12 +4,7 @@ import { motion } from "motion/react"
 
 export function Footer() {
   return (
-    <footer
-      className="flex flex-col-reverse gap-30 border-t border-[#2E3135] px-4 pt-10 pb-6 lg:flex-row lg:items-start lg:justify-between lg:gap-0 lg:px-10 lg:pb-16"
-      style={{
-        paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))",
-      }}
-    >
+    <footer className="flex flex-col-reverse gap-30 border-t border-[#2E3135] px-4 pt-10 pb-16 lg:flex-row lg:items-start lg:justify-between lg:gap-0 lg:px-10 lg:pb-16">
       <motion.div
         className="flex flex-col gap-6 lg:w-97 lg:justify-between lg:self-stretch"
         initial={{ opacity: 0, y: 20 }}
