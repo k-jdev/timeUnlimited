@@ -54,7 +54,7 @@ export function CtaSection() {
             className="group relative h-12 cursor-pointer overflow-hidden bg-[#111213] px-6 text-[18px] leading-6.5 font-medium tracking-[-0.04px]"
             onMouseEnter={handleHoverStart}
             onMouseLeave={handleHoverEnd}
-            // onClick={() => setIsModalOpen(true)}
+            onClick={() => window.open("https://wa.me/12633843821", "_blank")}
           >
             <motion.span
               className="pointer-events-none absolute inset-0 origin-left bg-[#edeef0]"

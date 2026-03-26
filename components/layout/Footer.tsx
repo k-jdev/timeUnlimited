@@ -55,9 +55,14 @@ export function Footer() {
             <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
               Instagram
             </p>
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
+            <Link
+              href="https://x.com/timeunlimitedco"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer transition-colors hover:text-[#edeef0]"
+            >
               X (Twitter)
-            </p>
+            </Link>
           </div>
         </motion.div>
 
@@ -72,15 +77,21 @@ export function Footer() {
             LEGAL
           </p>
           <div className="flex flex-col gap-3 text-base leading-6 font-light text-[#B0B4BA]">
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
+            <Link
+              href="/privacy-notice"
+              className="cursor-pointer transition-colors hover:text-[#edeef0]"
+            >
               Privacy Notice
-            </p>
+            </Link>
             {/* <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
               Cookie Policy
             </p> */}
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
+            <Link
+              href="/terms"
+              className="cursor-pointer transition-colors hover:text-[#edeef0]"
+            >
               Terms
-            </p>
+            </Link>
           </div>
         </motion.div>
       </div>
