@@ -375,7 +375,7 @@ function Step3HowReach({
       <FooterButtons
         onBack={onBack}
         onNext={onSubmit}
-        nextLabel="Submit request"
+        nextLabel="Submit "
         nextIcon={<RiCheckLine className="size-4" />}
         note={
           <span className="flex items-center gap-1.5">

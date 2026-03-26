@@ -506,7 +506,7 @@ function Step3FinalDetails({
       <FooterButtons
         onBack={onBack}
         onNext={onSubmit}
-        nextLabel="Submit request"
+        nextLabel="Submit "
         nextIcon={<RiCheckLine className="size-4" />}
         note="Quotes within 48 hours. No obligation"
       />

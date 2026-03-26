@@ -72,10 +72,10 @@ export default function TermsPage() {
           <p>
             For inquiries, please contact:{" "}
             <Link
-              href="mailto:info@timeunlimited.co"
+              href="mailto:contact@timeunlimited.co"
               className="underline underline-offset-2 transition-colors hover:text-[#edeef0]"
             >
-              info@timeunlimited.co
+              contact@timeunlimited.co
             </Link>
           </p>
         </div>
