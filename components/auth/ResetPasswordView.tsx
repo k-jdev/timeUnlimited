@@ -26,7 +26,6 @@ export function ResetPasswordView() {
       return
     }
 
-    // Demo: just redirect back to login
     router.push("/login")
   }
 
@@ -35,7 +34,6 @@ export function ResetPasswordView() {
       onSubmit={handleSubmit}
       className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
     >
-      {/* Title */}
       <div className="flex flex-col gap-2">
         <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
           Reset your password
@@ -45,9 +43,7 @@ export function ResetPasswordView() {
         </p>
       </div>
 
-      {/* Fields */}
       <div className="flex flex-col gap-4">
-        {/* Verification code */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="reset-code"
@@ -65,7 +61,6 @@ export function ResetPasswordView() {
           />
         </div>
 
-        {/* New password */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="reset-new-password"
@@ -99,7 +94,6 @@ export function ResetPasswordView() {
           </div>
         </div>
 
-        {/* Confirm password */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="reset-confirm-password"
@@ -134,10 +128,8 @@ export function ResetPasswordView() {
         </div>
       </div>
 
-      {/* Error */}
       {error && <p className="text-xs text-red-400">{error}</p>}
 
-      {/* Actions */}
       <div className="flex items-center justify-end gap-3">
         <button
           type="button"

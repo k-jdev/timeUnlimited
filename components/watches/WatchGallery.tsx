@@ -69,9 +69,7 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
 
   return (
     <>
-      {/* ── MOBILE gallery ── */}
       <div className="flex flex-col gap-0.5 pt-4 lg:hidden">
-        {/* Main image with prev/next arrows */}
         <div className="relative h-[300px] w-full overflow-hidden bg-[#111113] sm:h-[400px]">
           <button
             onClick={() => openLightbox(selectedImage)}
@@ -110,7 +108,6 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
           )}
         </div>
 
-        {/* Horizontal thumbnail strip */}
         <div className="flex gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {images.map((img, i) => (
             <button
@@ -130,7 +127,6 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
         </div>
       </div>
 
-      {/* ── DESKTOP gallery ── */}
       <div className="hidden flex-col gap-0.5 pt-[30px] lg:flex">
         <button
           onClick={() => openLightbox(selectedImage)}

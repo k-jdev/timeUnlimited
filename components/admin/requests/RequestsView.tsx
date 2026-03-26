@@ -71,8 +71,7 @@ export function RequestsView() {
 
   return (
     <div className="mx-auto max-w-360 px-6 pt-8 pb-16 lg:px-10">
-      {/* Title row + Tabs */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-[40px] text-[#edeef0] lg:text-[48px]">
           Requests
         </h1>
@@ -83,7 +82,6 @@ export function RequestsView() {
         />
       </div>
 
-      {/* Cards list */}
       {filteredRequests.length === 0 ? (
         <div className="flex items-center justify-center py-24">
           <p className="text-[#8b8d98]">No requests found.</p>

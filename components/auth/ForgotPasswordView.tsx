@@ -20,7 +20,6 @@ export function ForgotPasswordView() {
       onSubmit={handleSubmit}
       className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
     >
-      {/* Title */}
       <div className="flex flex-col gap-2">
         <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
           Reset your password
@@ -31,7 +30,6 @@ export function ForgotPasswordView() {
         </p>
       </div>
 
-      {/* Email */}
       <div className="flex flex-col gap-2">
         <label
           htmlFor="reset-email"
@@ -50,7 +48,6 @@ export function ForgotPasswordView() {
         />
       </div>
 
-      {/* Actions */}
       <div className="flex items-center justify-end gap-3">
         <button
           type="button"

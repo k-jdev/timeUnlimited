@@ -14,7 +14,6 @@ export function LoginView() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
-  // Redirect if already authenticated
   if (isLoaded && isAuthenticated) {
     router.replace("/admin/inventory")
     return null
@@ -46,14 +45,11 @@ export function LoginView() {
       onSubmit={handleSubmit}
       className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
     >
-      {/* Title */}
       <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
         Log in
       </h1>
 
-      {/* Fields */}
       <div className="flex flex-col gap-4">
-        {/* Email */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="login-email"
@@ -72,7 +68,6 @@ export function LoginView() {
           />
         </div>
 
-        {/* Password */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="login-password"
@@ -106,7 +101,6 @@ export function LoginView() {
           </div>
         </div>
 
-        {/* Forgot password */}
         <button
           type="button"
           onClick={() => router.push("/login/forgot-password")}
@@ -117,10 +111,8 @@ export function LoginView() {
         </button>
       </div>
 
-      {/* Error */}
       {error && <p className="text-xs text-red-400">{error}</p>}
 
-      {/* Submit */}
       <button
         type="submit"
         className="flex h-8 w-full items-center justify-center gap-2 bg-white/6 text-sm font-medium text-[#8b8d98] transition-colors hover:bg-white/10 hover:text-[#edeef0]"

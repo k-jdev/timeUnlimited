@@ -45,20 +45,20 @@ export function RequestCard({
   onDelete,
 }: RequestCardProps) {
   return (
-    <div className="flex flex-col gap-3 border border-[#d6ebfd30] bg-[#101010] px-6 py-5">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-3 border border-[#d6ebfd30] bg-[#101010] px-4 py-4 sm:px-6 sm:py-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {/* Left: request number + date */}
-        <div className="flex items-end gap-2">
-          <span className="text-[20px] leading-7 tracking-[-0.08px] text-[#edeef0]">
+        <div className="flex flex-col gap-0.5 sm:flex-row sm:items-end sm:gap-2">
+          <span className="text-[18px] leading-6 tracking-[-0.08px] text-[#edeef0] sm:text-[20px] sm:leading-7">
             Request #{request.requestNumber}
           </span>
-          <span className="pb-[3px] text-[12px] leading-4 tracking-[0.04px] text-[#43484E]">
+          <span className="text-[12px] leading-4 tracking-[0.04px] text-[#43484E] sm:pb-[3px]">
             Created: {request.createdAt}
           </span>
         </div>
 
         {/* Right: badge + status + delete */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <RequestTypeBadge type={request.type} />
 
           <div className="flex items-center gap-2">
@@ -95,35 +95,35 @@ export function RequestCard({
 
       {/* Fields row */}
       {request.type === "specific" ? (
-        <div className="flex items-start">
-          <div className="w-[295px] shrink-0 pr-3 pl-1">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <div className="sm:w-[295px] sm:shrink-0 sm:pr-3 sm:pl-1">
             <Field
               label="Watch Name / Model / Reference"
               value={request.watchReference}
             />
           </div>
-          <div className="flex min-w-0 flex-1 items-start">
-            <div className="min-w-0 flex-1 px-3">
+          <div className="grid grid-cols-2 gap-4 sm:flex sm:min-w-0 sm:flex-1 sm:items-start sm:gap-0">
+            <div className="sm:min-w-0 sm:flex-1 sm:px-3">
               <Field label="Budget Range" value={request.budgetRange} />
             </div>
-            <div className="min-w-0 flex-1 px-3">
+            <div className="sm:min-w-0 sm:flex-1 sm:px-3">
               <Field label="Timeframe" value={request.timeframe} />
             </div>
-            <div className="min-w-0 flex-1 px-3">
+            <div className="sm:min-w-0 sm:flex-1 sm:px-3">
               <Field label="Email" value={request.email} />
             </div>
-            <div className="min-w-0 flex-1 px-3">
+            <div className="sm:min-w-0 sm:flex-1 sm:px-3">
               <Field label="Name" value={request.name} />
             </div>
-            <div className="min-w-0 flex-1 px-3">
+            <div className="sm:min-w-0 sm:flex-1 sm:px-3">
               <Field label="Phone" value={request.phone} />
             </div>
           </div>
         </div>
       ) : (
-        <div className="flex gap-6">
-          <div className="flex min-w-0 flex-1 items-start">
-            <div className="flex w-[220px] shrink-0 flex-col gap-5 pr-3 pl-1">
+        <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+          <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row sm:items-start">
+            <div className="grid grid-cols-2 gap-4 sm:flex sm:w-[220px] sm:shrink-0 sm:flex-col sm:gap-5 sm:pr-3 sm:pl-1">
               <Field
                 label="Brand Preferences"
                 value={request.brandPreferences}
@@ -131,17 +131,17 @@ export function RequestCard({
               <Field label="Budget Range" value={request.budgetRange} />
               <Field label="Material" value={request.material} />
             </div>
-            <div className="flex min-w-0 flex-1 flex-col gap-5 px-3">
+            <div className="grid grid-cols-2 gap-4 sm:flex sm:min-w-0 sm:flex-1 sm:flex-col sm:gap-5 sm:px-3">
               <Field label="Timeframe" value={request.timeframe} />
               <Field label="Name" value={request.name} />
               <Field label="Region" value={request.region} />
             </div>
-            <div className="flex min-w-0 flex-1 flex-col gap-5 px-3">
+            <div className="grid grid-cols-2 gap-4 sm:flex sm:min-w-0 sm:flex-1 sm:flex-col sm:gap-5 sm:px-3">
               <Field label="Phone" value={request.phone} />
               <Field label="Email" value={request.email} />
             </div>
           </div>
-          <div className="flex w-[380px] shrink-0 flex-col gap-[5px]">
+          <div className="flex flex-col gap-[5px] lg:w-[380px] lg:shrink-0">
             <span className="text-[12px] leading-4 tracking-[0.04px] text-[#cdced6]">
               Purpose
             </span>

@@ -110,7 +110,6 @@ export function ImageUploadSection({
   const colorButtonRef = useRef<HTMLButtonElement>(null)
   const hiddenInputRef = useRef<HTMLInputElement>(null)
 
-  // Sync initial value into DOM refs after mount
   useEffect(() => {
     const color = initialHoverColor || ""
     if (colorButtonRef.current)
@@ -122,7 +121,7 @@ export function ImageUploadSection({
   const handleColorChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const color = e.target.value
-      // Direct DOM mutation — no React state, no re-render
+
       if (colorButtonRef.current)
         colorButtonRef.current.style.backgroundColor = color
       if (hiddenInputRef.current) hiddenInputRef.current.value = color
@@ -151,7 +150,6 @@ export function ImageUploadSection({
     e.target.value = ""
   }
 
-  // Build display slots: existing images + empty slots to fill complete rows of 2
   const filledSlots = additionalImages.map((f, i) => ({
     key: i,
     file: f as File | null,

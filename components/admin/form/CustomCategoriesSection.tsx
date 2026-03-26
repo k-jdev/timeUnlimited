@@ -87,7 +87,6 @@ export function CustomCategoriesSection() {
 
   return (
     <>
-      {/* Add category button */}
       <div className="flex flex-col gap-2">
         <Label className="text-sm text-[#edeef0] opacity-0 select-none">
           &nbsp;
@@ -102,7 +101,6 @@ export function CustomCategoriesSection() {
         </button>
       </div>
 
-      {/* Custom categories */}
       {customCategories.map((cat) =>
         cat.saved ? (
           <Fragment key={cat.id}>

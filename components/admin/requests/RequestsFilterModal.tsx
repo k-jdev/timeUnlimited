@@ -126,7 +126,6 @@ export function RequestsFilterModal({
 }: RequestsFilterModalProps) {
   const [draft, setDraft] = useState<RequestFilters>(filters)
 
-  // Sync draft from parent when modal opens
   useEffect(() => {
     if (isOpen) {
       setDraft(filters)
@@ -158,11 +157,10 @@ export function RequestsFilterModal({
       onClick={handleOverlayClick}
     >
       <div
-        className="relative flex w-[500px] flex-col gap-6 bg-[#111113] p-8"
+        className="relative mx-4 flex w-full max-w-[500px] flex-col gap-6 bg-[#111113] p-6 sm:p-8"
         style={{ boxShadow: "0 4px 18.6px 0 #000" }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
         <button
           type="button"
           onClick={onClose}
@@ -172,12 +170,10 @@ export function RequestsFilterModal({
           <RiCloseLine className="size-5" />
         </button>
 
-        {/* Title */}
         <h2 className="font-serif text-[40px] leading-none text-[#edeef0]">
           Filters
         </h2>
 
-        {/* Filter fields */}
         <div className="flex flex-col gap-4">
           <FilterField
             label="Budget Range"
@@ -216,7 +212,6 @@ export function RequestsFilterModal({
           />
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3">
           <button
             type="button"
