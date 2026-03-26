@@ -39,7 +39,7 @@ export function WatchDetails({
     .join(" ")
 
   return (
-    <div className="flex flex-col gap-10 px-4 pt-8 pb-4 lg:flex-1 lg:px-16 lg:pt-[34px]">
+    <div className="flex flex-col gap-10 px-4 pt-8 pb-4 lg:flex-1 lg:px-16 lg:pt-[78px]">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <p className="font-serif text-[20px] leading-[22px] tracking-[0.4px] text-[rgba(237,238,240,0.62)] uppercase">

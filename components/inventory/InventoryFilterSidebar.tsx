@@ -384,7 +384,7 @@ export function InventoryFilterSidebar({
           return (
             <button
               key={item.label}
-              className={`flex h-16 flex-1 flex-col items-center justify-center gap-2 text-[12px] leading-4 tracking-[0.04px] transition-colors duration-200 ${
+              className={`flex h-16 flex-1 cursor-pointer flex-col items-center justify-center gap-2 text-[12px] leading-4 tracking-[0.04px] transition-colors duration-200 ${
                 isHighlighted
                   ? "bg-[#0c2746] text-[#70b8ff]"
                   : "bg-[#111113] text-[#edeef0]"

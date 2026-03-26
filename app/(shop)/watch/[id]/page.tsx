@@ -71,7 +71,7 @@ export default function WatchDetailPage({
           nextWatch={nextWatch}
         />
 
-        <div className="flex flex-col lg:h-[calc(100vh-78px)] lg:flex-row">
+        <div className="flex flex-col lg:h-screen lg:flex-row">
           <div className="lg:scrollbar-none lg:h-full lg:w-[732px] lg:shrink-0 lg:overflow-y-auto">
             <WatchGallery images={gallery} watchName={watch.name} />
           </div>
