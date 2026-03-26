@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { motion } from "motion/react"
+import { SITE } from "@/constants/site"
 
 const CONTACTS = [
   {
     label: "Email Address",
-    value: "contact@timeunlimited.co",
-    href: "mailto:contact@timeunlimited.co",
+    value: SITE.email,
+    href: `mailto:${SITE.email}`,
   },
   {
     label: (
@@ -16,17 +17,17 @@ const CONTACTS = [
         <span className="text-[#43484E]">Twitter</span>
       </span>
     ),
-    value: "@timeunlimitedco",
-    href: "https://x.com/timeunlimitedco",
+    value: SITE.twitterHandle,
+    href: SITE.twitterUrl,
   },
   {
     label: "WhatsApp",
-    value: "+1 (263) 384-3821",
-    href: "https://wa.me/12633843821",
+    value: SITE.phone,
+    href: SITE.whatsappUrl,
   },
   {
     label: "Office Location",
-    value: "Miami, FL",
+    value: SITE.location,
   },
 ]
 

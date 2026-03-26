@@ -1,24 +1,6 @@
 "use client"
 
-import { RiMapPinLine, RiUploadLine, RiMailLine } from "@remixicon/react"
-
-const ACTION_ITEMS = [
-  {
-    label: "Request",
-    icon: RiMapPinLine,
-    highlighted: true,
-  },
-  {
-    label: "Sell",
-    icon: RiUploadLine,
-    highlighted: false,
-  },
-  {
-    label: "Contact",
-    icon: RiMailLine,
-    highlighted: false,
-  },
-]
+import { ACTION_ITEMS } from "@/data/action-items"
 
 export function ActionBar() {
   return (

@@ -15,24 +15,8 @@ import { AnimatePresence, motion } from "motion/react"
 import { cn } from "@/lib/utils"
 import { NAV_ITEMS } from "@/data/navigation"
 import { BrandLogo } from "./BrandLogo"
-
-const ACTION_ITEMS = [
-  {
-    label: "Request",
-    icon: WatchIcon,
-    highlighted: true,
-  },
-  {
-    label: "Sell",
-    icon: RiUploadLine,
-    highlighted: false,
-  },
-  {
-    label: "Contact",
-    icon: RiMailLine,
-    highlighted: false,
-  },
-]
+import { ACTION_ITEMS } from "@/data/action-items"
+import { SITE } from "@/constants/site"
 
 const MOBILE_SOCIAL_ITEMS = [
   { label: "Twitter", icon: RiTwitterXLine },
@@ -134,7 +118,7 @@ export function Sidebar() {
                 if (item.label === "Request") setIsModalOpen(true)
                 if (item.label === "Sell") setIsSellModalOpen(true)
                 if (item.label === "Contact")
-                  window.open("https://wa.me/12633843821", "_blank")
+                  window.open(SITE.whatsappUrl, "_blank")
               }}
               className={cn(
                 "flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 py-3 text-xs transition-all duration-200",
@@ -152,7 +136,7 @@ export function Sidebar() {
 
       {/* Mobile top bar */}
       <header className="fixed top-0 left-0 z-40 flex w-full items-center justify-between p-4 lg:hidden">
-        <LogoIcon />
+        <BrandLogo variant="icon" />
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="flex size-10 items-center justify-center text-[#edeef0]"
@@ -180,7 +164,7 @@ export function Sidebar() {
                 if (item.label === "Request") setIsModalOpen(true)
                 if (item.label === "Sell") setIsSellModalOpen(true)
                 if (item.label === "Contact")
-                  window.open("https://wa.me/12633843821", "_blank")
+                  window.open(SITE.whatsappUrl, "_blank")
               }}
               className={cn(
                 "flex h-13.5 flex-1 items-center justify-center gap-2 text-xs tracking-[0.04px]",
@@ -280,46 +264,5 @@ export function Sidebar() {
         onClose={() => setIsSellModalOpen(false)}
       />
     </>
-  )
-}
-
-function LogoIcon() {
-  return (
-    <svg
-      width="46"
-      height="28"
-      viewBox="0 0 53 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M19.8695 22.4584H25.3557L21.514 15.9005L28.0849 4.68261H41.2261L47.7962 15.9005L41.2261 27.1175H32.6274L35.3701 31.8001H42.9244C43.5705 31.8001 44.1683 31.4598 44.4914 30.908L52.7599 16.7917C53.0829 16.2399 53.0829 15.5602 52.7599 15.0084L44.4914 0.892087C44.1683 0.340327 43.5705 6.10352e-05 42.9244 6.10352e-05H26.3866C25.7405 6.10352e-05 25.1427 0.340327 24.8197 0.892087L16.5511 15.0092C16.2281 15.561 16.2281 16.2407 16.5511 16.7925L19.8695 22.4584Z"
-        fill="#EDEEF0"
-      />
-      <path
-        d="M33.1319 9.34175H27.6457L31.4874 15.8997L24.9164 27.1175H11.7753L5.20515 15.8997L11.7753 4.68261H19.2655L16.5236 6.10352e-05H10.0777C9.43165 6.10352e-05 8.83386 0.340327 8.51082 0.892087L0.242284 15.0076C-0.0807613 15.5594 -0.0807613 16.2392 0.242284 16.7909L8.51082 30.908C8.83386 31.4598 9.43165 31.8001 10.0777 31.8001H26.6156C27.2617 31.8001 27.8595 31.4598 28.1825 30.908L36.4511 16.7909C36.7741 16.2392 36.7741 15.5594 36.4511 15.0076L33.1327 9.34175H33.1319Z"
-        fill="#EDEEF0"
-      />
-    </svg>
-  )
-}
-
-function WatchIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <circle cx="12" cy="12" r="6" />
-      <polyline points="12 10 12 12 13 13" />
-      <path d="m16.13 7.66-.81-4.05a2 2 0 0 0-2-1.61h-2.68a2 2 0 0 0-2 1.61l-.78 4.05" />
-      <path d="m7.88 16.36.8 4a2 2 0 0 0 2 1.61h2.72a2 2 0 0 0 2-1.61l.81-4.05" />
-    </svg>
   )
 }

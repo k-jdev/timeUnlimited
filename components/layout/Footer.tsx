@@ -1,8 +1,8 @@
 "use client"
 
 import { motion } from "motion/react"
-
 import Link from "next/link"
+import { SITE } from "@/constants/site"
 
 export function Footer() {
   return (
@@ -45,18 +45,24 @@ export function Footer() {
           </p>
           <div className="flex flex-col gap-3 text-base leading-6 font-light text-[#B0B4BA]">
             <Link
-              href="https://wa.me/12633843821"
+              href={SITE.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="cursor-pointer transition-colors hover:text-[#edeef0]"
             >
               WhatsApp
             </Link>
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
-              Instagram
-            </p>
+
             <Link
-              href="https://x.com/timeunlimitedco"
+              href={SITE.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer transition-colors hover:text-[#edeef0]"
+            >
+              Instagram
+            </Link>
+            <Link
+              href={SITE.twitterUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="cursor-pointer transition-colors hover:text-[#edeef0]"

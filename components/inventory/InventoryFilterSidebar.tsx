@@ -6,15 +6,11 @@ import {
   RiSearchLine,
   RiArrowUpSLine,
   RiArrowDownSLine,
-  RiUploadLine,
-  RiMailLine,
   RiCloseLine,
 } from "@remixicon/react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { BrandLogo } from "@/components/layout/BrandLogo"
-import { RequestWatchModal } from "@/components/home/RequestWatchModal"
-import { SellWatchModal } from "@/components/home/SellWatchModal"
 import {
   BRANDS,
   CONDITIONS,
@@ -24,32 +20,8 @@ import {
   SIZES,
   SPECIAL_FEATURES,
 } from "@/data/inventory"
-
-function WatchIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <circle cx="12" cy="12" r="6" />
-      <polyline points="12 10 12 12 13 13" />
-      <path d="m16.13 7.66-.81-4.05a2 2 0 0 0-2-1.61h-2.68a2 2 0 0 0-2 1.61l-.78 4.05" />
-      <path d="m7.88 16.36.8 4a2 2 0 0 0 2 1.61h2.72a2 2 0 0 0 2-1.61l.81-4.05" />
-    </svg>
-  )
-}
-
-const ACTION_ITEMS = [
-  { label: "Request", icon: WatchIcon, highlighted: true },
-  { label: "Sell", icon: RiUploadLine, highlighted: false },
-  { label: "Contact", icon: RiMailLine, highlighted: false },
-]
+import { ACTION_ITEMS } from "@/data/action-items"
+import { SITE } from "@/constants/site"
 
 const PRICE_MIN = 0
 const PRICE_MAX = 200000
@@ -116,51 +88,66 @@ function CheckboxList({
   )
 }
 
+export type FilterState = {
+  brands: string[]
+  conditions: string[]
+  caseMaterials: string[]
+  braceletMaterials: string[]
+  dialColors: string[]
+  sizes: string[]
+  specials: string[]
+}
+
+export const DEFAULT_FILTERS: FilterState = {
+  brands: [],
+  conditions: [],
+  caseMaterials: [],
+  braceletMaterials: [],
+  dialColors: [],
+  sizes: [],
+  specials: [],
+}
+
+const CHECKBOX_FILTERS: {
+  key: keyof FilterState
+  title: string
+  items: readonly string[]
+}[] = [
+  { key: "conditions", title: "Condition", items: CONDITIONS },
+  { key: "caseMaterials", title: "Case material", items: CASE_MATERIALS },
+  {
+    key: "braceletMaterials",
+    title: "Bracelet Material",
+    items: BRACELET_MATERIALS,
+  },
+  { key: "dialColors", title: "Dial Color", items: DIAL_COLORS },
+  { key: "sizes", title: "Size", items: SIZES },
+  { key: "specials", title: "Special", items: SPECIAL_FEATURES },
+]
+
 export interface InventoryFilterSidebarProps {
-  selectedBrands: string[]
-  onBrandsChange: (brands: string[]) => void
-  selectedConditions: string[]
-  onConditionsChange: (conditions: string[]) => void
-  selectedCaseMaterials: string[]
-  onCaseMaterialsChange: (materials: string[]) => void
-  selectedBraceletMaterials: string[]
-  onBraceletMaterialsChange: (materials: string[]) => void
-  selectedDialColors: string[]
-  onDialColorsChange: (colors: string[]) => void
-  selectedSizes: string[]
-  onSizesChange: (sizes: string[]) => void
-  selectedSpecials: string[]
-  onSpecialsChange: (specials: string[]) => void
+  filters: FilterState
+  onFiltersChange: (key: keyof FilterState, items: string[]) => void
   priceRange: [number, number]
   onPriceRangeChange: (range: [number, number]) => void
   mobileOpen?: boolean
   onMobileClose?: () => void
+  onRequestWatch: () => void
+  onSellWatch: () => void
 }
 
 export function InventoryFilterSidebar({
-  selectedBrands,
-  onBrandsChange,
-  selectedConditions,
-  onConditionsChange,
-  selectedCaseMaterials,
-  onCaseMaterialsChange,
-  selectedBraceletMaterials,
-  onBraceletMaterialsChange,
-  selectedDialColors,
-  onDialColorsChange,
-  selectedSizes,
-  onSizesChange,
-  selectedSpecials,
-  onSpecialsChange,
+  filters,
+  onFiltersChange,
   priceRange,
   onPriceRangeChange,
   mobileOpen = false,
   onMobileClose,
+  onRequestWatch,
+  onSellWatch,
 }: InventoryFilterSidebarProps) {
   const [brandSearch, setBrandSearch] = useState("")
   const [hoveredAction, setHoveredAction] = useState<string | null>(null)
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
-  const [isSellModalOpen, setIsSellModalOpen] = useState(false)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Brand: true,
     Condition: true,
@@ -175,12 +162,10 @@ export function InventoryFilterSidebar({
   const toggle = (name: string) =>
     setOpenSections((prev) => ({ ...prev, [name]: !prev[name] }))
 
-  const toggleItem = (
-    list: string[],
-    item: string,
-    onChange: (v: string[]) => void
-  ) => {
-    onChange(
+  const toggleItem = (key: keyof FilterState, item: string) => {
+    const list = filters[key]
+    onFiltersChange(
+      key,
       list.includes(item) ? list.filter((x) => x !== item) : [...list, item]
     )
   }
@@ -193,45 +178,30 @@ export function InventoryFilterSidebar({
     <>
       <ScrollArea className="min-h-0 flex-1">
         <div className="flex flex-col px-6 pt-6 pb-8 lg:pt-16 lg:pr-10 lg:pl-8">
-          {/* Brand */}
-          <div className="border-b border-[#2E3135]">
-            <button
-              onClick={() => toggle("Brand")}
-              className="flex w-full items-center justify-between py-3"
-            >
-              <span className="text-[16px] leading-6 font-medium text-[#edeef0]">
-                Brand
-              </span>
-              {openSections.Brand ? (
-                <RiArrowUpSLine className="size-4 text-[#edeef0]" />
-              ) : (
-                <RiArrowDownSLine className="size-4 text-[#edeef0]" />
-              )}
-            </button>
-            {openSections.Brand && (
-              <div className="flex flex-col gap-3 pb-3">
-                <div className="flex h-8 items-center gap-2 bg-[rgba(255,255,255,0.06)] px-3">
-                  <RiSearchLine className="size-4 text-[#edeef0]/50" />
-                  <input
-                    type="text"
-                    placeholder="Select..."
-                    value={brandSearch}
-                    onChange={(e) => setBrandSearch(e.target.value)}
-                    className="flex-1 bg-transparent text-[14px] leading-5 text-[#edeef0] placeholder:text-[#edeef0]/50 focus:outline-none"
-                  />
-                </div>
-                <CheckboxList
-                  items={filteredBrands}
-                  selected={selectedBrands}
-                  onToggle={(item) =>
-                    toggleItem(selectedBrands, item, onBrandsChange)
-                  }
+          <FilterSection
+            title="Brand"
+            open={openSections.Brand}
+            onToggle={() => toggle("Brand")}
+          >
+            <div className="flex flex-col gap-3">
+              <div className="flex h-8 items-center gap-2 bg-[rgba(255,255,255,0.06)] px-3">
+                <RiSearchLine className="size-4 text-[#edeef0]/50" />
+                <input
+                  type="text"
+                  placeholder="Select..."
+                  value={brandSearch}
+                  onChange={(e) => setBrandSearch(e.target.value)}
+                  className="flex-1 bg-transparent text-[14px] leading-5 text-[#edeef0] placeholder:text-[#edeef0]/50 focus:outline-none"
                 />
               </div>
-            )}
-          </div>
+              <CheckboxList
+                items={filteredBrands}
+                selected={filters.brands}
+                onToggle={(item) => toggleItem("brands", item)}
+              />
+            </div>
+          </FilterSection>
 
-          {/* Condition */}
           <FilterSection
             title="Condition"
             open={openSections.Condition}
@@ -239,14 +209,11 @@ export function InventoryFilterSidebar({
           >
             <CheckboxList
               items={CONDITIONS}
-              selected={selectedConditions}
-              onToggle={(item) =>
-                toggleItem(selectedConditions, item, onConditionsChange)
-              }
+              selected={filters.conditions}
+              onToggle={(item) => toggleItem("conditions", item)}
             />
           </FilterSection>
 
-          {/* Price range */}
           <FilterSection
             title="Price range"
             open={openSections["Price range"]}
@@ -272,84 +239,20 @@ export function InventoryFilterSidebar({
             </div>
           </FilterSection>
 
-          {/* Case material */}
-          <FilterSection
-            title="Case material"
-            open={openSections["Case material"]}
-            onToggle={() => toggle("Case material")}
-          >
-            <CheckboxList
-              items={CASE_MATERIALS}
-              selected={selectedCaseMaterials}
-              onToggle={(item) =>
-                toggleItem(selectedCaseMaterials, item, onCaseMaterialsChange)
-              }
-            />
-          </FilterSection>
-
-          {/* Bracelet Material */}
-          <FilterSection
-            title="Bracelet Material"
-            open={openSections["Bracelet Material"]}
-            onToggle={() => toggle("Bracelet Material")}
-          >
-            <CheckboxList
-              items={BRACELET_MATERIALS}
-              selected={selectedBraceletMaterials}
-              onToggle={(item) =>
-                toggleItem(
-                  selectedBraceletMaterials,
-                  item,
-                  onBraceletMaterialsChange
-                )
-              }
-            />
-          </FilterSection>
-
-          {/* Dial Color */}
-          <FilterSection
-            title="Dial Color"
-            open={openSections["Dial Color"]}
-            onToggle={() => toggle("Dial Color")}
-          >
-            <CheckboxList
-              items={DIAL_COLORS}
-              selected={selectedDialColors}
-              onToggle={(item) =>
-                toggleItem(selectedDialColors, item, onDialColorsChange)
-              }
-            />
-          </FilterSection>
-
-          {/* Size */}
-          <FilterSection
-            title="Size"
-            open={openSections.Size}
-            onToggle={() => toggle("Size")}
-          >
-            <CheckboxList
-              items={SIZES}
-              selected={selectedSizes}
-              onToggle={(item) =>
-                toggleItem(selectedSizes, item, onSizesChange)
-              }
-            />
-          </FilterSection>
-
-          {/* Special */}
-          <FilterSection
-            title="Special"
-            open={openSections.Special}
-            onToggle={() => toggle("Special")}
-          >
-            <CheckboxList
-              items={SPECIAL_FEATURES}
-              selected={selectedSpecials}
-              onToggle={(item) =>
-                toggleItem(selectedSpecials, item, onSpecialsChange)
-              }
-            />
-          </FilterSection>
+          {CHECKBOX_FILTERS.slice(1).map(({ key, title, items }) => (
+            <FilterSection
+              key={key}
+              title={title}
+              open={openSections[title]}
+              onToggle={() => toggle(title)}
+            >
+              <CheckboxList
+                items={items}
+                selected={filters[key]}
+                onToggle={(item) => toggleItem(key, item)}
+              />
+            </FilterSection>
+          ))}
         </div>
       </ScrollArea>
 
@@ -392,10 +295,10 @@ export function InventoryFilterSidebar({
               onMouseEnter={() => setHoveredAction(item.label)}
               onMouseLeave={() => setHoveredAction(null)}
               onClick={() => {
-                if (item.label === "Request") setIsRequestModalOpen(true)
-                if (item.label === "Sell") setIsSellModalOpen(true)
+                if (item.label === "Request") onRequestWatch()
+                if (item.label === "Sell") onSellWatch()
                 if (item.label === "Contact")
-                  window.open("https://wa.me/12633843821", "_blank")
+                  window.open(SITE.whatsappUrl, "_blank")
               }}
             >
               <item.icon className="size-4" />
@@ -409,15 +312,6 @@ export function InventoryFilterSidebar({
 
   return (
     <>
-      <RequestWatchModal
-        isOpen={isRequestModalOpen}
-        onClose={() => setIsRequestModalOpen(false)}
-      />
-      <SellWatchModal
-        isOpen={isSellModalOpen}
-        onClose={() => setIsSellModalOpen(false)}
-      />
-
       <aside className="fixed top-0 right-0 z-30 hidden h-screen w-[320px] flex-col lg:flex">
         {filterContent}
       </aside>

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react"
 import {
-  RiArrowRightLine,
   RiArrowRightUpLine,
   RiCheckLine,
   RiCloseLine,
@@ -12,51 +11,18 @@ import {
   RiAuctionLine,
 } from "@remixicon/react"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-
-const BRAND_OPTIONS = [
-  "A. Lange & Söhne",
-  "Audemars Piguet",
-  "Cartier",
-  "Grand Seiko",
-  "IWC",
-  "Longines",
-  "Nomos",
-  "Oris",
-  "Patek Philippe",
-  "Rolex",
-  "Tudor",
-  "Vacheron Constantin",
-]
-
-const CONDITION_OPTIONS = [
-  "New (unworn)",
-  "Like new",
-  "Excellent",
-  "Good",
-  "Fair",
-]
-
-const PAPERS_OPTIONS = [
-  "Full set (box + papers)",
-  "Papers only",
-  "Box only",
-  "No box or papers",
-]
-
-const PAYMENT_OPTIONS = [
-  "Bank transfer",
-  "Credit / Debit card",
-  "Cryptocurrency",
-  "Cash",
-  "Trade-in",
-]
+  ModalHeader,
+  FormField,
+  ModalSelect,
+  ModalInput,
+  FooterButtons,
+} from "@/components/modal/ModalPrimitives"
+import {
+  BRAND_OPTIONS,
+  CONDITION_OPTIONS_SELL,
+  PAPERS_OPTIONS,
+  PAYMENT_OPTIONS,
+} from "@/constants/options"
 
 // --- Types ------------------------------------------------------------------
 
@@ -129,143 +95,6 @@ const SELL_TYPES: {
   },
 ]
 
-// --- Shared sub-components --------------------------------------------------
-
-function ModalHeader({
-  step,
-  title,
-  subtitle,
-  totalSteps = 3,
-}: {
-  step: number
-  title: string
-  subtitle: string
-  totalSteps?: number
-}) {
-  return (
-    <div className="flex items-start justify-between gap-4">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-serif text-[38px] leading-none text-[#edeef0]">
-          {title}
-        </h2>
-        <p className="text-[14px] leading-5 font-light text-[#8b8d98]">
-          {subtitle}
-        </p>
-      </div>
-      <div className="flex shrink-0 items-center gap-1 pt-1 text-[12px] tracking-[0.04px]">
-        <span className="text-[#edeef0]">Step {step}</span>
-        <span className="text-[#8b8d98]">of {totalSteps}</span>
-      </div>
-    </div>
-  )
-}
-
-function FormField({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <span className="text-[14px] leading-5 font-medium text-[#edeef0]">
-        {label}
-      </span>
-      {children}
-    </div>
-  )
-}
-
-function ModalSelect({
-  placeholder,
-  options,
-  value,
-  onChange,
-}: {
-  placeholder: string
-  options: string[]
-  value: string
-  onChange: (v: string) => void
-}) {
-  return (
-    <Select value={value || undefined} onValueChange={onChange}>
-      <SelectTrigger className="h-8 w-full rounded-none border-[#2e3135] bg-[#111113] text-[14px] text-[#edeef0] data-placeholder:text-[#8b8d98]">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent className="border-[#2e3135] bg-[#111214]">
-        {options.map((opt) => (
-          <SelectItem
-            key={opt}
-            value={opt}
-            className="text-[#edeef0] focus:bg-white/10 focus:text-[#edeef0]"
-          >
-            {opt}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  )
-}
-
-function ModalInput(props: React.ComponentProps<typeof Input>) {
-  return (
-    <Input
-      {...props}
-      className="h-8 rounded-none border-[#2e3135] bg-[#111113] text-[14px] text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white/30 focus-visible:ring-0"
-    />
-  )
-}
-
-function FooterButtons({
-  onBack,
-  onNext,
-  nextLabel = "Next",
-  nextIcon = <RiArrowRightLine className="size-4" />,
-  showBack = true,
-  note,
-}: {
-  onBack?: () => void
-  onNext: () => void
-  nextLabel?: string
-  nextIcon?: React.ReactNode
-  showBack?: boolean
-  note?: React.ReactNode
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      {note ? (
-        <span className="text-[12px] leading-5 font-light text-[#B0B4BA]">
-          {note}
-        </span>
-      ) : (
-        <span />
-      )}
-      <div className="flex items-center gap-3">
-        {showBack && onBack && (
-          <button
-            type="button"
-            onClick={onBack}
-            className="flex h-8 items-center justify-center bg-white/6 px-3 text-[14px] font-medium text-[#edeef0] transition-colors hover:bg-white/10"
-          >
-            Back
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={onNext}
-          className="flex h-8 items-center justify-center gap-2 bg-[#edeef0] px-3 text-[14px] font-medium text-[#020208] transition-colors hover:bg-white"
-        >
-          {nextLabel}
-          {nextIcon}
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// --- Step 1: Ready to let one go? -------------------------------------------
-
 function Step1SellType({
   value,
   onChange,
@@ -335,8 +164,6 @@ function Step1SellType({
   )
 }
 
-// --- Step 2: Tell us about your watch ----------------------------------------
-
 function Step2WatchDetails({
   data,
   onChange,
@@ -377,7 +204,7 @@ function Step2WatchDetails({
         <FormField label="Condition">
           <ModalSelect
             placeholder="Select condition"
-            options={CONDITION_OPTIONS}
+            options={CONDITION_OPTIONS_SELL}
             value={data.condition}
             onChange={(v) => onChange("condition", v)}
           />
@@ -405,8 +232,6 @@ function Step2WatchDetails({
     </div>
   )
 }
-
-// --- Step 3: Final details ---------------------------------------------------
 
 function Step3FinalDetails({
   data,
@@ -514,8 +339,6 @@ function Step3FinalDetails({
   )
 }
 
-// --- Success Screen ----------------------------------------------------------
-
 function SuccessScreen({
   requestNumber,
   onClose,
@@ -549,7 +372,7 @@ function SuccessScreen({
   )
 }
 
-// --- Main Component ----------------------------------------------------------
+//  Main Component
 
 interface SellWatchModalProps {
   isOpen: boolean
