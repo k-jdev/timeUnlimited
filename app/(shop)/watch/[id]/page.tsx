@@ -76,7 +76,7 @@ export default function WatchDetailPage({
             <WatchGallery images={gallery} watchName={watch.name} />
           </div>
 
-          <div className="lg:scrollbar-none lg:h-full lg:flex-1 lg:overflow-y-auto">
+          <div className="lg:mt-[78px] lg:scrollbar-none lg:h-[calc(100vh-78px)] lg:flex-1 lg:overflow-y-auto">
             <WatchDetails
               brand={watch.brand}
               name={watch.name}

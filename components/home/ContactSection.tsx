@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { motion } from "motion/react"
 
 const CONTACTS = [
@@ -15,10 +16,12 @@ const CONTACTS = [
       </span>
     ),
     value: "@timeunlimitedco",
+    href: "https://x.com/timeunlimitedco",
   },
   {
     label: "WhatsApp",
     value: "+1 (263) 384-3821",
+    href: "https://wa.me/12633843821",
   },
   {
     label: "Office Location",
@@ -42,7 +45,7 @@ export function ContactSection() {
         Contact
       </motion.h2>
 
-      <div className="grid w-full grid-cols-2 gap-4 md:grid-cols-4 md:gap-0">
+      <div className="grid w-full grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-0">
         {CONTACTS.map((contact, i) => (
           <motion.div
             key={i}
@@ -59,9 +62,20 @@ export function ContactSection() {
             <div className="text-lg leading-6.5 tracking-[-0.04px] text-white lg:text-xl lg:leading-7 lg:tracking-[-0.08px]">
               {contact.label}
             </div>
-            <p className="truncate text-base leading-6 font-light text-[#80838d] lg:text-lg lg:leading-6.5 lg:tracking-[-0.04px]">
-              {contact.value}
-            </p>
+            {contact.href ? (
+              <Link
+                href={contact.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-base leading-6 font-light break-all text-[#80838d] transition-colors hover:text-[#edeef0] lg:text-lg lg:leading-6.5 lg:tracking-[-0.04px] lg:break-normal"
+              >
+                {contact.value}
+              </Link>
+            ) : (
+              <p className="text-base leading-6 font-light break-all text-[#80838d] lg:text-lg lg:leading-6.5 lg:tracking-[-0.04px] lg:break-normal">
+                {contact.value}
+              </p>
+            )}
           </motion.div>
         ))}
       </div>

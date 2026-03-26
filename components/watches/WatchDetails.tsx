@@ -39,7 +39,7 @@ export function WatchDetails({
     .join(" ")
 
   return (
-    <div className="flex flex-col gap-10 px-4 pt-8 pb-4 lg:flex-1 lg:px-16 lg:pt-[78px]">
+    <div className="flex flex-col gap-10 px-4 pt-8 pb-4 lg:flex-1 lg:px-16 lg:pt-16">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <p className="font-serif text-[20px] leading-[22px] tracking-[0.4px] text-[rgba(237,238,240,0.62)] uppercase">
@@ -55,8 +55,8 @@ export function WatchDetails({
             {price}
           </p>
           <div className="flex items-center gap-1">
-            <RiInformationLine className="size-4 text-[#80838d]" />
-            <p className="text-[12px] leading-4 tracking-[0.04px] text-[#80838d]">
+            <RiInformationLine className="size-4 text-[#777B84]" />
+            <p className="text-[12px] leading-4 tracking-[0.04px] text-[#777B84]">
               Authenticated &amp; inspected in-house. No hidden fees.
             </p>
           </div>
@@ -85,7 +85,7 @@ export function WatchDetails({
             className="flex items-center justify-between border-b border-[#2E3135] py-3"
           >
             <span className="flex-[1_0_0] text-[#edeef0]">{spec.label}</span>
-            <span className="flex-[1_0_0] font-light text-[#80838d]">
+            <span className="flex-[1_0_0] font-light text-[#777B84]">
               {spec.value}
             </span>
           </div>
@@ -96,7 +96,7 @@ export function WatchDetails({
         <div className="border-b border-[#2E3135]">
           <button
             onClick={() => setAboutOpen(!aboutOpen)}
-            className="flex w-full items-center justify-between py-3"
+            className="flex w-full items-center justify-between border-b border-[#2E3135] py-3"
           >
             <span className="text-[16px] leading-6 font-medium text-[#edeef0]">
               About this watch
@@ -108,7 +108,7 @@ export function WatchDetails({
             )}
           </button>
           {aboutOpen && (
-            <div className="pb-4 text-[14px] leading-5 font-light whitespace-pre-line text-[#8b8d98]">
+            <div className="py-4 text-[14px] leading-5 font-light whitespace-pre-line text-[#B0B4BA]">
               {description}
             </div>
           )}
@@ -122,7 +122,7 @@ export function WatchDetails({
             <p className="text-[16px] leading-6 font-medium text-[#edeef0]">
               Authenticated In-House
             </p>
-            <p className="text-[14px] leading-5 font-light text-[#80838d]">
+            <p className="text-[14px] leading-5 font-light text-[#777B84]">
               This {brandFormatted} passed our multi-step inspection. Movement
               tested. Serial verified. Photographed before shipping.
             </p>
@@ -137,7 +137,7 @@ export function WatchDetails({
             <p className="text-[16px] leading-6 font-medium text-[#edeef0]">
               Worldwide Shipping
             </p>
-            <p className="text-[14px] leading-5 font-light text-[#80838d]">
+            <p className="text-[14px] leading-5 font-light text-[#777B84]">
               Fully insured international shipping with tracking. Delivered to
               your door with signature confirmation.
             </p>

@@ -2,6 +2,8 @@
 
 import { motion } from "motion/react"
 
+import Link from "next/link"
+
 export function Footer() {
   return (
     <footer className="flex flex-col-reverse gap-30 border-t border-[#2E3135] px-4 pt-10 pb-16 lg:flex-row lg:items-start lg:justify-between lg:gap-0 lg:px-10 lg:pb-16">
@@ -20,11 +22,11 @@ export function Footer() {
         </p>
 
         <div className="flex flex-col gap-2">
-          <p className="text-base leading-6 font-light text-[#60646c]">
+          <p className="text-base leading-6 font-light text-[#B0B4BA]">
             Buying, selling, sourcing, questions — whatever it is, don&apos;t
             hesitate. Reach out and let&apos;s talk watches.
           </p>
-          <p className="text-sm leading-5 font-light text-[#8b8d98]">
+          <p className="text-sm leading-5 font-light text-[#696E77]">
             © COPYRIGHT 2026
           </p>
         </div>
@@ -38,21 +40,23 @@ export function Footer() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
         >
-          <p className="text-xs leading-4 font-light tracking-[0.04px] text-[#8b8d98]">
+          <p className="text-xs leading-4 font-light tracking-[0.04px] text-[#696E77]">
             SOCIALS
           </p>
-          <div className="flex flex-col gap-3 text-base leading-6 font-light text-[#60646c]">
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
-              Linkedin
-            </p>
+          <div className="flex flex-col gap-3 text-base leading-6 font-light text-[#B0B4BA]">
+            <Link
+              href="https://wa.me/12633843821"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer transition-colors hover:text-[#edeef0]"
+            >
+              WhatsApp
+            </Link>
             <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
               Instagram
             </p>
             <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
-              Twitter
-            </p>
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
-              Youtube
+              X (Twitter)
             </p>
           </div>
         </motion.div>
@@ -64,16 +68,16 @@ export function Footer() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, delay: 0.25, ease: "easeOut" }}
         >
-          <p className="text-xs leading-4 font-light tracking-[0.04px] text-[#8b8d98]">
+          <p className="text-xs leading-4 font-light tracking-[0.04px] text-[#696E77]">
             LEGAL
           </p>
-          <div className="flex flex-col gap-3 text-base leading-6 font-light text-[#60646c]">
+          <div className="flex flex-col gap-3 text-base leading-6 font-light text-[#B0B4BA]">
             <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
               Privacy Notice
             </p>
-            <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
+            {/* <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
               Cookie Policy
-            </p>
+            </p> */}
             <p className="cursor-pointer transition-colors hover:text-[#edeef0]">
               Terms
             </p>

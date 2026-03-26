@@ -353,7 +353,7 @@ export function InventoryFilterSidebar({
         </div>
       </ScrollArea>
 
-      <div className="px-3 pb-8 lg:px-8">
+      {/* <div className="px-3 pb-8 lg:px-8">
         <svg
           width="104"
           height="26"
@@ -374,7 +374,7 @@ export function InventoryFilterSidebar({
             fill="#EDEEF0"
           />
         </svg>
-      </div>
+      </div> */}
 
       <div className="flex gap-2 bg-black px-3 pb-3 lg:px-6 lg:pr-10 lg:pl-8">
         {ACTION_ITEMS.map((item) => {
@@ -417,12 +417,11 @@ export function InventoryFilterSidebar({
         isOpen={isSellModalOpen}
         onClose={() => setIsSellModalOpen(false)}
       />
-      {/* Desktop sidebar */}
+
       <aside className="fixed top-0 right-0 z-30 hidden h-screen w-[320px] flex-col lg:flex">
         {filterContent}
       </aside>
 
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div

@@ -41,19 +41,19 @@ export function WatchTopBar({
         <div className="flex min-w-0 items-center">
           <Link
             href="/"
-            className="shrink-0 text-[14px] leading-5 text-[#b9bbc6] transition-colors hover:text-[#edeef0]"
+            className="shrink-0 text-[14px] leading-5 text-[#5A6169] transition-colors hover:text-[#b9bbc6]"
           >
             Home
           </Link>
-          <RiArrowRightSLine className="size-4 shrink-0 text-[#b9bbc6]" />
+          <RiArrowRightSLine className="size-4 shrink-0 text-[#5A6169]" />
           <Link
             href="/inventory"
-            className="shrink-0 text-[14px] leading-5 text-[#b9bbc6] transition-colors hover:text-[#edeef0]"
+            className="shrink-0 text-[14px] leading-5 text-[#5A6169] transition-colors hover:text-[#b9bbc6]"
           >
             Inventory
           </Link>
-          <RiArrowRightSLine className="size-4 shrink-0 text-[#b9bbc6]" />
-          <span className="truncate text-[14px] leading-5 text-[#60646c]">
+          <RiArrowRightSLine className="size-4 shrink-0 text-[#5A6169]" />
+          <span className="truncate text-[14px] leading-5 text-[#B0B4BA]">
             {watchName}
           </span>
         </div>

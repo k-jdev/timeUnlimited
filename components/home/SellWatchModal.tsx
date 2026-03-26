@@ -69,7 +69,7 @@ interface FormData {
   watchReference: string
   condition: string
   boxAndPapers: string
-  yearOfPurchase: string
+  yearOfProduction: string
   askingPrice: string
   paymentMethod: string
   contactMethod: string
@@ -81,7 +81,7 @@ const EMPTY_FORM: FormData = {
   watchReference: "",
   condition: "",
   boxAndPapers: "",
-  yearOfPurchase: "",
+  yearOfProduction: "",
   askingPrice: "",
   paymentMethod: "",
   contactMethod: "",
@@ -392,11 +392,11 @@ function Step2WatchDetails({
           />
         </FormField>
 
-        <FormField label="Year of purchase (optional)">
+        <FormField label="Year of Production (optional)">
           <ModalInput
             placeholder="e.g. 2019"
-            value={data.yearOfPurchase}
-            onChange={(e) => onChange("yearOfPurchase", e.target.value)}
+            value={data.yearOfProduction}
+            onChange={(e) => onChange("yearOfProduction", e.target.value)}
           />
         </FormField>
       </div>
