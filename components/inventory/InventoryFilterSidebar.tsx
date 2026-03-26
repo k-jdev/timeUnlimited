@@ -13,6 +13,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { BrandLogo } from "@/components/layout/BrandLogo"
+import { RequestWatchModal } from "@/components/home/RequestWatchModal"
+import { SellWatchModal } from "@/components/home/SellWatchModal"
 import {
   BRANDS,
   CONDITIONS,
@@ -157,6 +159,8 @@ export function InventoryFilterSidebar({
 }: InventoryFilterSidebarProps) {
   const [brandSearch, setBrandSearch] = useState("")
   const [hoveredAction, setHoveredAction] = useState<string | null>(null)
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     Brand: true,
     Condition: true,
@@ -387,6 +391,12 @@ export function InventoryFilterSidebar({
               }`}
               onMouseEnter={() => setHoveredAction(item.label)}
               onMouseLeave={() => setHoveredAction(null)}
+              onClick={() => {
+                if (item.label === "Request") setIsRequestModalOpen(true)
+                if (item.label === "Sell") setIsSellModalOpen(true)
+                if (item.label === "Contact")
+                  window.open("https://wa.me/12633843821", "_blank")
+              }}
             >
               <item.icon className="size-4" />
               <span>{item.label}</span>
@@ -399,6 +409,14 @@ export function InventoryFilterSidebar({
 
   return (
     <>
+      <RequestWatchModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+      />
+      <SellWatchModal
+        isOpen={isSellModalOpen}
+        onClose={() => setIsSellModalOpen(false)}
+      />
       {/* Desktop sidebar */}
       <aside className="fixed top-0 right-0 z-30 hidden h-screen w-[320px] flex-col lg:flex">
         {filterContent}

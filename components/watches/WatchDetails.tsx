@@ -69,12 +69,12 @@ export function WatchDetails({
               Inquire Now
             </span>
           </button>
-          <button className="flex h-10 items-center justify-center gap-3 border border-[rgba(237,238,240,0.62)] px-4">
+          {/* <button className="flex h-10 items-center justify-center gap-3 border border-[rgba(237,238,240,0.62)] px-4">
             <RiMailLine className="size-[18px] text-[#edeef0]" />
             <span className="text-[16px] leading-6 font-medium text-[#edeef0]">
               Request a Quote
             </span>
-          </button>
+          </button> */}
         </div>
       </div>
 

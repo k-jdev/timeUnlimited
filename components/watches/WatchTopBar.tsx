@@ -15,7 +15,7 @@ export function WatchTopBar({
   nextWatch,
 }: WatchTopBarProps) {
   return (
-    <div className="absolute top-0 right-0 left-0 z-10 flex flex-col lg:relative lg:flex-row lg:items-center lg:pt-[33px]">
+    <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:pt-[33px]">
       <div className="shrink-0 px-4 pt-6 lg:w-[732px] lg:px-0 lg:pt-0 lg:pl-6">
         <Link href="/">
           <svg

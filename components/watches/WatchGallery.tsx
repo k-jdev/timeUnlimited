@@ -69,15 +69,77 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-0.5 pt-4 lg:pt-[30px]">
+      {/* ── MOBILE gallery ── */}
+      <div className="flex flex-col gap-0.5 pt-4 lg:hidden">
+        {/* Main image with prev/next arrows */}
+        <div className="relative h-[300px] w-full overflow-hidden bg-[#111113] sm:h-[400px]">
+          <button
+            onClick={() => openLightbox(selectedImage)}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <img
+              src={images[selectedImage]}
+              alt={watchName}
+              className="size-[280px] object-contain sm:size-[340px]"
+              style={{ filter: "drop-shadow(0px 4px 88px rgba(0,0,0,0.64))" }}
+            />
+          </button>
+
+          {images.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setSelectedImage((i) => (i - 1 + images.length) % images.length)
+              }}
+              className="absolute top-1/2 left-2 z-10 flex size-9 -translate-y-1/2 items-center justify-center bg-black/40 text-white/70"
+            >
+              <RiArrowLeftSLine className="size-5" />
+            </button>
+          )}
+
+          {images.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setSelectedImage((i) => (i + 1) % images.length)
+              }}
+              className="absolute top-1/2 right-2 z-10 flex size-9 -translate-y-1/2 items-center justify-center bg-black/40 text-white/70"
+            >
+              <RiArrowRightSLine className="size-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Horizontal thumbnail strip */}
+        <div className="flex gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {images.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setSelectedImage(i)}
+              className={`relative h-[110px] w-[110px] shrink-0 overflow-hidden bg-[#111113] transition-opacity sm:h-[140px] sm:w-[140px] ${
+                selectedImage === i ? "opacity-100" : "opacity-50"
+              }`}
+            >
+              <img
+                src={img}
+                alt={`${watchName} - ${i + 1}`}
+                className="absolute inset-0 size-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── DESKTOP gallery ── */}
+      <div className="hidden flex-col gap-0.5 pt-[30px] lg:flex">
         <button
           onClick={() => openLightbox(selectedImage)}
-          className="relative h-[300px] w-full overflow-hidden bg-[#111113] sm:h-[400px] lg:h-[682px]"
+          className="relative h-[682px] w-full overflow-hidden bg-[#111113]"
         >
           <img
             src={images[selectedImage]}
             alt={watchName}
-            className="absolute top-1/2 left-1/2 size-[280px] -translate-x-1/2 -translate-y-1/2 object-cover sm:size-[340px] lg:size-[682px]"
+            className="absolute top-1/2 left-1/2 size-[682px] -translate-x-1/2 -translate-y-1/2 object-cover"
             style={{ filter: "drop-shadow(0px 4px 88px rgba(0,0,0,0.64))" }}
           />
         </button>
@@ -90,7 +152,7 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
                 setSelectedImage(i)
                 openLightbox(i)
               }}
-              className={`relative h-[160px] overflow-hidden bg-[#111113] transition-opacity lg:h-[320px] ${
+              className={`relative h-[320px] overflow-hidden bg-[#111113] transition-opacity ${
                 selectedImage === i
                   ? "opacity-100"
                   : "opacity-60 hover:opacity-80"

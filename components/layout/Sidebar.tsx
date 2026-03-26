@@ -133,6 +133,8 @@ export function Sidebar() {
               onClick={() => {
                 if (item.label === "Request") setIsModalOpen(true)
                 if (item.label === "Sell") setIsSellModalOpen(true)
+                if (item.label === "Contact")
+                  window.open("https://wa.me/12633843821", "_blank")
               }}
               className={cn(
                 "flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 py-3 text-xs transition-all duration-200",
@@ -177,6 +179,8 @@ export function Sidebar() {
               onClick={() => {
                 if (item.label === "Request") setIsModalOpen(true)
                 if (item.label === "Sell") setIsSellModalOpen(true)
+                if (item.label === "Contact")
+                  window.open("https://wa.me/12633843821", "_blank")
               }}
               className={cn(
                 "flex h-13.5 flex-1 items-center justify-center gap-2 text-xs tracking-[0.04px]",

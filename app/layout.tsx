@@ -16,6 +16,9 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: "Time Unlimited",
+  icons: {
+    icon: "/vite.svg",
+  },
 }
 
 export default function RootLayout({
