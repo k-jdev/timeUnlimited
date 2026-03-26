@@ -7,6 +7,7 @@ const CONTACTS = [
   {
     label: "Email Address",
     value: "contact@timeunlimited.co",
+    href: "mailto:contact@timeunlimited.co",
   },
   {
     label: (
