@@ -1,7 +1,11 @@
 import { pool } from "@/lib/db"
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
+import { requireAuth } from "@/lib/authHelpers";
 
-export async function GET(req: Request, context: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
+
+   const authResult = requireAuth(req);
+  if (authResult instanceof Response) return authResult;
 
   const { params } = context
   const { id } = await params

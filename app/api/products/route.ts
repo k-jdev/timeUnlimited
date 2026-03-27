@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
+import { requireAuth } from "@/lib/authHelpers";
+
 
 export async function GET(req: NextRequest) {
+
+  const authResult = requireAuth(req);
+  if (authResult instanceof Response) return authResult;
+
   try {
     const url = new URL(req.url)
     const search = url.searchParams.get("search") ?? ""

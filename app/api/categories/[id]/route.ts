@@ -1,11 +1,14 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest} from "next/server"
 import { pool } from "@/lib/db"
+import { requireAuth } from '@/lib/authHelpers';
 
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
 
-export async function DELETE(req: Request, context: { params: { id: string } }) {
+  const authResult = requireAuth(req);
+  if (authResult instanceof Response) return authResult;
 
-   const { params } = context
-  const { id } = await params 
+  const { params } = context
+  const { id } = await params
 
   if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 })
@@ -28,7 +31,11 @@ export async function DELETE(req: Request, context: { params: { id: string } }) 
   }
 }
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+
+   const authResult = requireAuth(req);
+  if (authResult instanceof Response) return authResult;
+
   try {
     const { id } = params
     const res = await pool.query("SELECT * FROM categories WHERE id = $1", [id])

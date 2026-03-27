@@ -1,8 +1,12 @@
 import { pool } from "@/lib/db"
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
+import { requireAuth } from "@/lib/authHelpers";
 
 
-export async function DELETE(req: Request, context: { params: { productId: string, categoryId: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { productId: string, categoryId: string } }) {
+
+   const authResult = requireAuth(req);
+  if (authResult instanceof Response) return authResult;
 
   const { params } = context
   const { productId, categoryId} = await params  

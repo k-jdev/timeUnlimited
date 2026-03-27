@@ -1,9 +1,15 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { supabaseServer } from '@/lib/supabaseServer'
 import { v4 as uuidv4 } from 'uuid'
 import type { ProductImage } from '@/types/image'
+import { requireAuth } from '@/lib/authHelpers';
 
-export async function POST(req: Request) {
+
+export async function POST(req: NextRequest) {
+
+  const authResult = requireAuth(req);
+  if (authResult instanceof Response) return authResult;
+
   try {
     const formData = await req.formData()
 
@@ -33,7 +39,7 @@ export async function POST(req: Request) {
       .from('images')
       .upload(filePath, file)
 
-      console.log('Upload result:', { filePath, uploadError })
+    console.log('Upload result:', { filePath, uploadError })
 
     if (uploadError) throw uploadError
 
@@ -61,26 +67,26 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET( req: Request
+export async function GET(req: Request
 ): Promise<Response> {
-    const url = new URL(req.url)
-    const productId = url.searchParams.get('productId')
+  const url = new URL(req.url)
+  const productId = url.searchParams.get('productId')
 
-    if (!productId) {
-        return NextResponse.json({ error: 'Missing productId' }, { status: 400 })
-    }
+  if (!productId) {
+    return NextResponse.json({ error: 'Missing productId' }, { status: 400 })
+  }
 
-    const { data, error } = await supabaseServer
-        .from('product_images')
-        .select('*')
-        .eq('product_id', productId)
-        // .order('is_main', { ascending: false })
-        // .order('sort_order', { ascending: true })
-        .order('created_at', { ascending: false })
+  const { data, error } = await supabaseServer
+    .from('product_images')
+    .select('*')
+    .eq('product_id', productId)
+    // .order('is_main', { ascending: false })
+    // .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: false })
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
-    return NextResponse.json(data as ProductImage[])
+  return NextResponse.json(data as ProductImage[])
 }
