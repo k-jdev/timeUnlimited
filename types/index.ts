@@ -37,6 +37,9 @@ export interface AdminProduct {
   dial?: string,
   hover_color?: string,
   complete_set?: boolean,
+  images?: object[],
+  serial_number?: string,
+  dial_color?: string
 }
 
 export interface NavItem {

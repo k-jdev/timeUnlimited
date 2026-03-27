@@ -1,42 +1,80 @@
-"use client"
+'use client'
 
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { RiAddLine } from "@remixicon/react"
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb"
-import { useProducts, type ProductTab } from "@/hooks/useProducts"
 import { ProductsToolbar } from "./ProductsToolbar"
 import { ProductsTable } from "./ProductsTable"
 import { ProductsPagination } from "./ProductsPagination"
 import { ProductsSelectionBar } from "./ProductsSelectionBar"
 
-export function ProductsView() {
-  const { isLoaded, counts, deleteProducts, getFilteredProducts } =
-    useProducts()
+export type ProductTab = "all" | "active" | "archived"
 
+export interface ProductImage {
+  id: string
+  product_id: string
+  image_url: string
+  file_path: string
+  is_main: boolean
+  sort_order: number
+  created_at: string
+}
+
+export interface Product {
+  id: string
+  brand: string
+  model: string
+  status: string
+  created_at: string
+  images: ProductImage[]
+}
+
+export function ProductsView() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [total, setTotal] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState<ProductTab>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(15)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [counts, setCounts] = useState<{ [key in ProductTab]: number }>({
+    all: 0,
+    active: 0,
+    archived: 0
+  })
 
-  const filteredProducts = useMemo(
-    () => getFilteredProducts(activeTab, searchQuery),
-    [activeTab, searchQuery, counts]
-  )
+  // --- Fetch products from API ---
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoaded(false)
+      try {
+        const res = await fetch(
+          `/api/products?search=${searchQuery}&status=${activeTab}&page=${currentPage}&limit=${itemsPerPage}`
+        )
+        const data: { products: Product[]; total: number } = await res.json()
 
+        setProducts(data.products)
+        setTotal(data.total)
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredProducts.length / itemsPerPage)
-  )
-  const safePage = Math.min(currentPage, totalPages)
+        setCounts({
+          all: data.total,
+          active: data.products.filter(p => p.status === "active").length,
+          archived: data.products.filter(p => p.status === "archived").length
+        })
+      } catch (err) {
+        console.error("Error fetching products:", err)
+        setProducts([])
+        setTotal(0)
+      }
+      setIsLoaded(true)
+    }
 
-  const paginatedProducts = useMemo(() => {
-    const start = (safePage - 1) * itemsPerPage
-    return filteredProducts.slice(start, start + itemsPerPage)
-  }, [filteredProducts, safePage, itemsPerPage])
+    fetchProducts()
+  }, [activeTab, searchQuery, currentPage, itemsPerPage])
 
+  // --- Handlers ---
   function handleTabChange(tab: ProductTab) {
     setActiveTab(tab)
     setCurrentPage(1)
@@ -56,30 +94,31 @@ export function ProductsView() {
   }
 
   function handleToggleSelect(id: string) {
-    setSelectedIds((prev) => {
+    setSelectedIds(prev => {
       const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
       return next
     })
   }
 
   function handleToggleSelectAll() {
-    if (selectedIds.size === paginatedProducts.length) {
+    if (selectedIds.size === products.length) {
       setSelectedIds(new Set())
     } else {
-      setSelectedIds(new Set(paginatedProducts.map((p) => p.id)))
+      setSelectedIds(new Set(products.map(p => p.id)))
     }
   }
 
   function handleDeleteSelected() {
-    deleteProducts(Array.from(selectedIds))
+    // Можно добавить вызов DELETE API для каждого id
+    const remaining = products.filter(p => !selectedIds.has(p.id))
+    setProducts(remaining)
     setSelectedIds(new Set())
     setCurrentPage(1)
   }
+
+  const totalPages = Math.max(1, Math.ceil(total / itemsPerPage))
 
   if (!isLoaded) {
     return (
@@ -117,14 +156,14 @@ export function ProductsView() {
         onClear={() => setSelectedIds(new Set())}
       />
 
-      {paginatedProducts.length === 0 ? (
+      {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
           <p className="text-[#8b8d98]">
-            {filteredProducts.length === 0 && counts.all === 0
+            {total === 0
               ? "No products yet."
               : "No products match your search."}
           </p>
-          {counts.all === 0 && (
+          {total === 0 && (
             <Link
               href="/admin/inventory/add"
               className="text-sm text-[#5eb1ef] underline-offset-4 hover:underline"
@@ -135,17 +174,17 @@ export function ProductsView() {
         </div>
       ) : (
         <ProductsTable
-          products={paginatedProducts}
+          products={products}
           selectedIds={selectedIds}
           onToggleSelect={handleToggleSelect}
           onToggleSelectAll={handleToggleSelectAll}
         />
       )}
 
-      {filteredProducts.length > 0 && (
+      {total > 0 && (
         <ProductsPagination
-          totalItems={filteredProducts.length}
-          currentPage={safePage}
+          totalItems={total}
+          currentPage={currentPage}
           totalPages={totalPages}
           itemsPerPage={itemsPerPage}
           onPageChange={setCurrentPage}
