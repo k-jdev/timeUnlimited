@@ -26,12 +26,12 @@ export default function AddProductPage() {
 
       <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-6">
         <div className="w-full lg:w-[380px] lg:shrink-0">
-          <ImageUploadSection
+          {/* <ImageUploadSection
             mainImage={mainImage}
             additionalImages={additionalImages}
             onMainImageChange={setMainImage}
             onAdditionalImagesChange={setAdditionalImages}
-          />
+          /> */}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">
