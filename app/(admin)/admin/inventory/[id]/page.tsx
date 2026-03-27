@@ -8,7 +8,8 @@ import {
   ProductForm,
   type ProductFormData,
 } from "@/components/admin/ProductForm"
-import type { AdminProduct } from "@/types"
+import type { AdminProduct } from "@/types";
+import UploadImage from "@/components/admin/form/UploadImage"
 
 const STORAGE_KEY = "admin_products"
 
@@ -25,55 +26,54 @@ export default function EditProductPage() {
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
+  console.log(id)
 
   const [product, setProduct] = useState<AdminProduct | null>(null)
   const [mainImage, setMainImage] = useState<File | null>(null)
   const [additionalImages, setAdditionalImages] = useState<File[]>([])
 
   useEffect(() => {
-    const products = readFromStorage()
-    const found = products.find((p) => p.id === id)
-    setProduct(found ?? null)
-  }, [id])
+  fetch(`/api/products/${id}`)
+    .then((res) => res.json())
+    .then((data) => setProduct(data))
+    .catch(() => setProduct(null))
+}, [id])
 
   function handleSave(data: ProductFormData) {
-    const products = readFromStorage()
-    const updated = products.map((p) =>
-      p.id === id
-        ? {
-            ...p,
-            brand: data.brand,
-            name: data.model,
-            price: data.price,
-            referenceNumber: data.referenceNumber,
-            description: data.description,
-            condition: data.condition,
-            caseMaterial: data.caseMaterial,
-            size: data.caseSize,
-            dialColor: data.dial,
-            ref: data.referenceNumber ?? "",
-            hoverColor: data.hoverColor,
-          }
-        : p
-    )
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    router.push("/admin/inventory")
+    fetch(`/api/products/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Update failed")
+        return res.json()
+      })
+      .then(() => {
+        router.push("/admin/inventory")
+      })
+      .catch((err) => {
+        console.error(err)
+        alert("Failed to update product")
+      })
   }
 
   const initialData: Partial<ProductFormData> | undefined = product
-    ? {
-        brand: product.brand,
-        model: product.name,
-        price: product.price,
-        referenceNumber: product.ref,
-        description: product.description ?? "",
-        condition: product.condition,
-        caseMaterial: product.caseMaterial,
-        caseSize: product.size,
-        dial: product.dialColor,
-        hoverColor: product.hoverColor ?? "",
-      }
-    : undefined
+  ? {
+      id: product.id,
+      brand: product.brand,
+      model: product.model,
+      price: product.price,
+      referenceNumber: product.reference_number, 
+      description: product.description ?? "",
+      condition: product.condition,
+      caseMaterial: product.case_material,      
+      caseSize: product.case_size,             
+      dial: product.dial,                       
+      completeSet: product.complete_set,        
+      hoverColor: product.hover_color ?? "",   
+    }
+  : undefined
 
   return (
     <div className="mx-auto max-w-360 px-6 pt-8 pb-16 lg:px-10">
@@ -89,14 +89,18 @@ export default function EditProductPage() {
 
       <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-6">
         <div className="w-full lg:w-95 lg:shrink-0">
-          <ImageUploadSection
+
+          {
+            product && <UploadImage productId={product.id} />
+          }
+          {/* <ImageUploadSection
             mainImage={mainImage}
             additionalImages={additionalImages}
             onMainImageChange={setMainImage}
             onAdditionalImagesChange={setAdditionalImages}
             existingImage={product?.image}
             initialHoverColor={product?.hoverColor}
-          />
+          /> */}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">

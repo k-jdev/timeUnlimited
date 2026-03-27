@@ -1,32 +1,60 @@
 "use client"
 
-import { type FormEvent, useState } from "react"
-import { useRouter } from "next/navigation"
+import { type FormEvent, useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react"
 
 export function ResetPasswordView() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const emailParam = searchParams.get("email") || ""
+
+  const [email, setEmail] = useState(emailParam)
   const [code, setCode] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showNew, setShowNew] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError("")
 
-    if (!code || !newPassword || !confirmPassword) {
+    if (!email || !code || !newPassword || !confirmPassword) {
       setError("Please fill in all fields")
       return
     }
+
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match")
       return
     }
 
-    router.push("/login")
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code, newPassword }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong")
+        setLoading(false)
+        return
+      }
+
+      setLoading(false)
+      router.push("/login")
+    } catch (err) {
+      setError("Failed to update password")
+      setLoading(false)
+    }
   }
 
   return (
@@ -44,11 +72,9 @@ export function ResetPasswordView() {
       </div>
 
       <div className="flex flex-col gap-4">
+        {/* Verification code */}
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="reset-code"
-            className="text-sm font-medium text-[#edeef0]"
-          >
+          <label htmlFor="reset-code" className="text-sm font-medium text-[#edeef0]">
             Verification code
           </label>
           <input
@@ -61,11 +87,9 @@ export function ResetPasswordView() {
           />
         </div>
 
+        {/* New password */}
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="reset-new-password"
-            className="text-sm font-medium text-[#edeef0]"
-          >
+          <label htmlFor="reset-new-password" className="text-sm font-medium text-[#edeef0]">
             New password
           </label>
           <div className="relative">
@@ -85,20 +109,14 @@ export function ResetPasswordView() {
               tabIndex={-1}
               aria-label={showNew ? "Hide password" : "Show password"}
             >
-              {showNew ? (
-                <RiEyeLine className="size-4" />
-              ) : (
-                <RiEyeOffLine className="size-4" />
-              )}
+              {showNew ? <RiEyeLine className="size-4" /> : <RiEyeOffLine className="size-4" />}
             </button>
           </div>
         </div>
 
+        {/* Confirm password */}
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="reset-confirm-password"
-            className="text-sm font-medium text-[#edeef0]"
-          >
+          <label htmlFor="reset-confirm-password" className="text-sm font-medium text-[#edeef0]">
             Confirm password
           </label>
           <div className="relative">
@@ -118,11 +136,7 @@ export function ResetPasswordView() {
               tabIndex={-1}
               aria-label={showConfirm ? "Hide password" : "Show password"}
             >
-              {showConfirm ? (
-                <RiEyeLine className="size-4" />
-              ) : (
-                <RiEyeOffLine className="size-4" />
-              )}
+              {showConfirm ? <RiEyeLine className="size-4" /> : <RiEyeOffLine className="size-4" />}
             </button>
           </div>
         </div>
@@ -140,9 +154,10 @@ export function ResetPasswordView() {
         </button>
         <button
           type="submit"
-          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15"
+          disabled={loading}
+          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Update password
+          {loading ? "Updating..." : "Update password"}
         </button>
       </div>
     </form>

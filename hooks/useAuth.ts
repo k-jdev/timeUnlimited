@@ -1,33 +1,51 @@
-"use client"
-
-import { useEffect, useState } from "react"
-
-const AUTH_KEY = "admin_auth"
-const VALID_EMAIL = "admin@mail.com"
-const VALID_PASSWORD = "3–sgxVm?2Gv%RCz"
+import { useState, useEffect } from "react";
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsAuthenticated(localStorage.getItem(AUTH_KEY) === "true")
-    setIsLoaded(true)
-  }, [])
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+    setIsLoaded(true);
+  }, []);
 
-  function login(email: string, password: string): boolean {
-    if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-      localStorage.setItem(AUTH_KEY, "true")
-      setIsAuthenticated(true)
-      return true
+ 
+  async function login(email: string, password: string) {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return false;
+      }
+
+      // сохраняем токен
+      localStorage.setItem("token", data.token);
+
+      setIsAuthenticated(true);
+      return true;
+    } catch (e) {
+      return false;
     }
-    return false
   }
 
   function logout() {
-    localStorage.removeItem(AUTH_KEY)
-    setIsAuthenticated(false)
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
   }
 
-  return { isAuthenticated, isLoaded, login, logout }
+  return {
+    isAuthenticated,
+    isLoaded,
+    login,
+    logout,
+  };
 }

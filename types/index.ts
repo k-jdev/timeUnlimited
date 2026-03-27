@@ -30,6 +30,13 @@ export interface AdminProduct {
   description?: string
   galleryImages?: string[]
   hoverColor?: string
+  model?: string,
+  reference_number?: string,
+  case_material?: string,
+  case_size?: string,
+  dial?: string,
+  hover_color?: string,
+  complete_set?: boolean,
 }
 
 export interface NavItem {

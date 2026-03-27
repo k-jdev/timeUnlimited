@@ -6,13 +6,45 @@ import { useRouter } from "next/navigation"
 export function ForgotPasswordView() {
   const router = useRouter()
   const [email, setEmail] = useState("")
+  const [error, setError] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!email) return
-    setSubmitted(true)
-    router.push("/login/reset-password")
+    setError("")
+
+    if (!email) {
+      setError("Please enter your email")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || "Something went wrong")
+        setLoading(false)
+        return
+      }
+
+      setSubmitted(true)
+      setLoading(false)
+
+      // переход на страницу ввода кода
+      router.push(`/login/reset-password?email=${encodeURIComponent(email)}`)
+    } catch (err) {
+      setError("Failed to send verification code")
+      setLoading(false)
+    }
   }
 
   return (
@@ -48,6 +80,8 @@ export function ForgotPasswordView() {
         />
       </div>
 
+      {error && <p className="text-xs text-red-400">{error}</p>}
+
       <div className="flex items-center justify-end gap-3">
         <button
           type="button"
@@ -58,9 +92,10 @@ export function ForgotPasswordView() {
         </button>
         <button
           type="submit"
-          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15"
+          disabled={loading}
+          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Reset password
+          {loading ? "Sending..." : "Reset password"}
         </button>
       </div>
     </form>

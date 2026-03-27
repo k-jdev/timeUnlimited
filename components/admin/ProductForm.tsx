@@ -5,10 +5,11 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ProductFormFields } from "./form/ProductFormFields"
-import { CustomCategoriesSection } from "./form/CustomCategoriesSection"
+import { ProductCategoriesSection } from "./form/CategoriesSection"
 import { ProductFormActions } from "./form/ProductFormActions"
 
 export interface ProductFormData {
+  id: string
   brand: string
   model: string
   price: string
@@ -23,6 +24,7 @@ export interface ProductFormData {
 }
 
 const EMPTY_FORM: ProductFormData = {
+  id: "",
   brand: "",
   model: "",
   price: "",
@@ -49,11 +51,12 @@ export function ProductForm({
 }: ProductFormProps) {
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     const data: ProductFormData = {
-      brand: formData.get("brand") as string,
+      id: formData.get("id") as string,
       model: formData.get("model") as string,
       price: formData.get("price") as string,
       referenceNumber: formData.get("referenceNumber") as string,
@@ -65,27 +68,14 @@ export function ProductForm({
       completeSet: formData.get("completeSet") as string,
       hoverColor: formData.get("hoverColor") as string,
     }
-    if (onSave) {
-      onSave(data)
-    } else {
-      const existing = JSON.parse(
-        localStorage.getItem("admin_products") ?? "[]"
-      )
-      const newProduct = {
-        ...data,
-        id: Date.now().toString(),
-        status: "active",
-        image: "",
-        dialColor: data.dial,
-        ref: data.referenceNumber ?? "",
-        hoverColor: data.hoverColor,
-        glowColor: "",
-        borderColor: "",
-      }
-      existing.push(newProduct)
-      localStorage.setItem("admin_products", JSON.stringify(existing))
-      router.push("/admin/inventory")
-    }
+
+    await fetch("/api/products/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+
+    router.push("/admin/inventory")
   }
 
   const defaultValues = { ...EMPTY_FORM, ...initialData }
@@ -102,7 +92,12 @@ export function ProductForm({
 
       <div className="grid flex-1 grid-cols-1 content-start gap-x-6 gap-y-5 md:grid-cols-3">
         <ProductFormFields defaultValues={defaultValues} />
-        <CustomCategoriesSection />
+        {
+          initialData && initialData.id && (
+           <ProductCategoriesSection productId={initialData?.id} />
+          )
+        }
+        
 
         <div className="flex flex-col gap-2 md:col-span-1">
           <Label htmlFor="referenceNumber" className="text-sm text-[#edeef0]">

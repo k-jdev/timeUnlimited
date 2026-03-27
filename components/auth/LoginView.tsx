@@ -9,8 +9,8 @@ export function LoginView() {
   const router = useRouter()
   const { isAuthenticated, isLoaded, login } = useAuth()
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("ssstss@mail.com")
+  const [password, setPassword] = useState("1234")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
@@ -19,22 +19,23 @@ export function LoginView() {
     return null
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    setError("")
+  async function handleSubmit(e: FormEvent) {
+  e.preventDefault();
+  setError("");
 
-    if (!email || !password) {
-      setError("Please fill in all fields")
-      return
-    }
-
-    const success = login(email, password)
-    if (success) {
-      router.push("/admin/inventory")
-    } else {
-      setError("Invalid email or password")
-    }
+  if (!email || !password) {
+    setError("Please fill in all fields");
+    return;
   }
+
+  const success = await login(email, password);
+
+  if (success) {
+    router.push("/admin/inventory");
+  } else {
+    setError("Invalid email or password");
+  }
+}
 
   if (!isLoaded) {
     return <div className="h-120 w-120" />

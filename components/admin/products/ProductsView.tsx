@@ -22,9 +22,9 @@ export function ProductsView() {
 
   const filteredProducts = useMemo(
     () => getFilteredProducts(activeTab, searchQuery),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeTab, searchQuery, counts]
   )
+
 
   const totalPages = Math.max(
     1,
