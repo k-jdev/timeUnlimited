@@ -1,6 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { authFetch } from "@/lib/authFetch"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 interface Category {
   id: string
@@ -8,7 +11,7 @@ interface Category {
 }
 
 interface Props {
-  productId?: string 
+  productId?: string
 }
 
 export function ProductCategoriesSection({ productId }: Props) {
@@ -17,7 +20,7 @@ export function ProductCategoriesSection({ productId }: Props) {
 
   // загрузка всех категорий
   const fetchCategories = async () => {
-    const res = await fetch("/api/categories")
+    const res = await authFetch("/api/categories")
     const data = await res.json()
     setAllCategories(data)
   }
@@ -25,7 +28,7 @@ export function ProductCategoriesSection({ productId }: Props) {
   // загрузка категорий продукта
   const fetchProductCategories = async () => {
     if (!productId) return
-    const res = await fetch(`/api/products/${productId}/categories`)
+    const res = await authFetch(`/api/products/${productId}/categories`)
     const data: Category[] = await res.json()
     setSelected(data.map((c) => c.id))
   }
@@ -37,9 +40,7 @@ export function ProductCategoriesSection({ productId }: Props) {
 
   const toggleCategory = (id: string) => {
     setSelected((prev) =>
-      prev.includes(id)
-        ? prev.filter((c) => c !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
     )
   }
 
@@ -47,7 +48,7 @@ export function ProductCategoriesSection({ productId }: Props) {
   const save = async () => {
     if (!productId) return
 
-    await fetch(`/api/products/${productId}/categories`, {
+    await authFetch(`/api/products/${productId}/categories`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ categoryIds: selected }),
@@ -55,22 +56,25 @@ export function ProductCategoriesSection({ productId }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-3 md:col-span-3 border border-[#2e3135] p-4">
-      <h2 className="text-[#edeef0] text-sm">Categories</h2>
+    <div className="flex flex-col gap-3 border border-[#2e3135] p-4 md:col-span-3">
+      <h2 className="text-sm text-[#edeef0]">Categories</h2>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {allCategories.map((cat) => (
-          <label
-            key={cat.id}
-            className="flex items-center gap-2 text-[#edeef0] text-sm"
-          >
-            <input
-              type="checkbox"
+          <div key={cat.id} className="flex items-center gap-3">
+            <Checkbox
+              id={cat.id}
               checked={selected.includes(cat.id)}
-              onChange={() => toggleCategory(cat.id)}
+              onCheckedChange={() => toggleCategory(cat.id)}
+              className="rounded-none border-[#3a3d42] data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-[#020208]"
             />
-            {cat.name}
-          </label>
+            <Label
+              htmlFor={cat.id}
+              className="cursor-pointer text-sm text-[#cdced6] hover:text-[#edeef0]"
+            >
+              {cat.name}
+            </Label>
+          </div>
         ))}
       </div>
 
@@ -78,7 +82,7 @@ export function ProductCategoriesSection({ productId }: Props) {
         <button
           type="button"
           onClick={save}
-          className="mt-2 text-xs bg-[#5eb1ef] text-black px-3 py-1"
+          className="mt-1 w-full border border-[#2e3135] bg-transparent py-2 text-xs text-[#cdced6] transition-colors duration-200 hover:border-[#5eb1ef] hover:text-[#edeef0]"
         >
           Save categories
         </button>

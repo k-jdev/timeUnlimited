@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import type { AdminRequest, RequestFilters, RequestStatus } from "@/types"
+import { authFetch } from "@/lib/authFetch"
 
 export type RequestTab = "all" | "specific" | "assisted"
 
@@ -12,7 +13,7 @@ export function useRequests() {
   // Fetch all requests from API
   const fetchRequests = async () => {
     try {
-      const res = await fetch("/api/requests")
+      const res = await authFetch("/api/requests")
       const data: AdminRequest[] = await res.json()
       setRequests(data)
       setIsLoaded(true)
@@ -38,7 +39,7 @@ export function useRequests() {
   // Delete request via API
   const deleteRequest = async (id: string) => {
     try {
-      const res = await fetch(`/api/requests/${id}`, { method: "DELETE" })
+      const res = await authFetch(`/api/requests/${id}`, { method: "DELETE" })
       if (!res.ok) throw new Error("Delete failed")
       setRequests((prev) => prev.filter((r) => r.id !== id))
     } catch (err) {
@@ -49,7 +50,7 @@ export function useRequests() {
   // Update status via API
   const updateStatus = async (id: string, status: RequestStatus) => {
     try {
-      const res = await fetch(`/api/requests/${id}`, {
+      const res = await authFetch(`/api/requests/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -67,7 +68,8 @@ export function useRequests() {
     tab: RequestTab = "all",
     filters?: RequestFilters
   ): AdminRequest[] => {
-    let result = tab === "all" ? requests : requests.filter((r) => r.type === tab)
+    let result =
+      tab === "all" ? requests : requests.filter((r) => r.type === tab)
 
     if (!filters) return result
 
@@ -79,7 +81,9 @@ export function useRequests() {
     }
     if (filters.brandPreferences) {
       result = result.filter((r) =>
-        r.brandPreferences?.toLowerCase().includes(filters.brandPreferences.toLowerCase())
+        r.brandPreferences
+          ?.toLowerCase()
+          .includes(filters.brandPreferences.toLowerCase())
       )
     }
     if (filters.material) {

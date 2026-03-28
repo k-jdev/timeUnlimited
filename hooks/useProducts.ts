@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export type ProductTab = "all" | "active" | "inactive"
+export type ProductTab = "all" | "active" | "archived"
 
 export interface Product {
   id: string
@@ -52,12 +52,19 @@ export function useProducts() {
   const counts = {
     all: products.length,
     active: products.filter((p) => p.status === "active").length,
-    inactive: products.filter((p) => p.status === "inactive").length,
+    archived: products.filter((p) => p.status === "archived").length,
   }
 
   useEffect(() => {
     fetchProducts()
   }, [])
 
-  return { isLoaded, products, counts, fetchProducts, deleteProducts, getFilteredProducts }
+  return {
+    isLoaded,
+    products,
+    counts,
+    fetchProducts,
+    deleteProducts,
+    getFilteredProducts,
+  }
 }

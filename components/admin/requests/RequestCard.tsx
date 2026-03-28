@@ -25,7 +25,7 @@ function Field({ label, value }: { label: string; value?: string }) {
         {label}
       </span>
       <span className="overflow-hidden text-[12px] leading-4 font-medium tracking-[0.04px] text-ellipsis whitespace-nowrap text-[#edeef0]">
-        {value || "вЂ”"}
+        {value || "—"}
       </span>
     </div>
   )
@@ -146,7 +146,7 @@ export function RequestCard({
               Purpose
             </span>
             <div className="min-h-[120px] border border-[#2e3135] p-3 text-[12px] leading-5 text-[#edeef0]">
-              {request.purpose || "вЂ”"}
+              {request.purpose || "—"}
             </div>
           </div>
         </div>

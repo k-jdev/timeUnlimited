@@ -14,6 +14,7 @@ interface ImageUploadSectionProps {
   onMainImageChange: (file: File | null) => void
   onAdditionalImagesChange: (files: File[]) => void
   existingImage?: string
+  existingAdditionalImages?: string[]
   initialHoverColor?: string
 }
 
@@ -104,6 +105,7 @@ export function ImageUploadSection({
   onMainImageChange,
   onAdditionalImagesChange,
   existingImage,
+  existingAdditionalImages = [],
   initialHoverColor,
 }: ImageUploadSectionProps) {
   const colorPickerRef = useRef<HTMLInputElement>(null)
@@ -150,18 +152,22 @@ export function ImageUploadSection({
     e.target.value = ""
   }
 
-  const filledSlots = additionalImages.map((f, i) => ({
-    key: i,
-    file: f as File | null,
-  }))
-  const emptyCount = filledSlots.length % 2 === 0 ? 2 : 1
-  const slots = [
-    ...filledSlots,
-    ...Array.from({ length: emptyCount }, (_, i) => ({
-      key: additionalImages.length + i,
-      file: null as File | null,
+  const filledSlots: { key: string; preview: string; isExisting: boolean }[] = [
+    ...existingAdditionalImages.map((url, i) => ({
+      key: `existing-${i}`,
+      preview: url,
+      isExisting: true,
+    })),
+    ...additionalImages.map((f, i) => ({
+      key: `new-${i}`,
+      preview: URL.createObjectURL(f),
+      isExisting: false,
     })),
   ]
+  // always keep at least 2 empty slots at the end; fill to even rows
+  const totalFilled = filledSlots.length
+  const remainder = totalFilled % 2
+  const emptyCount = remainder === 0 ? 2 : 1
 
   return (
     <div className="flex flex-col">
@@ -170,7 +176,7 @@ export function ImageUploadSection({
           onFile={onMainImageChange}
           preview={mainPreview}
           onRemove={mainImage ? () => onMainImageChange(null) : undefined}
-          className="h-75 lg:h-112.5"
+          className="aspect-square w-full"
         />
         {
           <button
@@ -204,18 +210,21 @@ export function ImageUploadSection({
       </div>
 
       <div className="mt-0.5 grid grid-cols-2 gap-0.5">
-        {slots.map(({ key, file }) => {
-          const preview = file ? URL.createObjectURL(file) : undefined
-          return (
-            <UploadZone
-              key={key}
-              onFile={addAdditional}
-              preview={preview}
-              onRemove={file ? () => removeAdditional(key) : undefined}
-              className="h-37.5 lg:h-45"
-            />
-          )
-        })}
+        {filledSlots.map(({ key, preview }) => (
+          <UploadZone
+            key={key}
+            onFile={addAdditional}
+            preview={preview}
+            className="aspect-square w-full"
+          />
+        ))}
+        {Array.from({ length: emptyCount }, (_, i) => (
+          <UploadZone
+            key={`empty-${i}`}
+            onFile={addAdditional}
+            className="aspect-square w-full"
+          />
+        ))}
       </div>
 
       <button

@@ -1,37 +1,21 @@
-'use client'
+"use client"
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { RiAddLine } from "@remixicon/react"
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb"
+import { authFetch } from "@/lib/authFetch"
 import { ProductsToolbar } from "./ProductsToolbar"
 import { ProductsTable } from "./ProductsTable"
 import { ProductsPagination } from "./ProductsPagination"
 import { ProductsSelectionBar } from "./ProductsSelectionBar"
+import type { AdminProduct } from "@/types"
+import type { ProductTab } from "@/hooks/useProducts"
 
-export type ProductTab = "all" | "active" | "archived"
-
-export interface ProductImage {
-  id: string
-  product_id: string
-  image_url: string
-  file_path: string
-  is_main: boolean
-  sort_order: number
-  created_at: string
-}
-
-export interface Product {
-  id: string
-  brand: string
-  model: string
-  status: string
-  created_at: string
-  images: ProductImage[]
-}
+export type { ProductTab }
 
 export function ProductsView() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<AdminProduct[]>([])
   const [total, setTotal] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState<ProductTab>("all")
@@ -42,7 +26,7 @@ export function ProductsView() {
   const [counts, setCounts] = useState<{ [key in ProductTab]: number }>({
     all: 0,
     active: 0,
-    archived: 0
+    archived: 0,
   })
 
   // --- Fetch products from API ---
@@ -50,18 +34,25 @@ export function ProductsView() {
     const fetchProducts = async () => {
       setIsLoaded(false)
       try {
-        const res = await fetch(
+        const res = await authFetch(
           `/api/products?search=${searchQuery}&status=${activeTab}&page=${currentPage}&limit=${itemsPerPage}`
         )
-        const data: { products: Product[]; total: number } = await res.json()
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`)
+        }
+        const data: { products: AdminProduct[]; total: number } =
+          await res.json()
 
-        setProducts(data.products)
-        setTotal(data.total)
+        const products = data.products ?? []
+        const total = data.total ?? 0
+
+        setProducts(products)
+        setTotal(total)
 
         setCounts({
-          all: data.total,
-          active: data.products.filter(p => p.status === "active").length,
-          archived: data.products.filter(p => p.status === "archived").length
+          all: total,
+          active: products.filter((p) => p.status === "active").length,
+          archived: products.filter((p) => p.status === "archived").length,
         })
       } catch (err) {
         console.error("Error fetching products:", err)
@@ -94,7 +85,7 @@ export function ProductsView() {
   }
 
   function handleToggleSelect(id: string) {
-    setSelectedIds(prev => {
+    setSelectedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
@@ -106,13 +97,13 @@ export function ProductsView() {
     if (selectedIds.size === products.length) {
       setSelectedIds(new Set())
     } else {
-      setSelectedIds(new Set(products.map(p => p.id)))
+      setSelectedIds(new Set(products.map((p) => p.id)))
     }
   }
 
   function handleDeleteSelected() {
     // Можно добавить вызов DELETE API для каждого id
-    const remaining = products.filter(p => !selectedIds.has(p.id))
+    const remaining = products.filter((p) => !selectedIds.has(p.id))
     setProducts(remaining)
     setSelectedIds(new Set())
     setCurrentPage(1)
@@ -166,7 +157,7 @@ export function ProductsView() {
           {total === 0 && (
             <Link
               href="/admin/inventory/add"
-              className="text-sm text-[#5eb1ef] underline-offset-4 hover:underline"
+              className="text-sm underline-offset-4 hover:underline"
             >
               Add your first product
             </Link>
