@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
-import { requireAuth } from "@/lib/authHelpers";
+import { requireAuth } from "@/lib/authHelpers"
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-
-  const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
   const { id } = await params
   const body = await req.json()
@@ -56,15 +58,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-
-  const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
   const { id } = await params
 
   try {
-    const result = await pool.query("SELECT * FROM products WHERE id = $1", [id])
+    const result = await pool.query("SELECT * FROM products WHERE id = $1", [
+      id,
+    ])
     if (result.rows.length === 0) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
@@ -74,4 +80,3 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Database error" }, { status: 500 })
   }
 }
-

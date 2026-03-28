@@ -1,18 +1,21 @@
 import { pool } from "@/lib/db"
 import { NextResponse, NextRequest } from "next/server"
-import { requireAuth } from "@/lib/authHelpers";
+import { requireAuth } from "@/lib/authHelpers"
 
-
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string; categoryId: string }> }) {
-
-   const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string; categoryId: string }> }
+) {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
   const { id, categoryId } = await params
 
-
   if (!id || !categoryId) {
-    return NextResponse.json({ error: "Product ID and Category ID are required" }, { status: 400 })
+    return NextResponse.json(
+      { error: "Product ID and Category ID are required" },
+      { status: 400 }
+    )
   }
 
   try {
@@ -28,6 +31,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ success: true, deleted: result.rows[0] })
   } catch (err) {
     console.error(err)
-    return NextResponse.json({ error: "Failed to unlink category" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to unlink category" },
+      { status: 500 }
+    )
   }
 }

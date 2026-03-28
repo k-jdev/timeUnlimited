@@ -1,16 +1,21 @@
 import { pool } from "@/lib/db"
 import { NextResponse, NextRequest } from "next/server"
-import { requireAuth } from "@/lib/authHelpers";
+import { requireAuth } from "@/lib/authHelpers"
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-
-   const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
   const { id } = await params
 
   if (!id) {
-    return NextResponse.json({ error: "Product ID is required" }, { status: 400 })
+    return NextResponse.json(
+      { error: "Product ID is required" },
+      { status: 400 }
+    )
   }
 
   try {
@@ -27,12 +32,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json(result.rows)
   } catch (err) {
     console.error(err)
-    return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to fetch categories" },
+      { status: 500 }
+    )
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const { id } = await params
   const { categoryIds } = await req.json()
 
@@ -44,11 +54,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   try {
-
-    await pool.query(
-      `DELETE FROM product_categories WHERE product_id = $1`,
-      [id]
-    )
+    await pool.query(`DELETE FROM product_categories WHERE product_id = $1`, [
+      id,
+    ])
 
     for (const categoryId of categoryIds) {
       await pool.query(
