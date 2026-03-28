@@ -2,12 +2,11 @@ import { pool } from "@/lib/db"
 import { NextResponse, NextRequest } from "next/server"
 import { requireAuth } from "@/lib/authHelpers";
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
    const authResult = requireAuth(req);
   if (authResult instanceof Response) return authResult;
 
-  const { params } = context
   const { id } = await params
 
   if (!id) {
@@ -32,9 +31,8 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
   }
 }
 
-export async function POST(req: Request, context: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
-  const { params } = context
   const { id } = await params
   const { categoryIds } = await req.json()
 

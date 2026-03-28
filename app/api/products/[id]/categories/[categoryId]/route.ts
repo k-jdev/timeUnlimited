@@ -3,23 +3,22 @@ import { NextResponse, NextRequest } from "next/server"
 import { requireAuth } from "@/lib/authHelpers";
 
 
-export async function DELETE(req: NextRequest, context: { params: { productId: string, categoryId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string; categoryId: string }> }) {
 
    const authResult = requireAuth(req);
   if (authResult instanceof Response) return authResult;
 
-  const { params } = context
-  const { productId, categoryId} = await params  
+  const { id, categoryId } = await params
 
 
-  if (!productId || !categoryId) {
+  if (!id || !categoryId) {
     return NextResponse.json({ error: "Product ID and Category ID are required" }, { status: 400 })
   }
 
   try {
     const result = await pool.query(
       `DELETE FROM product_categories WHERE product_id = $1 AND category_id = $2 RETURNING *`,
-      [productId, categoryId]
+      [id, categoryId]
     )
 
     if (result.rowCount === 0) {

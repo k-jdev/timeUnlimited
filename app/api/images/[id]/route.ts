@@ -1,15 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/supabaseServer'
 
-interface Params {
-    params: { id: string }
-}
-
 export async function DELETE(
-    req: Request,
-    context: Params
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ): Promise<Response> {
-    const { params } = context
     const { id } = await params
     const imageId = id
     if (!imageId) {

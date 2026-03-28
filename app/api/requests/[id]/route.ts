@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const res = await pool.query('DELETE FROM WatchRequests WHERE request_id=$1 RETURNING *', [params.id]);
+        const { id } = await params
+        const res = await pool.query('DELETE FROM WatchRequests WHERE request_id=$1 RETURNING *', [id]);
         if (!res.rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404 });
         return NextResponse.json({ success: true });
     } catch (error) {
@@ -14,9 +15,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
 export async function PUT(
     req: NextRequest,
-    context: { params: any }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const { params } = context
     const { id } = await params
 
     if (!id) {

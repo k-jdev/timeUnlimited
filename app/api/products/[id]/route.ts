@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
 import { requireAuth } from "@/lib/authHelpers";
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
   const authResult = requireAuth(req);
   if (authResult instanceof Response) return authResult;
 
-  const id = params.id
+  const { id } = await params
   const body = await req.json()
   const {
     brand,
@@ -56,12 +56,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function GET(req: NextRequest, context: { params: any }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
   const authResult = requireAuth(req);
   if (authResult instanceof Response) return authResult;
 
-  const { params } = context
   const { id } = await params
 
   try {
