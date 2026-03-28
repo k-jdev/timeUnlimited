@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
-import { requireAuth } from "@/lib/authHelpers";
-
+import { requireAuth } from "@/lib/authHelpers"
 
 export async function GET(req: NextRequest) {
-
-  const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
   try {
     const url = new URL(req.url)
@@ -29,10 +27,24 @@ export async function GET(req: NextRequest) {
       whereClause += ` AND (brand ILIKE $${values.length} OR model ILIKE $${values.length})`
     }
 
-    // --- Count total ---
+    // --- Count total (filtered) ---
     const countQuery = `SELECT COUNT(*) AS total FROM products WHERE ${whereClause}`
     const countRes = await pool.query(countQuery, values)
     const total = Number(countRes.rows[0].total)
+
+    // --- Count by status (global, ignoring current filter) ---
+    const countsRes = await pool.query(
+      `SELECT
+         COUNT(*) AS all,
+         COUNT(*) FILTER (WHERE status = 'active') AS active,
+         COUNT(*) FILTER (WHERE status = 'archived') AS archived
+       FROM products`
+    )
+    const counts = {
+      all: Number(countsRes.rows[0].all),
+      active: Number(countsRes.rows[0].active),
+      archived: Number(countsRes.rows[0].archived),
+    }
 
     // --- Fetch products page ---
     const productQuery = `
@@ -46,10 +58,10 @@ export async function GET(req: NextRequest) {
     const products = productsRes.rows
 
     if (products.length === 0) {
-      return NextResponse.json({ products: [], total })
+      return NextResponse.json({ products: [], total, counts })
     }
 
-    const productIds = products.map(p => p.id)
+    const productIds = products.map((p) => p.id)
     const imagesRes = await pool.query(
       `SELECT * FROM product_images 
        WHERE product_id = ANY($1::uuid[])
@@ -58,17 +70,17 @@ export async function GET(req: NextRequest) {
     )
 
     const imagesMap: Record<string, any[]> = {}
-    imagesRes.rows.forEach(img => {
+    imagesRes.rows.forEach((img) => {
       if (!imagesMap[img.product_id]) imagesMap[img.product_id] = []
       imagesMap[img.product_id].push(img)
     })
 
-    const productsWithImages = products.map(p => ({
+    const productsWithImages = products.map((p) => ({
       ...p,
-      images: imagesMap[p.id] || []
+      images: imagesMap[p.id] || [],
     }))
 
-    return NextResponse.json({ products: productsWithImages, total })
+    return NextResponse.json({ products: productsWithImages, total, counts })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error"
     return NextResponse.json({ error: message }, { status: 500 })

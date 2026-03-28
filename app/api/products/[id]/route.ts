@@ -80,3 +80,31 @@ export async function GET(
     return NextResponse.json({ error: "Database error" }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
+
+  const { id } = await params
+
+  try {
+    await pool.query("DELETE FROM product_images WHERE product_id = $1", [id])
+    await pool.query("DELETE FROM product_categories WHERE product_id = $1", [
+      id,
+    ])
+    const result = await pool.query(
+      "DELETE FROM products WHERE id = $1 RETURNING *",
+      [id]
+    )
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+    }
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error(err)
+    return NextResponse.json({ error: "Database error" }, { status: 500 })
+  }
+}

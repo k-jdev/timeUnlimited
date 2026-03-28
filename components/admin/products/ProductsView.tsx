@@ -32,7 +32,6 @@ export function ProductsView() {
   // --- Fetch products from API ---
   useEffect(() => {
     const fetchProducts = async () => {
-      setIsLoaded(false)
       try {
         const res = await authFetch(
           `/api/products?search=${searchQuery}&status=${activeTab}&page=${currentPage}&limit=${itemsPerPage}`
@@ -40,20 +39,18 @@ export function ProductsView() {
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`)
         }
-        const data: { products: AdminProduct[]; total: number } =
-          await res.json()
+        const data = await res.json()
 
-        const products = data.products ?? []
-        const total = data.total ?? 0
+        setProducts(data.products ?? [])
+        setTotal(data.total ?? 0)
 
-        setProducts(products)
-        setTotal(total)
-
-        setCounts({
-          all: total,
-          active: products.filter((p) => p.status === "active").length,
-          archived: products.filter((p) => p.status === "archived").length,
-        })
+        if (data.counts) {
+          setCounts({
+            all: data.counts.all ?? 0,
+            active: data.counts.active ?? 0,
+            archived: data.counts.archived ?? 0,
+          })
+        }
       } catch (err) {
         console.error("Error fetching products:", err)
         setProducts([])
@@ -101,12 +98,19 @@ export function ProductsView() {
     }
   }
 
-  function handleDeleteSelected() {
-    // Можно добавить вызов DELETE API для каждого id
-    const remaining = products.filter((p) => !selectedIds.has(p.id))
-    setProducts(remaining)
-    setSelectedIds(new Set())
-    setCurrentPage(1)
+  async function handleDeleteSelected() {
+    const ids = Array.from(selectedIds)
+    try {
+      await Promise.all(
+        ids.map((id) => authFetch(`/api/products/${id}`, { method: "DELETE" }))
+      )
+      setProducts((prev) => prev.filter((p) => !selectedIds.has(p.id)))
+      setTotal((prev) => prev - ids.length)
+      setSelectedIds(new Set())
+      setCurrentPage(1)
+    } catch (err) {
+      console.error("Failed to delete products:", err)
+    }
   }
 
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage))

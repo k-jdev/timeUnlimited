@@ -9,6 +9,7 @@ import { WatchDetails } from "@/components/watches/WatchDetails"
 import { WatchRelated } from "@/components/watches/WatchRelated"
 import { CtaSection } from "@/components/home/CtaSection"
 import { Footer } from "@/components/layout/Footer"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function WatchDetailPage({
   params,
@@ -52,8 +53,68 @@ export default function WatchDetailPage({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#020208]">
-        <div className="h-24 w-24" />
+      <div className="min-h-screen overflow-x-hidden bg-[#020208]">
+        <div className="relative mx-auto max-w-[1440px]">
+          {/* TopBar skeleton */}
+          <div className="relative z-10 flex flex-col lg:absolute lg:inset-x-0 lg:top-0 lg:z-20 lg:flex-row lg:items-center lg:pt-[33px]">
+            <div className="shrink-0 px-4 pt-6 lg:w-[732px] lg:px-0 lg:pt-0 lg:pl-6">
+              <Skeleton className="h-[34px] w-[140px] rounded-none bg-[#1a1b1f]" />
+            </div>
+            <div className="flex flex-1 items-center justify-between px-4 py-2 lg:px-16">
+              <Skeleton className="h-4 w-32 rounded-none bg-[#1a1b1f]" />
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-8 rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="h-8 w-8 rounded-none bg-[#1a1b1f]" />
+              </div>
+            </div>
+          </div>
+
+          {/* Main content skeleton */}
+          <div className="flex flex-col lg:h-screen lg:flex-row">
+            {/* Gallery skeleton */}
+            <div className="lg:h-full lg:w-[732px] lg:shrink-0">
+              <Skeleton className="h-[480px] w-full rounded-none bg-[#1a1b1f] lg:h-full" />
+            </div>
+
+            {/* Details skeleton */}
+            <div className="flex flex-1 flex-col gap-8 px-4 pt-8 pb-4 lg:mt-[78px] lg:px-16 lg:pt-16">
+              {/* Brand + name */}
+              <div className="flex flex-col gap-3">
+                <Skeleton className="h-4 w-24 rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="h-9 w-3/4 rounded-none bg-[#1a1b1f]" />
+              </div>
+
+              {/* Price */}
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-12 w-40 rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="h-4 w-64 rounded-none bg-[#1a1b1f]" />
+              </div>
+
+              {/* Specs */}
+              <div className="flex flex-col gap-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between border-b border-[#1a1b1f] pb-3"
+                  >
+                    <Skeleton className="h-4 w-28 rounded-none bg-[#1a1b1f]" />
+                    <Skeleton className="h-4 w-32 rounded-none bg-[#1a1b1f]" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Description */}
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4 w-full rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="h-4 w-full rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="h-4 w-5/6 rounded-none bg-[#1a1b1f]" />
+              </div>
+
+              {/* CTA button */}
+              <Skeleton className="h-12 w-full rounded-none bg-[#1a1b1f]" />
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

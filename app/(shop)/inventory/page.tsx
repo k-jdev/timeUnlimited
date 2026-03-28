@@ -17,6 +17,7 @@ import {
   DEFAULT_FILTERS,
 } from "@/components/inventory/InventoryFilterSidebar"
 import { InventoryWatchCard } from "@/components/inventory/InventoryWatchCard"
+import { Skeleton } from "@/components/ui/skeleton"
 import { CtaSection } from "@/components/home/CtaSection"
 import { Footer } from "@/components/layout/Footer"
 import { BrandLogo } from "@/components/layout/BrandLogo"
@@ -344,9 +345,31 @@ export default function InventoryPage() {
               gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             }}
           >
-            {filteredWatches.map((watch) => (
-              <InventoryWatchCard key={watch.id} watch={watch} />
-            ))}
+            {isLoading
+              ? Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="relative h-[493px] overflow-hidden bg-[#111113]"
+                  >
+                    <div className="absolute top-0 left-1/2 size-[350px] -translate-x-1/2">
+                      <Skeleton className="size-full rounded-none bg-[#1a1b1f]" />
+                    </div>
+                    <div className="absolute top-[325px] left-1/2 flex w-[243px] -translate-x-1/2 flex-col items-center gap-4">
+                      <div className="flex w-full flex-col items-center gap-2">
+                        <Skeleton className="h-3.5 w-24 rounded-none bg-[#1a1b1f]" />
+                        <Skeleton className="h-5 w-40 rounded-none bg-[#1a1b1f]" />
+                        <div className="mt-1 flex gap-2">
+                          <Skeleton className="h-5 w-16 rounded-none bg-[#1a1b1f]" />
+                          <Skeleton className="h-5 w-12 rounded-none bg-[#1a1b1f]" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-7 w-28 rounded-none bg-[#1a1b1f]" />
+                    </div>
+                  </div>
+                ))
+              : filteredWatches.map((watch) => (
+                  <InventoryWatchCard key={watch.id} watch={watch} />
+                ))}
           </div>
         </div>
         <div className="pb-16 lg:pb-32" />
