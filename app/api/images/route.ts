@@ -42,7 +42,12 @@ export async function POST(req: NextRequest) {
 
     console.log("Upload result:", { filePath, uploadError })
 
-    if (uploadError) throw uploadError
+    if (uploadError) {
+      return NextResponse.json(
+        { error: uploadError.message || "Storage upload failed" },
+        { status: 500 }
+      )
+    }
 
     // получить publicUrl
     const { data } = supabaseServer.storage
@@ -51,28 +56,33 @@ export async function POST(req: NextRequest) {
 
     const imageUrl = data.publicUrl
 
-    const { data: existing } = await supabaseServer
-      .from("product_images")
-      .select("id")
-      .eq("product_id", productId)
-      .limit(1)
-
-    const isMain = !existing || existing.length === 0
-
     const { error: dbError } = await supabaseServer
       .from("product_images")
       .insert({
         product_id: productId,
         image_url: imageUrl,
         file_path: filePath,
-        is_main: isMain,
       })
 
-    if (dbError) throw dbError
+    if (dbError) {
+      return NextResponse.json(
+        {
+          error: dbError.message,
+          details: dbError.details,
+          code: dbError.code,
+        },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({ imageUrl })
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Unknown error"
+    const message =
+      err instanceof Error
+        ? err.message
+        : typeof err === "object" && err !== null && "message" in err
+          ? String((err as Record<string, unknown>).message)
+          : "Unknown error"
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

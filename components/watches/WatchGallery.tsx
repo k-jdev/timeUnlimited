@@ -141,26 +141,25 @@ export function WatchGallery({ images, watchName }: WatchGalleryProps) {
         </button>
 
         <div className="grid grid-cols-2 gap-0.5">
-          {images.map((img, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setSelectedImage(i)
-                openLightbox(i)
-              }}
-              className={`relative h-[320px] overflow-hidden bg-[#111113] transition-opacity ${
-                selectedImage === i
-                  ? "opacity-100"
-                  : "opacity-60 hover:opacity-80"
-              }`}
-            >
-              <img
-                src={img}
-                alt={`${watchName} - ${i + 1}`}
-                className="absolute inset-0 size-full object-cover"
-              />
-            </button>
-          ))}
+          {images
+            .map((img, i) => ({ img, i }))
+            .filter(({ i }) => i !== selectedImage)
+            .map(({ img, i }) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setSelectedImage(i)
+                  openLightbox(i)
+                }}
+                className="relative h-[320px] overflow-hidden bg-[#111113] opacity-60 transition-opacity hover:opacity-80"
+              >
+                <img
+                  src={img}
+                  alt={`${watchName} - ${i + 1}`}
+                  className="absolute inset-0 size-full object-cover"
+                />
+              </button>
+            ))}
         </div>
       </div>
 

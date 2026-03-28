@@ -68,7 +68,7 @@ export function ProductForm({
         .then((res) => res.json())
         .then((imgs: { image_url: string; is_main: boolean }[]) => {
           if (!Array.isArray(imgs)) return
-          const main = imgs.find((i) => i.is_main) ?? imgs[0]
+          const main = imgs[imgs.length - 1] ?? imgs[0]
           const rest = imgs.filter((i) => i !== main)
           setExistingMainImage(main?.image_url)
           setExistingAdditionalImages(rest.map((i) => i.image_url))
