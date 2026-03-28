@@ -34,7 +34,6 @@ interface FormData {
   additionalDetails: string
   paymentMethod: string
   contactMethod: string
-  contactMethod: string
 }
 
 const EMPTY_FORM: FormData = {
@@ -231,47 +230,6 @@ function SuccessScreen({
   )
 }
 
-export const EMPTY_FORM2 = {
-
-  email: "",
-  phone: "",
-  budgetRange: "",
-  timeframe: "",
-  brandPreferences: "",
-  material: "",
-  region: "",
-  purpose: "",
-} 
-
-function formatRequestPayload(formData: any) {
-  return {
-    created_date: new Date().toISOString(),
-    status: "new",
-    type: "assisted",
-
-    // core fields
-    client_name: formData.name || "",
-    email: formData.email || "",
-    phone: formData.phone || "",
-
-    // filters / preferences
-    budget_range: formData.budgetRange || "",
-    timeframe: formData.timeframe || "",
-    brand_preferences: formData.brand || "",
-    material: formData.material || "",
-    region: formData.region || "",
-
-    // details
-    purpose: formData.additionalDetails || "",
-    
-    // optional (if you want to store later)
-    watch_reference: formData.watchReference || null,
-    condition_preference: formData.conditionPreference || null,
-    payment_method: formData.paymentMethod || null,
-    contact_method: formData.contactMethod || null,
-  }
-}
-
 interface RequestWatchModalProps {
   isOpen: boolean
   onClose: () => void
@@ -305,28 +263,32 @@ export function RequestWatchModal({ isOpen, onClose }: RequestWatchModalProps) {
   }
 
   async function handleSubmit() {
-
-     const payload = formatRequestPayload(formData)
+    const payload = {
+      created_date: new Date().toISOString(),
+      status: "new",
+      assisted_by: null,
+      brand_preferences: formData.brand || "",
+      budget_range: formData.budgetRange || "",
+      material: formData.conditionPreference || "",
+      timeframe: formData.paymentMethod || "",
+      client_name: formData.watchReference || "",
+      region: "",
+      phone: formData.contactMethod || "",
+      email: "",
+      purpose: formData.additionalDetails || "",
+    }
 
     try {
-      // Call API to create request
       const res = await fetch("/api/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...payload,
-          created_date: new Date().toISOString(),
-          status: "new",
-          type: "New", // or choose based on your logic
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (!res.ok) throw new Error("Failed to create request")
 
       const createdRequest = await res.json()
-
-      // Use request ID or request number for success screen
-      setRequestNumber(createdRequest.request_id || createdRequest.id)
+      setRequestNumber(createdRequest.id || "")
       setStep("success")
     } catch (err) {
       console.error(err)
@@ -388,4 +350,3 @@ export function RequestWatchModal({ isOpen, onClose }: RequestWatchModalProps) {
     </div>
   )
 }
-

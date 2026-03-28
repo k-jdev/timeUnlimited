@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { useState, useMemo, useEffect, useRef } from "react"
@@ -8,7 +8,9 @@ import {
   RiFilterLine,
   RiCheckLine,
 } from "@remixicon/react"
-import { INVENTORY_WATCHES, BRANDS } from "@/data/inventory"
+import { BRANDS } from "@/data/inventory"
+import type { InventoryWatch } from "@/data/inventory"
+import { mapProductToWatch } from "@/lib/mapProduct"
 import {
   InventoryFilterSidebar,
   FilterState,
@@ -51,6 +53,24 @@ export default function InventoryPage() {
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
   const [isSellModalOpen, setIsSellModalOpen] = useState(false)
 
+  const [watches, setWatches] = useState<InventoryWatch[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchWatches() {
+      try {
+        const res = await fetch("/api/inventary")
+        if (!res.ok) throw new Error("Failed to fetch")
+        const data = await res.json()
+        setWatches(data.products.map(mapProductToWatch))
+      } catch (err) {
+        console.error("Error fetching inventory:", err)
+      }
+      setIsLoading(false)
+    }
+    fetchWatches()
+  }, [])
+
   const activeBrandChips = useMemo(() => {
     if (filters.brands.length === 0) return []
     return BRANDS.filter((b) =>
@@ -59,7 +79,7 @@ export default function InventoryPage() {
   }, [filters.brands])
 
   const filteredWatches = useMemo(() => {
-    let result = [...INVENTORY_WATCHES]
+    let result = [...watches]
 
     if (search) {
       const q = search.toLowerCase()
@@ -136,7 +156,7 @@ export default function InventoryPage() {
     }
 
     return result
-  }, [search, filters, priceRange, sortOrder])
+  }, [watches, search, filters, priceRange, sortOrder])
 
   const sortLabels: Record<SortOrder, string> = {
     "new-to-old": "New to Old",

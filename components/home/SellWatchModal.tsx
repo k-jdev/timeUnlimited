@@ -409,9 +409,48 @@ export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
   }
 
   function handleSubmit() {
-    const num = String(Math.floor(10000 + Math.random() * 90000))
-    setRequestNumber(num)
-    setStep("success")
+    const purposeParts = [
+      `Sell type: ${formData.sellType}`,
+      formData.boxAndPapers ? `Box & Papers: ${formData.boxAndPapers}` : "",
+      formData.yearOfProduction ? `Year: ${formData.yearOfProduction}` : "",
+    ]
+      .filter(Boolean)
+      .join(". ")
+
+    const payload = {
+      created_date: new Date().toISOString(),
+      status: "new",
+      client_name: formData.watchReference || "",
+      email: "",
+      phone: formData.contactMethod || "",
+      brand_preferences: formData.brand || "",
+      budget_range: formData.askingPrice || "",
+      material: formData.condition || "",
+      timeframe: formData.paymentMethod || "",
+      region: "",
+      purpose: purposeParts,
+      assisted_by: null,
+    }
+
+    fetch("/api/requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to create request")
+        return res.json()
+      })
+      .then((data) => {
+        setRequestNumber(
+          data.id || String(Math.floor(10000 + Math.random() * 90000))
+        )
+        setStep("success")
+      })
+      .catch((err) => {
+        console.error(err)
+        alert("Failed to submit. Please try again.")
+      })
   }
 
   if (!isOpen) return null

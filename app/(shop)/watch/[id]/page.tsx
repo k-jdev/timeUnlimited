@@ -1,7 +1,8 @@
 "use client"
 
-import { use, useMemo } from "react"
-import { INVENTORY_WATCHES } from "@/data/inventory"
+import { use, useState, useEffect } from "react"
+import type { InventoryWatch } from "@/data/inventory"
+import { mapProductToWatch } from "@/lib/mapProduct"
 import { WatchTopBar } from "@/components/watches/WatchTopBar"
 import { WatchGallery } from "@/components/watches/WatchGallery"
 import { WatchDetails } from "@/components/watches/WatchDetails"
@@ -16,42 +17,66 @@ export default function WatchDetailPage({
 }) {
   const { id } = use(params)
 
-  const watchIndex = INVENTORY_WATCHES.findIndex((w) => w.id === id)
-  const watch = INVENTORY_WATCHES[watchIndex]
+  const [watch, setWatch] = useState<InventoryWatch | null>(null)
+  const [relatedWatches, setRelatedWatches] = useState<InventoryWatch[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const prevWatch =
-    watchIndex > 0 ? INVENTORY_WATCHES[watchIndex - 1] : undefined
-  const nextWatch =
-    watchIndex < INVENTORY_WATCHES.length - 1
-      ? INVENTORY_WATCHES[watchIndex + 1]
-      : undefined
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(`/api/inventory/${id}`)
+        if (!res.ok) {
+          setIsLoading(false)
+          return
+        }
+        const data = await res.json()
+        setWatch(mapProductToWatch(data))
 
-  const relatedWatches = useMemo(
-    () => INVENTORY_WATCHES.filter((w) => w.id !== id).slice(0, 3),
-    [id]
-  )
+        const relRes = await fetch("/api/inventary")
+        if (relRes.ok) {
+          const relData = await relRes.json()
+          setRelatedWatches(
+            relData.products
+              .map(mapProductToWatch)
+              .filter((w: InventoryWatch) => w.id !== id)
+              .slice(0, 3)
+          )
+        }
+      } catch (err) {
+        console.error("Error fetching watch:", err)
+      }
+      setIsLoading(false)
+    }
+    fetchData()
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#020208]">
+        <div className="h-24 w-24" />
+      </div>
+    )
+  }
 
   if (!watch) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-[#020208]">
         <p className="text-[18px] text-[#edeef0]">Watch not found</p>
       </div>
     )
   }
 
-  const gallery = watch.galleryImages ?? [
-    watch.image,
-    watch.image,
-    watch.image,
-    watch.image,
-  ]
+  const gallery =
+    watch.galleryImages && watch.galleryImages.length > 0
+      ? watch.galleryImages
+      : [watch.image, watch.image, watch.image, watch.image]
 
   const specs = [
     {
       label: "Reference Number",
       value: watch.referenceNumber ?? watch.ref.replace("Ref. ", ""),
     },
-    { label: "Condition", value: "Pre-Owned" },
+    { label: "Condition", value: watch.condition || "Pre-Owned" },
     { label: "Case material", value: watch.caseMaterial },
     { label: "Case Size", value: watch.size },
     { label: "Dial", value: watch.dial ?? watch.dialColor },
@@ -65,11 +90,7 @@ export default function WatchDetailPage({
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#020208]">
       <div className="relative mx-auto max-w-[1440px]">
-        <WatchTopBar
-          watchName={watch.name}
-          prevWatch={prevWatch}
-          nextWatch={nextWatch}
-        />
+        <WatchTopBar watchName={watch.name} />
 
         <div className="flex flex-col lg:h-screen lg:flex-row">
           <div className="lg:scrollbar-none lg:h-full lg:w-[732px] lg:shrink-0 lg:overflow-y-auto">

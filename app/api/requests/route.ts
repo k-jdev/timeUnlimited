@@ -1,56 +1,75 @@
-import { NextRequest, NextResponse } from 'next/server';
-import {pool} from '@/lib/db';
+import { NextRequest, NextResponse } from "next/server"
+import { pool } from "@/lib/db"
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(req.url)
 
-    const filters: string[] = [];
-    const values: any[] = [];
+    const filters: string[] = []
+    const values: any[] = []
 
-    const budget = searchParams.get('budget_range');
-    const timeframe = searchParams.get('timeframe');
-    const brand = searchParams.get('brand_preferences');
-    const material = searchParams.get('material');
-    const region = searchParams.get('region');
+    const budget = searchParams.get("budget_range")
+    const timeframe = searchParams.get("timeframe")
+    const brand = searchParams.get("brand_preferences")
+    const material = searchParams.get("material")
+    const region = searchParams.get("region")
 
-    let index = 1;
+    let index = 1
 
     if (budget) {
-      filters.push(`budget_range = $${index++}`);
-      values.push(budget);
+      filters.push(`budget_range = $${index++}`)
+      values.push(budget)
     }
     if (timeframe) {
-      filters.push(`timeframe = $${index++}`);
-      values.push(timeframe);
+      filters.push(`timeframe = $${index++}`)
+      values.push(timeframe)
     }
     if (brand) {
-      filters.push(`brand_preferences ILIKE $${index++}`);
-      values.push(`%${brand}%`);
+      filters.push(`brand_preferences ILIKE $${index++}`)
+      values.push(`%${brand}%`)
     }
     if (material) {
-      filters.push(`material = $${index++}`);
-      values.push(material);
+      filters.push(`material = $${index++}`)
+      values.push(material)
     }
     if (region) {
-      filters.push(`region ILIKE $${index++}`);
-      values.push(`%${region}%`);
+      filters.push(`region ILIKE $${index++}`)
+      values.push(`%${region}%`)
     }
 
-    const whereClause = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
-    const query = `SELECT * FROM requests ${whereClause} ORDER BY created_date DESC`;
+    const whereClause = filters.length ? `WHERE ${filters.join(" AND ")}` : ""
+    const query = `SELECT * FROM requests ${whereClause} ORDER BY created_date DESC`
 
-    const res = await pool.query(query, values);
-    return NextResponse.json(res.rows);
+    const res = await pool.query(query, values)
+
+    const mapped = res.rows.map((r: any) => ({
+      id: r.id,
+      requestNumber: r.id,
+      createdAt: r.created_date,
+      status: r.status,
+      name: r.client_name || "",
+      email: r.email || "",
+      phone: r.phone || "",
+      budgetRange: r.budget_range || "",
+      timeframe: r.timeframe || "",
+      watchReference: r.client_name || "",
+      brandPreferences: r.brand_preferences || "",
+      purpose: r.purpose || "",
+      material: r.material || "",
+      region: r.region || "",
+      type: r.brand_preferences ? "assisted" : "specific",
+    }))
+
+    return NextResponse.json(mapped)
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    console.error(error)
+    return NextResponse.json({ error: "Database error" }, { status: 500 })
   }
-};
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
+    const data = await req.json()
     const result = await pool.query(
       `INSERT INTO requests 
       (created_date, assisted_by, status, brand_preferences, budget_range, material, timeframe, client_name, region, phone, email, purpose)
@@ -59,7 +78,7 @@ export async function POST(req: NextRequest) {
       [
         data.created_date,
         data.assisted_by || null,
-        data.status || 'New',
+        data.status || "New",
         data.brand_preferences,
         data.budget_range,
         data.material,
@@ -70,11 +89,11 @@ export async function POST(req: NextRequest) {
         data.email,
         data.purpose,
       ]
-    );
+    )
 
-    return NextResponse.json(result.rows[0], { status: 201 });
+    return NextResponse.json(result.rows[0], { status: 201 })
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    console.error(error)
+    return NextResponse.json({ error: "Database error" }, { status: 500 })
   }
 }
