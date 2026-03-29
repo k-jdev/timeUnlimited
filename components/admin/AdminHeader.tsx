@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth"
 const NAV_LINKS = [
   { label: "Inventory", href: "/admin/inventory" },
   { label: "Requests", href: "/admin/requests" },
+  { label: "Sells", href: "/admin/sells" },
 ]
 
 export function AdminHeader() {

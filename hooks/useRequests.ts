@@ -6,14 +6,14 @@ import { authFetch } from "@/lib/authFetch"
 
 export type RequestTab = "all" | "specific" | "assisted"
 
-export function useRequests() {
+export function useRequests(type: "sell" | "request") {
   const [requests, setRequests] = useState<AdminRequest[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
 
   // Fetch all requests from API
   const fetchRequests = async () => {
     try {
-      const res = await authFetch("/api/requests")
+      const res = await authFetch(`/api/requests?type=${type}`)
       const data: AdminRequest[] = await res.json()
       setRequests(data)
       setIsLoaded(true)

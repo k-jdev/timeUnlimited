@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { RiAddLine, RiCloseLine } from "@remixicon/react"
+import { authFetch } from "@/lib/authFetch"
+
 
 interface Category {
   id: string
@@ -19,7 +21,7 @@ export function CategoriesManager() {
   const fetchCategories = async () => {
     setLoading(true)
     try {
-      const res = await fetch("/api/categories")
+      const res = await authFetch("/api/categories")
       const data: Category[] = await res.json()
       setCategories(data)
     } catch (err) {
@@ -38,7 +40,7 @@ export function CategoriesManager() {
     if (!newCategory.trim()) return
 
     try {
-      const res = await fetch("/api/categories", {
+      const res = await authFetch("/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newCategory }),
@@ -54,7 +56,7 @@ export function CategoriesManager() {
   // 3️⃣ Удаление категории
   const removeCategory = async (catId: string) => {
     try {
-      await fetch(`/api/categories/${catId}`, { method: "DELETE" })
+      await authFetch(`/api/categories/${catId}`, { method: "DELETE" })
       setCategories(categories.filter((c) => c.id !== catId))
     } catch (err) {
       console.error(err)

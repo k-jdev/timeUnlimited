@@ -276,6 +276,7 @@ export function RequestWatchModal({ isOpen, onClose }: RequestWatchModalProps) {
       phone: formData.contactMethod || "",
       email: "",
       purpose: formData.additionalDetails || "",
+      type: "request",
     }
 
     try {

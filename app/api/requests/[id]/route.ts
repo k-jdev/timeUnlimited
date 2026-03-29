@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
+import { requireAuth } from "@/lib/authHelpers"
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
+
   try {
     const { id } = await params
     const res = await pool.query(
-      "DELETE FROM WatchRequests WHERE request_id=$1 RETURNING *",
+      "DELETE FROM requests WHERE id=$1 RETURNING *",
       [id]
     )
     if (!res.rows.length)
@@ -24,6 +29,10 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
+
   const { id } = await params
 
   if (!id) {

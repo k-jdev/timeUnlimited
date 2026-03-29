@@ -8,10 +8,11 @@ export function requireAuth(req: NextRequest) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
-  const user = verifyToken(token);
-  if (!user) {
+  const user = verifyToken(token) as any;
+
+  if (!user|| user.role !== 'admin') {
     return new Response(JSON.stringify({ error: 'Invalid token' }), { status: 401 });
   }
 
-  return user; // return the decoded user if token is valid
+  return user; 
 }

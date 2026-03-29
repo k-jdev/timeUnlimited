@@ -430,6 +430,7 @@ export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
       region: "",
       purpose: purposeParts,
       assisted_by: null,
+      type: "sell",
     }
 
     fetch("/api/requests", {

@@ -8,7 +8,7 @@ import { RequestCard } from "./RequestCard"
 import { RequestsFilterModal } from "./RequestsFilterModal"
 import { RequestsToolbar } from "./RequestsToolbar"
 
-export function RequestsView() {
+export function RequestsView({ type }: { type: "sell" | "request" }) {
   const {
     isLoaded,
     requests,
@@ -16,7 +16,7 @@ export function RequestsView() {
     deleteRequest,
     updateStatus,
     getFilteredRequests,
-  } = useRequests()
+  } = useRequests(type)
 
   const [activeTab, setActiveTab] = useState<RequestTab>("all")
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())

@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
+import { requireAuth } from "@/lib/authHelpers"
 
 export async function GET(req: NextRequest) {
+
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
+
   try {
     const { searchParams } = new URL(req.url)
 
@@ -13,8 +18,12 @@ export async function GET(req: NextRequest) {
     const brand = searchParams.get("brand_preferences")
     const material = searchParams.get("material")
     const region = searchParams.get("region")
+    const type = searchParams.get("type")
 
     let index = 1
+
+    filters.push(`type = $${index++}`)
+    values.push(type)
 
     if (budget) {
       filters.push(`budget_range = $${index++}`)
@@ -68,12 +77,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+
   try {
     const data = await req.json()
     const result = await pool.query(
       `INSERT INTO requests 
-      (created_date, assisted_by, status, brand_preferences, budget_range, material, timeframe, client_name, region, phone, email, purpose)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+      (created_date, assisted_by, status, brand_preferences, budget_range, material, timeframe, client_name, region, phone, email, purpose, type)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
       RETURNING *`,
       [
         data.created_date,
@@ -88,6 +98,7 @@ export async function POST(req: NextRequest) {
         data.phone,
         data.email,
         data.purpose,
+        data.type,
       ]
     )
 
