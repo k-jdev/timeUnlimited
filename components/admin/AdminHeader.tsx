@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: "Inventory", href: "/admin/inventory" },
   { label: "Requests", href: "/admin/requests" },
   { label: "Sells", href: "/admin/sells" },
+  { label: "Categories", href: "/admin/categories" },
 ]
 
 export function AdminHeader() {

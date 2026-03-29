@@ -24,6 +24,7 @@ export interface ProductFormData {
   dial: string
   completeSet: string
   hoverColor: string
+  status: string
 }
 
 const EMPTY_FORM: ProductFormData = {
@@ -39,6 +40,7 @@ const EMPTY_FORM: ProductFormData = {
   dial: "",
   completeSet: "",
   hoverColor: "",
+  status: "",
 }
 
 interface ProductFormProps {
@@ -73,7 +75,7 @@ export function ProductForm({
           setExistingMainImage(main?.image_url)
           setExistingAdditionalImages(rest.map((i) => i.image_url))
         })
-        .catch(() => {})
+        .catch(() => { })
     }
   }, [mode, initialData?.id])
 
@@ -104,6 +106,7 @@ export function ProductForm({
       dial: formData.get("dial") as string,
       completeSet: formData.get("completeSet") as string,
       hoverColor: formData.get("hoverColor") as string,
+      status: formData.get("status") as string,
     }
 
     if (mode === "edit" && initialData?.id) {
@@ -144,7 +147,7 @@ export function ProductForm({
 
       <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-6">
         <div className="w-full lg:w-90 lg:shrink-0">
-          <ImageUploadSection
+          {mode === "edit" && (<ImageUploadSection
             mainImage={mainImage}
             additionalImages={additionalImages}
             onMainImageChange={setMainImage}
@@ -152,7 +155,7 @@ export function ProductForm({
             existingImage={existingMainImage}
             existingAdditionalImages={existingAdditionalImages}
             initialHoverColor={initialData?.hoverColor}
-          />
+          />)}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-y-5">
@@ -193,7 +196,7 @@ export function ProductForm({
             </div>
           </div>
 
-          <ProductFormActions onCancel={() => router.back()} />
+          <ProductFormActions onCancel={() => router.back()} mode={mode} productId={initialData?.id} status={initialData?.status} />
         </div>
       </div>
     </form>

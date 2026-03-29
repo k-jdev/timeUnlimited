@@ -108,3 +108,4 @@ export async function DELETE(
     return NextResponse.json({ error: "Database error" }, { status: 500 })
   }
 }
+
