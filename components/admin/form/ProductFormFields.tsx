@@ -16,22 +16,40 @@ import {
   DIAL_COLORS,
   SIZES,
 } from "@/data/inventory"
-import type { ProductFormData } from "@/components/admin/ProductForm"
 
 const COMPLETE_SET_OPTIONS = ["Yes", "No", "Box only", "Papers only"]
 
+export interface ProductFieldValues {
+  brand: string
+  model: string
+  condition: string
+  caseMaterial: string
+  caseSize: string
+  dial: string
+  price: string
+  completeSet: string
+}
+
+interface ProductFormFieldsProps {
+  values: ProductFieldValues
+  onChange: (field: keyof ProductFieldValues, value: string) => void
+}
+
 export function ProductFormFields({
-  defaultValues,
-}: {
-  defaultValues: ProductFormData
-}) {
+  values,
+  onChange,
+}: ProductFormFieldsProps) {
   return (
     <>
       <div className="flex flex-col gap-2">
         <Label htmlFor="brand" className="text-sm text-[#edeef0]">
           Brand
         </Label>
-        <Select name="brand" defaultValue={defaultValues.brand}>
+        <Select
+          name="brand"
+          value={values.brand}
+          onValueChange={(v) => onChange("brand", v)}
+        >
           <SelectTrigger
             id="brand"
             className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
@@ -52,7 +70,11 @@ export function ProductFormFields({
         <Label htmlFor="condition" className="text-sm text-[#edeef0]">
           Condition
         </Label>
-        <Select name="condition" defaultValue={defaultValues.condition}>
+        <Select
+          name="condition"
+          value={values.condition}
+          onValueChange={(v) => onChange("condition", v)}
+        >
           <SelectTrigger
             id="condition"
             className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
@@ -73,7 +95,11 @@ export function ProductFormFields({
         <Label htmlFor="caseMaterial" className="text-sm text-[#edeef0]">
           Case material
         </Label>
-        <Select name="caseMaterial" defaultValue={defaultValues.caseMaterial}>
+        <Select
+          name="caseMaterial"
+          value={values.caseMaterial}
+          onValueChange={(v) => onChange("caseMaterial", v)}
+        >
           <SelectTrigger
             id="caseMaterial"
             className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
@@ -98,7 +124,8 @@ export function ProductFormFields({
           id="model"
           name="model"
           placeholder="e.g. Nautilus Perpetual"
-          defaultValue={defaultValues.model}
+          value={values.model}
+          onChange={(e) => onChange("model", e.target.value)}
           className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
         />
       </div>
@@ -107,7 +134,11 @@ export function ProductFormFields({
         <Label htmlFor="caseSize" className="text-sm text-[#edeef0]">
           Case Size
         </Label>
-        <Select name="caseSize" defaultValue={defaultValues.caseSize}>
+        <Select
+          name="caseSize"
+          value={values.caseSize}
+          onValueChange={(v) => onChange("caseSize", v)}
+        >
           <SelectTrigger
             id="caseSize"
             className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
@@ -128,7 +159,11 @@ export function ProductFormFields({
         <Label htmlFor="dial" className="text-sm text-[#edeef0]">
           Dial
         </Label>
-        <Select name="dial" defaultValue={defaultValues.dial}>
+        <Select
+          name="dial"
+          value={values.dial}
+          onValueChange={(v) => onChange("dial", v)}
+        >
           <SelectTrigger
             id="dial"
             className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
@@ -158,7 +193,8 @@ export function ProductFormFields({
             step="0.01"
             min="0"
             placeholder="0.00"
-            defaultValue={defaultValues.price}
+            value={values.price}
+            onChange={(e) => onChange("price", e.target.value)}
             className="rounded-none border-[#2e3135] bg-transparent pl-7 placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
           />
         </div>
@@ -168,7 +204,11 @@ export function ProductFormFields({
         <Label htmlFor="completeSet" className="text-sm text-[#edeef0]">
           Complete Set
         </Label>
-        <Select name="completeSet" defaultValue={defaultValues.completeSet}>
+        <Select
+          name="completeSet"
+          value={values.completeSet}
+          onValueChange={(v) => onChange("completeSet", v)}
+        >
           <SelectTrigger
             id="completeSet"
             className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"

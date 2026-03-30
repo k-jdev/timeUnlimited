@@ -37,6 +37,7 @@ export default function EditProductPage() {
         dial: product.dial ?? "",
         completeSet: String(product.complete_set ?? ""),
         hoverColor: product.hover_color ?? "",
+        status: product.status ?? "",
       }
     : undefined
 

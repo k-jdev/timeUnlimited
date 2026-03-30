@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { RiAddLine, RiCloseLine } from "@remixicon/react"
 import { authFetch } from "@/lib/authFetch"
 
-
 interface Category {
   id: string
   name: string
@@ -16,7 +15,6 @@ export function CategoriesManager() {
   const [categories, setCategories] = useState<Category[]>([])
   const [newCategory, setNewCategory] = useState("")
   const [loading, setLoading] = useState(false)
-
 
   const fetchCategories = async () => {
     setLoading(true)
@@ -35,7 +33,6 @@ export function CategoriesManager() {
     fetchCategories()
   }, [])
 
-
   const addCategory = async () => {
     if (!newCategory.trim()) return
 
@@ -53,7 +50,6 @@ export function CategoriesManager() {
     }
   }
 
-  // 3️⃣ Удаление категории
   const removeCategory = async (catId: string) => {
     try {
       await authFetch(`/api/categories/${catId}`, { method: "DELETE" })
@@ -92,30 +88,21 @@ export function CategoriesManager() {
           type="text"
           value={newCategory}
           onChange={(e) => setNewCategory(e.target.value)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && (e.preventDefault(), addCategory())
+          }
           placeholder="New category"
-          className="flex-1 border-[#2e3135] bg-transparent placeholder:text-[#8b8d98] text-[#edeef0]"
+          className="flex-1 rounded-none border-[#2e3135] bg-transparent text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
         />
         <button
           type="button"
           onClick={addCategory}
-          className="flex items-center gap-1 px-3 bg-[#5eb1ef] text-sm text-[#020208] hover:bg-[#4a94d0]"
+          className="flex items-center gap-1 bg-[#edeef0] px-3 text-sm text-[#020208] hover:bg-white"
         >
           <RiAddLine className="size-4" />
           Add
         </button>
       </div>
-    </div>
-  )
-}
-
-
-export default function CategoriesPage() {
-  return (
-    <div className="p-8">
-      <h1 className="mb-8 font-serif text-[40px] leading-tight text-[#edeef0] lg:text-[48px]">
-        Manage categories
-      </h1>
-      <CategoriesManager />
     </div>
   )
 }

@@ -3,7 +3,6 @@ import { pool } from "@/lib/db"
 import { requireAuth } from "@/lib/authHelpers"
 
 export async function GET(req: NextRequest) {
-
   const authResult = requireAuth(req)
   if (authResult instanceof Response) return authResult
 
@@ -77,7 +76,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-
   try {
     const data = await req.json()
     const result = await pool.query(

@@ -19,6 +19,12 @@ export default function WatchDetailPage({
   const { id } = use(params)
 
   const [watch, setWatch] = useState<InventoryWatch | null>(null)
+  const [prevWatch, setPrevWatch] = useState<InventoryWatch | undefined>(
+    undefined
+  )
+  const [nextWatch, setNextWatch] = useState<InventoryWatch | undefined>(
+    undefined
+  )
   const [relatedWatches, setRelatedWatches] = useState<InventoryWatch[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -36,12 +42,16 @@ export default function WatchDetailPage({
         const relRes = await fetch("/api/inventary")
         if (relRes.ok) {
           const relData = await relRes.json()
-          setRelatedWatches(
-            relData.products
-              .map(mapProductToWatch)
-              .filter((w: InventoryWatch) => w.id !== id)
-              .slice(0, 3)
+          const allWatches: InventoryWatch[] =
+            relData.products.map(mapProductToWatch)
+          const idx = allWatches.findIndex((w) => w.id === id)
+          setPrevWatch(idx > 0 ? allWatches[idx - 1] : undefined)
+          setNextWatch(
+            idx !== -1 && idx < allWatches.length - 1
+              ? allWatches[idx + 1]
+              : undefined
           )
+          setRelatedWatches(allWatches.filter((w) => w.id !== id).slice(0, 3))
         }
       } catch (err) {
         console.error("Error fetching watch:", err)
@@ -151,7 +161,11 @@ export default function WatchDetailPage({
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#020208]">
       <div className="relative mx-auto max-w-[1440px]">
-        <WatchTopBar watchName={watch.name} />
+        <WatchTopBar
+          watchName={watch.name}
+          prevWatch={prevWatch}
+          nextWatch={nextWatch}
+        />
 
         <div className="flex flex-col lg:h-screen lg:flex-row">
           <div className="lg:scrollbar-none lg:h-full lg:w-[732px] lg:shrink-0 lg:overflow-y-auto">

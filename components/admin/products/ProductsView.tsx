@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { RiAddLine } from "@remixicon/react"
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb"
 import { authFetch } from "@/lib/authFetch"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ProductsToolbar } from "./ProductsToolbar"
 import { ProductsTable } from "./ProductsTable"
 import { ProductsPagination } from "./ProductsPagination"
@@ -18,6 +19,7 @@ export function ProductsView() {
   const [products, setProducts] = useState<AdminProduct[]>([])
   const [total, setTotal] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
   const [activeTab, setActiveTab] = useState<ProductTab>("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
@@ -32,6 +34,7 @@ export function ProductsView() {
   // --- Fetch products from API ---
   useEffect(() => {
     const fetchProducts = async () => {
+      setIsFetching(true)
       try {
         const res = await authFetch(
           `/api/products?search=${searchQuery}&status=${activeTab}&page=${currentPage}&limit=${itemsPerPage}`
@@ -57,6 +60,7 @@ export function ProductsView() {
         setTotal(0)
       }
       setIsLoaded(true)
+      setIsFetching(false)
     }
 
     fetchProducts()
@@ -151,7 +155,23 @@ export function ProductsView() {
         onClear={() => setSelectedIds(new Set())}
       />
 
-      {products.length === 0 ? (
+      {isFetching ? (
+        <div className="flex flex-col">
+          {Array.from({ length: itemsPerPage > 8 ? 8 : itemsPerPage }).map(
+            (_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 border-b border-[#d6ebfd15] px-4 py-3"
+              >
+                <Skeleton className="size-5 rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="size-10 rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="h-4 w-48 rounded-none bg-[#1a1b1f]" />
+                <Skeleton className="ml-auto h-5 w-16 rounded-none bg-[#1a1b1f]" />
+              </div>
+            )
+          )}
+        </div>
+      ) : products.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
           <p className="text-[#8b8d98]">
             {total === 0

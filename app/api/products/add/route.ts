@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/db"
 import { v4 as uuidv4 } from "uuid"
-import { requireAuth } from "@/lib/authHelpers";
+import { requireAuth } from "@/lib/authHelpers"
 
 export async function GET(req: NextRequest) {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
-  const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
-
-  const res = await pool.query(`SELECT * FROM products ORDER BY created_at DESC`)
+  const res = await pool.query(
+    `SELECT * FROM products ORDER BY created_at DESC`
+  )
   return NextResponse.json(res.rows)
-
 }
 
 export async function POST(req: NextRequest) {
   const data = await req.json()
-  const authResult = requireAuth(req);
-  if (authResult instanceof Response) return authResult;
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
 
   const id = uuidv4()
   const now = new Date().toISOString()
@@ -46,6 +46,12 @@ export async function POST(req: NextRequest) {
     now,
   ]
 
-  await pool.query(query, values)
+  try {
+    await pool.query(query, values)
+  } catch (err) {
+    console.error("Failed to insert product:", err)
+    return NextResponse.json({ error: "Database error" }, { status: 500 })
+  }
+
   return NextResponse.json({ id })
 }

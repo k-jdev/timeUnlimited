@@ -20,7 +20,6 @@ import { InventoryWatchCard } from "@/components/inventory/InventoryWatchCard"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CtaSection } from "@/components/home/CtaSection"
 import { Footer } from "@/components/layout/Footer"
-import { BrandLogo } from "@/components/layout/BrandLogo"
 import { RequestWatchModal } from "@/components/home/RequestWatchModal"
 import { SellWatchModal } from "@/components/home/SellWatchModal"
 
@@ -162,8 +161,8 @@ export default function InventoryPage() {
   const sortLabels: Record<SortOrder, string> = {
     "new-to-old": "New to Old",
     "old-to-new": "Old to New",
-    "price-high": "Price: High to Low",
-    "price-low": "Price: Low to High",
+    "price-high": "High to Low",
+    "price-low": "Low to High",
   }
 
   return (
@@ -181,12 +180,7 @@ export default function InventoryPage() {
 
       <div className="lg:pr-[320px]">
         <div className="lg:mx-auto lg:max-w-[1400px]">
-          <div className="px-4 pt-8 pb-2 lg:pt-10">
-            <Link href="/">
-              <BrandLogo />
-            </Link>
-          </div>
-          <div className="flex flex-col gap-8 px-4 pt-10 pb-8 lg:pt-8">
+          <div className="flex flex-col gap-8 px-4 pt-10 pb-8 lg:pt-10">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
               <div className="flex items-start gap-3">
                 <h1 className="font-serif text-[48px] leading-none text-[#edeef0] lg:text-[64px] lg:leading-[66px]">

@@ -12,6 +12,7 @@ export function useRequests(type: "sell" | "request") {
 
   // Fetch all requests from API
   const fetchRequests = async () => {
+    setIsLoaded(false)
     try {
       const res = await authFetch(`/api/requests?type=${type}`)
       const data: AdminRequest[] = await res.json()
@@ -24,7 +25,7 @@ export function useRequests(type: "sell" | "request") {
 
   useEffect(() => {
     fetchRequests()
-  }, [])
+  }, [type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Counts per tab
   const counts = useMemo(

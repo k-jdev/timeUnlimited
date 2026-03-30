@@ -256,6 +256,10 @@ export function InventoryFilterSidebar({
         </div>
       </ScrollArea>
 
+      <div className="px-6 pb-8 lg:px-8">
+        <BrandLogo />
+      </div>
+
       {/* <div className="px-3 pb-8 lg:px-8">
         <svg
           width="104"

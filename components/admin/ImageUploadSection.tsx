@@ -6,6 +6,7 @@ import {
   RiAddLine,
   RiCloseLine,
   RiContrastDropLine,
+  RiLoader4Line,
 } from "@remixicon/react"
 
 interface ImageUploadSectionProps {
@@ -15,6 +16,8 @@ interface ImageUploadSectionProps {
   onAdditionalImagesChange: (files: File[]) => void
   existingImage?: string
   existingAdditionalImages?: string[]
+  onExistingMainImageRemove?: () => Promise<void> | void
+  onExistingAdditionalImagesChange?: (urls: string[]) => Promise<void> | void
   initialHoverColor?: string
 }
 
@@ -26,11 +29,12 @@ function UploadZone({
 }: {
   onFile: (file: File) => void
   preview?: string
-  onRemove?: () => void
+  onRemove?: () => void | Promise<void>
   className?: string
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
+  const [removing, setRemoving] = useState(false)
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -52,7 +56,10 @@ function UploadZone({
 
   if (preview) {
     return (
-      <div className={`relative overflow-hidden bg-[#111113] ${className}`}>
+      <div
+        className={`relative overflow-hidden bg-[#111113] ${className}`}
+        onClick={() => inputRef.current?.click()}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={preview}
@@ -62,12 +69,29 @@ function UploadZone({
         {onRemove && (
           <button
             type="button"
-            onClick={onRemove}
-            className="absolute top-2 right-2 flex size-6 items-center justify-center bg-black/60 text-white hover:bg-black/80"
+            onClick={async (e) => {
+              e.stopPropagation()
+              setRemoving(true)
+              await onRemove()
+              setRemoving(false)
+            }}
+            disabled={removing}
+            className="absolute top-2 right-2 flex size-6 items-center justify-center bg-black/60 text-white hover:bg-black/80 disabled:cursor-not-allowed"
           >
-            <RiCloseLine className="size-4" />
+            {removing ? (
+              <RiLoader4Line className="size-4 animate-spin" />
+            ) : (
+              <RiCloseLine className="size-4" />
+            )}
           </button>
         )}
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={handleChange}
+        />
       </div>
     )
   }
@@ -106,6 +130,8 @@ export function ImageUploadSection({
   onAdditionalImagesChange,
   existingImage,
   existingAdditionalImages = [],
+  onExistingMainImageRemove,
+  onExistingAdditionalImagesChange,
   initialHoverColor,
 }: ImageUploadSectionProps) {
   const colorPickerRef = useRef<HTMLInputElement>(null)
@@ -134,6 +160,12 @@ export function ImageUploadSection({
     ? URL.createObjectURL(mainImage)
     : existingImage || undefined
 
+  const mainOnRemove = mainImage
+    ? () => onMainImageChange(null)
+    : existingImage && onExistingMainImageRemove
+      ? onExistingMainImageRemove
+      : undefined
+
   const addAdditional = (file: File) => {
     onAdditionalImagesChange([...additionalImages, file])
   }
@@ -152,16 +184,23 @@ export function ImageUploadSection({
     e.target.value = ""
   }
 
-  const filledSlots: { key: string; preview: string; isExisting: boolean }[] = [
+  const filledSlots: {
+    key: string
+    preview: string
+    onRemove: () => Promise<void> | void
+  }[] = [
     ...existingAdditionalImages.map((url, i) => ({
       key: `existing-${i}`,
       preview: url,
-      isExisting: true,
+      onRemove: () => {
+        const next = existingAdditionalImages.filter((_, idx) => idx !== i)
+        return onExistingAdditionalImagesChange?.(next)
+      },
     })),
     ...additionalImages.map((f, i) => ({
       key: `new-${i}`,
       preview: URL.createObjectURL(f),
-      isExisting: false,
+      onRemove: () => removeAdditional(i),
     })),
   ]
   // always keep at least 2 empty slots at the end; fill to even rows
@@ -175,7 +214,7 @@ export function ImageUploadSection({
         <UploadZone
           onFile={onMainImageChange}
           preview={mainPreview}
-          onRemove={mainImage ? () => onMainImageChange(null) : undefined}
+          onRemove={mainOnRemove}
           className="aspect-square w-full"
         />
         {
@@ -210,11 +249,12 @@ export function ImageUploadSection({
       </div>
 
       <div className="mt-0.5 grid grid-cols-2 gap-0.5">
-        {filledSlots.map(({ key, preview }) => (
+        {filledSlots.map(({ key, preview, onRemove }) => (
           <UploadZone
             key={key}
             onFile={addAdditional}
             preview={preview}
+            onRemove={onRemove}
             className="aspect-square w-full"
           />
         ))}
