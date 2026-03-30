@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   RiCheckLine,
   RiCloseLine,
@@ -204,6 +205,8 @@ function SuccessScreen({
   requestNumber: string
   onClose: () => void
 }) {
+  const router = useRouter()
+
   return (
     <div className="flex flex-col items-center justify-center gap-6 py-4">
       <img src="/images/request/clock.png" alt="Clock" className="size-34" />
@@ -220,7 +223,10 @@ function SuccessScreen({
 
       <button
         type="button"
-        onClick={onClose}
+        onClick={() => {
+          onClose()
+          router.push("/inventory")
+        }}
         className="flex h-8 items-center justify-center gap-2 bg-[#edeef0] px-3 text-[14px] font-medium text-[#020208] transition-colors hover:bg-white"
       >
         <RiArrowRightUpLine className="size-4" />
