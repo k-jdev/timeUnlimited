@@ -203,6 +203,12 @@ export function ProductForm({
         })
       }
 
+      await authFetch(`/api/products/${initialData.id}/categories`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categoryIds: selectedCategoryIds }),
+      })
+
       animateTo(100)
       setTimeout(() => router.push("/admin/inventory"), 400)
       return
@@ -327,9 +333,7 @@ export function ProductForm({
 
               <ProductCategoriesSection
                 productId={initialData?.id}
-                onSelectionChange={
-                  mode === "add" ? setSelectedCategoryIds : undefined
-                }
+                onSelectionChange={setSelectedCategoryIds}
               />
 
               <div className="flex flex-col gap-2 md:col-span-3">
