@@ -63,12 +63,17 @@ export function WatchDetails({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <button className="flex h-10 items-center justify-center gap-3 bg-[#edeef0] px-4">
+          <a
+            href="https://api.whatsapp.com/send/?phone=12633843821&text&type=phone_number&app_absent=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-10 items-center justify-center gap-3 bg-[#edeef0] px-4"
+          >
             <RiArrowRightLine className="size-[18px] text-[#020208]" />
             <span className="text-[16px] leading-6 font-medium text-[#020208]">
-              Inquire Now
+              Secure this piece
             </span>
-          </button>
+          </a>
           {/* <button className="flex h-10 items-center justify-center gap-3 border border-[rgba(237,238,240,0.62)] px-4">
             <RiMailLine className="size-[18px] text-[#edeef0]" />
             <span className="text-[16px] leading-6 font-medium text-[#edeef0]">
