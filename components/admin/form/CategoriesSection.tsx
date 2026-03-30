@@ -24,6 +24,7 @@ export function ProductCategoriesSection({
   const [allCategories, setAllCategories] = useState<Category[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [newCategory, setNewCategory] = useState("")
+  const [adding, setAdding] = useState(false)
 
   const fetchCategories = async () => {
     const res = await authFetch("/api/categories")
@@ -62,6 +63,7 @@ export function ProductCategoriesSection({
       const created: Category = await res.json()
       setAllCategories((prev) => [...prev, created])
       setNewCategory("")
+      setAdding(false)
     } catch (err) {
       console.error(err)
     }
@@ -94,55 +96,75 @@ export function ProductCategoriesSection({
     <div className="flex flex-col gap-3 md:col-span-3">
       <h2 className="text-sm text-[#edeef0]">Categories</h2>
 
-      <div className="flex flex-col gap-3 border border-[#2e3135] p-4">
-        <div className="flex flex-col gap-3">
-          {allCategories.map((cat) => (
-            <div key={cat.id} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Checkbox
-                  id={cat.id}
-                  checked={selected.includes(cat.id)}
-                  onCheckedChange={() => toggleCategory(cat.id)}
-                  className="rounded-none border-[#3a3d42] data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-[#020208]"
-                />
-                <Label
-                  htmlFor={cat.id}
-                  className="cursor-pointer text-sm text-[#cdced6] hover:text-[#edeef0]"
-                >
-                  {cat.name}
-                </Label>
-              </div>
-              <button
-                type="button"
-                onClick={() => removeCategory(cat.id)}
-                className="text-[#8b8d98] hover:text-[#edeef0]"
+      <div className="flex flex-col gap-0 border border-[#2e3135]">
+        {allCategories.map((cat) => (
+          <div
+            key={cat.id}
+            className="flex items-center justify-between border-b border-[#2e3135] px-4 py-3 last:border-b-0"
+          >
+            <div className="flex items-center gap-3">
+              <Checkbox
+                id={cat.id}
+                checked={selected.includes(cat.id)}
+                onCheckedChange={() => toggleCategory(cat.id)}
+                className="rounded-none border-[#3a3d42] data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-[#020208]"
+              />
+              <Label
+                htmlFor={cat.id}
+                className="cursor-pointer text-sm text-[#cdced6] hover:text-[#edeef0]"
               >
-                <RiCloseLine className="size-4" />
-              </button>
+                {cat.name}
+              </Label>
             </div>
-          ))}
-        </div>
+            <button
+              type="button"
+              onClick={() => removeCategory(cat.id)}
+              className="text-[#8b8d98] hover:text-[#edeef0]"
+            >
+              <RiCloseLine className="size-4" />
+            </button>
+          </div>
+        ))}
 
-        <div className="flex gap-2 pt-1">
-          <Input
-            type="text"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-            onKeyDown={(e) =>
-              e.key === "Enter" && (e.preventDefault(), addCategory())
-            }
-            placeholder="New category"
-            className="flex-1 rounded-none border-[#2e3135] bg-transparent text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white focus-visible:ring-white/10"
-          />
+        {adding ? (
+          <div className="flex border-t border-[#2e3135] first:border-t-0">
+            <Input
+              autoFocus
+              type="text"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  addCategory()
+                }
+                if (e.key === "Escape") {
+                  setAdding(false)
+                  setNewCategory("")
+                }
+              }}
+              placeholder="New category"
+              className="flex-1 rounded-none border-0 bg-transparent text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:ring-0"
+            />
+            <button
+              type="button"
+              onClick={addCategory}
+              className="flex items-center gap-1 bg-[#edeef0] px-3 text-sm text-[#020208] hover:bg-white"
+            >
+              <RiAddLine className="size-4" />
+              Add
+            </button>
+          </div>
+        ) : (
           <button
             type="button"
-            onClick={addCategory}
-            className="flex items-center gap-1 bg-[#edeef0] px-3 text-sm text-[#020208] hover:bg-white"
+            onClick={() => setAdding(true)}
+            className={`flex items-center gap-2 px-4 py-3 text-sm text-[#60646c] transition-colors hover:text-[#edeef0] ${allCategories.length > 0 ? "border-t border-[#2e3135]" : ""}`}
           >
-            <RiAddLine className="size-4" />
-            Add
+            <RiAddLine className="size-4.5" />
+            Add category
           </button>
-        </div>
+        )}
       </div>
 
       {productId && (

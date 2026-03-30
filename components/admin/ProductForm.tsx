@@ -325,6 +325,13 @@ export function ProductForm({
                 />
               </div>
 
+              <ProductCategoriesSection
+                productId={initialData?.id}
+                onSelectionChange={
+                  mode === "add" ? setSelectedCategoryIds : undefined
+                }
+              />
+
               <div className="flex flex-col gap-2 md:col-span-3">
                 <Label htmlFor="description" className="text-sm text-[#edeef0]">
                   Product description
@@ -341,13 +348,6 @@ export function ProductForm({
                   className="resize-none rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
                 />
               </div>
-
-              <ProductCategoriesSection
-                productId={initialData?.id}
-                onSelectionChange={
-                  mode === "add" ? setSelectedCategoryIds : undefined
-                }
-              />
             </div>
 
             <ProductFormActions
