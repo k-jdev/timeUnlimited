@@ -60,7 +60,7 @@ export function ResetPasswordView() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
+      className="flex w-full max-w-120 flex-col gap-6 bg-[#111113] p-6 backdrop-blur-sm sm:p-10"
     >
       <div className="flex flex-col gap-2">
         <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
@@ -74,7 +74,10 @@ export function ResetPasswordView() {
       <div className="flex flex-col gap-4">
         {/* Verification code */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="reset-code" className="text-sm font-medium text-[#edeef0]">
+          <label
+            htmlFor="reset-code"
+            className="text-sm font-medium text-[#edeef0]"
+          >
             Verification code
           </label>
           <input
@@ -89,7 +92,10 @@ export function ResetPasswordView() {
 
         {/* New password */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="reset-new-password" className="text-sm font-medium text-[#edeef0]">
+          <label
+            htmlFor="reset-new-password"
+            className="text-sm font-medium text-[#edeef0]"
+          >
             New password
           </label>
           <div className="relative">
@@ -109,14 +115,21 @@ export function ResetPasswordView() {
               tabIndex={-1}
               aria-label={showNew ? "Hide password" : "Show password"}
             >
-              {showNew ? <RiEyeLine className="size-4" /> : <RiEyeOffLine className="size-4" />}
+              {showNew ? (
+                <RiEyeLine className="size-4" />
+              ) : (
+                <RiEyeOffLine className="size-4" />
+              )}
             </button>
           </div>
         </div>
 
         {/* Confirm password */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="reset-confirm-password" className="text-sm font-medium text-[#edeef0]">
+          <label
+            htmlFor="reset-confirm-password"
+            className="text-sm font-medium text-[#edeef0]"
+          >
             Confirm password
           </label>
           <div className="relative">
@@ -136,7 +149,11 @@ export function ResetPasswordView() {
               tabIndex={-1}
               aria-label={showConfirm ? "Hide password" : "Show password"}
             >
-              {showConfirm ? <RiEyeLine className="size-4" /> : <RiEyeOffLine className="size-4" />}
+              {showConfirm ? (
+                <RiEyeLine className="size-4" />
+              ) : (
+                <RiEyeOffLine className="size-4" />
+              )}
             </button>
           </div>
         </div>
@@ -155,7 +172,7 @@ export function ResetPasswordView() {
         <button
           type="submit"
           disabled={loading}
-          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Updating..." : "Update password"}
         </button>

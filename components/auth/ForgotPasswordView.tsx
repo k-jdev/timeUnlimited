@@ -50,7 +50,7 @@ export function ForgotPasswordView() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
+      className="flex w-full max-w-120 flex-col gap-6 bg-[#111113] p-6 backdrop-blur-sm sm:p-10"
     >
       <div className="flex flex-col gap-2">
         <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
@@ -93,7 +93,7 @@ export function ForgotPasswordView() {
         <button
           type="submit"
           disabled={loading}
-          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex h-8 items-center justify-center bg-white/10 px-3 text-sm font-medium text-[#edeef0] transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Sending..." : "Reset password"}
         </button>

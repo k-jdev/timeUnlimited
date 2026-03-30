@@ -20,31 +20,31 @@ export function LoginView() {
   }
 
   async function handleSubmit(e: FormEvent) {
-  e.preventDefault();
-  setError("");
+    e.preventDefault()
+    setError("")
 
-  if (!email || !password) {
-    setError("Please fill in all fields");
-    return;
+    if (!email || !password) {
+      setError("Please fill in all fields")
+      return
+    }
+
+    const success = await login(email, password)
+
+    if (success) {
+      router.push("/admin/inventory")
+    } else {
+      setError("Invalid email or password")
+    }
   }
-
-  const success = await login(email, password);
-
-  if (success) {
-    router.push("/admin/inventory");
-  } else {
-    setError("Invalid email or password");
-  }
-}
 
   if (!isLoaded) {
-    return <div className="h-120 w-120" />
+    return <div className="h-120 w-full max-w-120" />
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-120 flex-col gap-6 bg-[#111113] p-10 backdrop-blur-sm"
+      className="flex w-full max-w-120 flex-col gap-6 bg-[#111113] p-6 backdrop-blur-sm sm:p-10"
     >
       <h1 className="font-serif text-[38px] leading-none text-[#edeef0]">
         Log in

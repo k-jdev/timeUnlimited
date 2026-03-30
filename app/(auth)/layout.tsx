@@ -7,14 +7,14 @@ export default function AuthLayout({
 }) {
   return (
     <div
-      className="dark relative flex h-screen items-center justify-center overflow-hidden"
+      className="dark relative flex h-screen items-center justify-center overflow-hidden overflow-y-auto"
       style={{
         backgroundImage: "url('/images/login/bg.png')",
         backgroundSize: "100% 100%",
         backgroundPosition: "center",
       }}
     >
-      <Link href="/" className="absolute top-7 left-16 z-20">
+      <Link href="/" className="absolute top-7 left-4 z-20 sm:left-16">
         <svg
           width="211"
           height="45"
@@ -33,7 +33,9 @@ export default function AuthLayout({
         </svg>
       </Link>
 
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 flex w-full justify-center px-4 sm:px-0">
+        {children}
+      </div>
     </div>
   )
 }
