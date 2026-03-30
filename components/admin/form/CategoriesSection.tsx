@@ -132,7 +132,7 @@ export function ProductCategoriesSection({
               e.key === "Enter" && (e.preventDefault(), addCategory())
             }
             placeholder="New category"
-            className="flex-1 rounded-none border-[#2e3135] bg-transparent text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
+            className="flex-1 rounded-none border-[#2e3135] bg-transparent text-[#edeef0] placeholder:text-[#8b8d98] focus-visible:border-white focus-visible:ring-white/10"
           />
           <button
             type="button"
@@ -149,7 +149,7 @@ export function ProductCategoriesSection({
         <button
           type="button"
           onClick={save}
-          className="mt-1 w-full border border-[#2e3135] bg-transparent py-2 text-xs text-[#cdced6] transition-colors duration-200 hover:border-[#5eb1ef] hover:text-[#edeef0]"
+          className="mt-1 w-full border border-[#2e3135] bg-transparent py-2 text-xs text-[#cdced6] transition-colors duration-200 hover:border-white hover:text-white"
         >
           Save categories
         </button>
