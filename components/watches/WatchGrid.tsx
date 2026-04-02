@@ -5,83 +5,28 @@ import Link from "next/link"
 import { motion } from "motion/react"
 import { RiAddLine } from "@remixicon/react"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
-
-interface WatchCard {
-  id: string
-  href: string
-  brand: string
-  name: string
-  ref: string
-  size: string
-  price: string
-  image: string
-  featured?: boolean
-  imageClassName?: string
-  glowColor: string
-  borderColor: string
-}
-
-const WATCHES: WatchCard[] = [
-  {
-    id: "patek-nautilus",
-    href: "/watch/patek-nautilus-1",
-    brand: "PATEK PHILIPPE",
-    name: "Nautilus Perpetual",
-    ref: "Ref. 5740/1G-001",
-    size: "40mm",
-    price: "$32,000",
-    image: "/images/watches/patek-nautilus.webp",
-    featured: true,
-
-    glowColor: "#0090FF",
-    borderColor: "#5eb1ef",
-  },
-  {
-    id: "ap-royal-oak",
-    href: "/watch/ap-royal-oak-1",
-    brand: "AUDEMARS PIGUET",
-    name: "Royal Oak",
-    ref: "Ref. 15500ST",
-    size: "41mm",
-    price: "$38,500",
-    image: "/images/watches/ap-royal-oak.webp",
-
-    glowColor: "#ac871c",
-    borderColor: "#ac871c",
-  },
-  {
-    id: "ap-perpetual",
-    href: "/watch/ap-perpetual-1",
-    brand: "AUDEMARS PIGUET",
-    name: "Royal Oak Perpetual",
-    ref: "Ref. 26579CE",
-    size: "41mm",
-    price: "$95,000",
-    image: "/images/watches/ap-perpetual.webp",
-    imageClassName: "scale-130",
-    glowColor: "#eb8e90",
-    borderColor: "#eb8e90",
-  },
-  {
-    id: "patek-aquanaut",
-    href: "/watch/patek-aquanaut-1",
-    brand: "PATEK PHILIPPE",
-    name: "Aquanaut Travel Time",
-    ref: "Ref. 5164A-001",
-    size: "40.8mm",
-    price: "$45,000",
-    image: "/images/watches/patek-aquanaut.webp",
-
-    glowColor: "#60646c",
-    borderColor: "#60646c",
-  },
-]
+import { mapProductToWatch, type DBProduct } from "@/lib/mapProduct"
+import type { InventoryWatch } from "@/data/inventory"
 
 export function WatchGrid() {
+  const [watches, setWatches] = useState<InventoryWatch[]>([])
+  const [loading, setLoading] = useState(true)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [scrollActiveId, setScrollActiveId] = useState<string | null>(null)
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
+
+  useEffect(() => {
+    fetch("/api/inventary?limit=4&sort=new")
+      .then((res) => res.json())
+      .then((data: { products?: DBProduct[] }) => {
+        const mapped = (data.products ?? []).map((p) => mapProductToWatch(p))
+        setWatches(mapped)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
   const setCardRef = useCallback(
     (id: string) => (el: HTMLDivElement | null) => {
@@ -127,7 +72,22 @@ export function WatchGrid() {
   }, [])
 
   const activeId =
-    hoveredId ?? scrollActiveId ?? WATCHES.find((w) => w.featured)?.id ?? null
+    hoveredId ?? scrollActiveId ?? (watches.length > 0 ? watches[0].id : null)
+
+  if (loading) {
+    return (
+      <div className="flex flex-col">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-square w-full bg-[#111113]" />
+          ))}
+        </div>
+        <Skeleton className="h-12 w-full bg-[#111213]" />
+      </div>
+    )
+  }
+
+  if (watches.length === 0) return null
 
   return (
     <div className="flex flex-col">
@@ -135,7 +95,7 @@ export function WatchGrid() {
         className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2"
         onMouseLeave={() => setHoveredId(null)}
       >
-        {WATCHES.map((watch, i) => (
+        {watches.map((watch, i) => (
           <motion.div
             key={watch.id}
             ref={setCardRef(watch.id)}
@@ -145,7 +105,7 @@ export function WatchGrid() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
           >
-            <Link href={watch.href} className="block">
+            <Link href={`/watch/${watch.id}`} className="block">
               <WatchCardItem
                 watch={watch}
                 isActive={watch.id === activeId}
@@ -177,7 +137,7 @@ function WatchCardItem({
   isActive,
   onHover,
 }: {
-  watch: WatchCard
+  watch: InventoryWatch
   isActive: boolean
   onHover: () => void
 }) {
