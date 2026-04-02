@@ -7,9 +7,11 @@ export async function GET(req: NextRequest) {
   const authResult = requireAuth(req)
   if (authResult instanceof Response) return authResult
 
-  const res = await pool.query(
-    `SELECT * FROM products ORDER BY created_at DESC`
-  )
+  const res = await pool.query(`
+    SELECT * FROM products
+    ORDER BY show_on_main DESC, show_order ASC, created_at DESC
+  `)
+
   return NextResponse.json(res.rows)
 }
 
@@ -23,10 +25,23 @@ export async function POST(req: NextRequest) {
 
   const query = `
     INSERT INTO products
-    (id, brand, model, price, reference_number, description, condition, case_material, case_size, dial, complete_set, hover_color, status, dial_color, created_at, updated_at)
+    (
+      id, brand, model, price, reference_number, description,
+      condition, case_material, case_size, dial, complete_set,
+      hover_color, status, dial_color,
+      show_on_main, show_order,
+      created_at, updated_at
+    )
     VALUES
-    ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+    (
+      $1,$2,$3,$4,$5,$6,
+      $7,$8,$9,$10,$11,
+      $12,$13,$14,
+      $15,$16,
+      $17,$18
+    )
   `
+
   const values = [
     id,
     data.brand,
@@ -42,6 +57,9 @@ export async function POST(req: NextRequest) {
     data.hoverColor,
     data.status ?? "active",
     data.dialColor ?? data.dial,
+    data.show_on_main ?? false,
+    data.show_order ?? 0,
+
     now,
     now,
   ]

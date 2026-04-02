@@ -27,7 +27,9 @@ export interface ProductFieldValues {
   caseSize: string
   dial: string
   price: string
-  completeSet: string
+  completeSet: string,
+  show_on_main: boolean,
+  show_order: number,
 }
 
 interface ProductFormFieldsProps {

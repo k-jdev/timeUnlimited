@@ -40,6 +40,8 @@ export interface AdminProduct {
   images?: object[],
   serial_number?: string,
   dial_color?: string
+  show_on_main?: boolean,
+  show_order?: number,
 }
 
 export interface NavItem {

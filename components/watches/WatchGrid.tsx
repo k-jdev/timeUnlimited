@@ -18,7 +18,7 @@ export function WatchGrid() {
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
   useEffect(() => {
-    fetch("/api/inventary?limit=4&sort=new")
+    fetch("/api/inventary/home")
       .then((res) => res.json())
       .then((data: { products?: DBProduct[] }) => {
         const mapped = (data.products ?? []).map((p) => mapProductToWatch(p))

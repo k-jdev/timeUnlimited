@@ -11,6 +11,7 @@ export async function PUT(
 
   const { id } = await params
   const body = await req.json()
+
   const {
     brand,
     model,
@@ -22,16 +23,29 @@ export async function PUT(
     caseSize,
     dial,
     hoverColor,
+    show_on_main,
+    show_order,
   } = body
 
   const query = `
     UPDATE products
-    SET brand=$1, model=$2, price=$3, reference_number=$4,
-        description=$5, condition=$6, case_material=$7,
-        case_size=$8, dial=$9, hover_color=$10, updated_at=NOW()
-    WHERE id=$11
+    SET brand=$1,
+        model=$2,
+        price=$3,
+        reference_number=$4,
+        description=$5,
+        condition=$6,
+        case_material=$7,
+        case_size=$8,
+        dial=$9,
+        hover_color=$10,
+        show_on_main=$11,
+        show_order=$12,
+        updated_at=NOW()
+    WHERE id=$13
     RETURNING *
   `
+
   const values = [
     brand,
     model,
@@ -43,14 +57,22 @@ export async function PUT(
     caseSize,
     dial,
     hoverColor,
+    show_on_main === true,
+    Number(show_order) || 0,
+
     id,
   ]
 
   try {
     const result = await pool.query(query, values)
+
     if (result.rows.length === 0) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      )
     }
+
     return NextResponse.json(result.rows[0])
   } catch (err) {
     console.error(err)
