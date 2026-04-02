@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export type ProductTab = "all" | "active" | "archived"
+export type ProductTab = "all" | "active" | "archived" | "featured"
 
 export interface Product {
   id: string

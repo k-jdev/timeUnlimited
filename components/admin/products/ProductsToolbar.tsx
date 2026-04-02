@@ -9,6 +9,7 @@ const TABS: { value: ProductTab; label: string }[] = [
   { value: "all", label: "All" },
   { value: "active", label: "Active" },
   { value: "archived", label: "Archived" },
+  { value: "featured", label: "Featured" },
 ]
 
 interface ProductsToolbarProps {
@@ -47,7 +48,7 @@ export function ProductsToolbar({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search by model, brand..."
-          className="w-full border-b border-[#2e3135] bg-transparent py-2 text-sm text-[#edeef0] outline-none placeholder:text-[#8b8d98] focus:border-[#5eb1ef]"
+          className="w-full border-b border-[#edeef0] bg-transparent py-2 text-sm text-[#edeef0] outline-none placeholder:text-[#8b8d98] focus:border-white"
         />
       </div>
 
@@ -80,7 +81,7 @@ export function ProductsToolbar({
               onChange={(e) => onSearchChange(e.target.value)}
               onBlur={handleSearchBlur}
               placeholder="Search by model, brand..."
-              className="w-48 border-b border-[#2e3135] bg-transparent py-1 text-sm text-[#edeef0] outline-none placeholder:text-[#8b8d98] focus:border-[#5eb1ef]"
+              className="w-48 border-b border-[#edeef0] bg-transparent py-1 text-sm text-[#edeef0] outline-none placeholder:text-[#8b8d98] focus:border-white"
             />
           ) : (
             <button

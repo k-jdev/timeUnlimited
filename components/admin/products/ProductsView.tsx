@@ -12,6 +12,7 @@ import { ProductsPagination } from "./ProductsPagination"
 import { ProductsSelectionBar } from "./ProductsSelectionBar"
 import type { AdminProduct } from "@/types"
 import type { ProductTab } from "@/hooks/useProducts"
+import { FeaturedProductsView } from "@/components/admin/featured/FeaturedProductsView"
 
 export type { ProductTab }
 
@@ -29,10 +30,13 @@ export function ProductsView() {
     all: 0,
     active: 0,
     archived: 0,
+    featured: 0,
   })
 
   // --- Fetch products from API ---
   useEffect(() => {
+    if (activeTab === "featured") return
+
     const fetchProducts = async () => {
       setIsFetching(true)
       try {
@@ -52,6 +56,7 @@ export function ProductsView() {
             all: data.counts.all ?? 0,
             active: data.counts.active ?? 0,
             archived: data.counts.archived ?? 0,
+            featured: data.counts.featured ?? 0,
           })
         }
       } catch (err) {
@@ -149,62 +154,68 @@ export function ProductsView() {
         onSearchChange={handleSearchChange}
       />
 
-      <ProductsSelectionBar
-        selectedCount={selectedIds.size}
-        onDelete={handleDeleteSelected}
-        onClear={() => setSelectedIds(new Set())}
-      />
-
-      {isFetching ? (
-        <div className="flex flex-col">
-          {Array.from({ length: itemsPerPage > 8 ? 8 : itemsPerPage }).map(
-            (_, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 border-b border-[#d6ebfd15] px-4 py-3"
-              >
-                <Skeleton className="size-5 rounded-none bg-[#1a1b1f]" />
-                <Skeleton className="size-10 rounded-none bg-[#1a1b1f]" />
-                <Skeleton className="h-4 w-48 rounded-none bg-[#1a1b1f]" />
-                <Skeleton className="ml-auto h-5 w-16 rounded-none bg-[#1a1b1f]" />
-              </div>
-            )
-          )}
-        </div>
-      ) : products.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-          <p className="text-[#8b8d98]">
-            {total === 0
-              ? "No products yet."
-              : "No products match your search."}
-          </p>
-          {total === 0 && (
-            <Link
-              href="/admin/inventory/add"
-              className="text-sm underline-offset-4 hover:underline"
-            >
-              Add your first product
-            </Link>
-          )}
-        </div>
+      {activeTab === "featured" ? (
+        <FeaturedProductsView />
       ) : (
-        <ProductsTable
-          products={products}
-          selectedIds={selectedIds}
-          onToggleSelect={handleToggleSelect}
-          onToggleSelectAll={handleToggleSelectAll}
-        />
-      )}
+        <>
+          <ProductsSelectionBar
+            selectedCount={selectedIds.size}
+            onDelete={handleDeleteSelected}
+            onClear={() => setSelectedIds(new Set())}
+          />
 
-      {total > 0 && (
-        <ProductsPagination
-          totalItems={total}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
+          {isFetching ? (
+            <div className="flex flex-col">
+              {Array.from({ length: itemsPerPage > 8 ? 8 : itemsPerPage }).map(
+                (_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-4 border-b border-[#d6ebfd15] px-4 py-3"
+                  >
+                    <Skeleton className="size-5 rounded-none bg-[#1a1b1f]" />
+                    <Skeleton className="size-10 rounded-none bg-[#1a1b1f]" />
+                    <Skeleton className="h-4 w-48 rounded-none bg-[#1a1b1f]" />
+                    <Skeleton className="ml-auto h-5 w-16 rounded-none bg-[#1a1b1f]" />
+                  </div>
+                )
+              )}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+              <p className="text-[#8b8d98]">
+                {total === 0
+                  ? "No products yet."
+                  : "No products match your search."}
+              </p>
+              {total === 0 && (
+                <Link
+                  href="/admin/inventory/add"
+                  className="text-sm underline-offset-4 hover:underline"
+                >
+                  Add your first product
+                </Link>
+              )}
+            </div>
+          ) : (
+            <ProductsTable
+              products={products}
+              selectedIds={selectedIds}
+              onToggleSelect={handleToggleSelect}
+              onToggleSelectAll={handleToggleSelectAll}
+            />
+          )}
+
+          {total > 0 && (
+            <ProductsPagination
+              totalItems={total}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
+          )}
+        </>
       )}
     </div>
   )

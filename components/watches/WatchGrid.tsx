@@ -20,9 +20,17 @@ export function WatchGrid() {
   useEffect(() => {
     fetch("/api/inventary/home")
       .then((res) => res.json())
-      .then((data: { products?: DBProduct[] }) => {
-        const mapped = (data.products ?? []).map((p) => mapProductToWatch(p))
-        setWatches(mapped)
+      .then(async (data: { products?: DBProduct[] }) => {
+        const products = data.products ?? []
+        if (products.length > 0) {
+          setWatches(products.map((p) => mapProductToWatch(p)))
+        } else {
+          const fallback = await fetch("/api/inventary?limit=4&sort=new")
+          const fallbackData: { products?: DBProduct[] } = await fallback.json()
+          setWatches(
+            (fallbackData.products ?? []).map((p) => mapProductToWatch(p))
+          )
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false))
