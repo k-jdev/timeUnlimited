@@ -85,7 +85,7 @@ export function WatchGrid() {
   if (loading) {
     return (
       <div className="flex flex-col">
-        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="aspect-square w-full bg-[#111113]" />
           ))}
@@ -100,7 +100,7 @@ export function WatchGrid() {
   return (
     <div className="flex flex-col">
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2"
+        className="grid grid-cols-1 lg:grid-cols-2"
         onMouseLeave={() => setHoveredId(null)}
       >
         {watches.map((watch, i) => (

@@ -68,6 +68,7 @@ function SortableCard({
         {...attributes}
         {...listeners}
         className="cursor-grab text-[#60646c] transition-colors hover:text-[#edeef0] active:cursor-grabbing"
+        style={{ touchAction: "none" }}
         aria-label="Drag to reorder"
       >
         <RiDraggable className="size-5" />
@@ -157,9 +158,32 @@ export function FeaturedProductsView() {
     setPickerOpen(false)
   }
 
-  function handleRemove(id: string) {
+  async function handleRemove(id: string) {
+    const product = featured.find((p) => p.id === id)
     setFeatured((prev) => prev.filter((p) => p.id !== id))
-    setRemovedIds((prev) => [...prev, id])
+    if (!product) return
+    try {
+      await authFetch(`/api/products/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brand: product.brand,
+          model: product.model || product.name,
+          price: product.price,
+          referenceNumber: product.reference_number || product.ref,
+          description: product.description ?? "",
+          condition: product.condition,
+          caseMaterial: product.case_material || product.caseMaterial,
+          caseSize: product.case_size || product.size,
+          dial: product.dial,
+          hoverColor: product.hover_color || product.hoverColor,
+          show_on_main: false,
+          show_order: 0,
+        }),
+      })
+    } catch (err) {
+      console.error("Failed to remove featured product:", err)
+    }
   }
 
   async function handleSave() {
