@@ -5,12 +5,18 @@ export function useAuth() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-    setIsLoaded(true);
+    fetch("/api/auth/me")
+      .then((res) => {
+        setIsAuthenticated(res.ok);
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+      })
+      .finally(() => {
+        setIsLoaded(true);
+      });
   }, []);
 
- 
   async function login(email: string, password: string) {
     try {
       const res = await fetch("/api/auth/login", {
@@ -21,14 +27,9 @@ export function useAuth() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
         return false;
       }
-
-      // сохраняем токен
-      localStorage.setItem("token", data.token);
 
       setIsAuthenticated(true);
       return true;
@@ -37,8 +38,8 @@ export function useAuth() {
     }
   }
 
-  function logout() {
-    localStorage.removeItem("token");
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
     setIsAuthenticated(false);
   }
 
