@@ -10,12 +10,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
-  BRANDS,
   CONDITIONS,
   CASE_MATERIALS,
   DIAL_COLORS,
   SIZES,
 } from "@/data/inventory"
+import { ALL_BRANDS, BRAND_MODELS } from "@/data/brand-models"
 
 const COMPLETE_SET_OPTIONS = ["Yes", "No", "Box only", "Papers only"]
 
@@ -27,9 +27,9 @@ export interface ProductFieldValues {
   caseSize: string
   dial: string
   price: string
-  completeSet: string,
-  show_on_main: boolean,
-  show_order: number,
+  completeSet: string
+  show_on_main: boolean
+  show_order: number
 }
 
 interface ProductFormFieldsProps {
@@ -41,6 +41,8 @@ export function ProductFormFields({
   values,
   onChange,
 }: ProductFormFieldsProps) {
+  const models = values.brand ? (BRAND_MODELS[values.brand] ?? []) : []
+
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -50,7 +52,10 @@ export function ProductFormFields({
         <Select
           name="brand"
           value={values.brand}
-          onValueChange={(v) => onChange("brand", v)}
+          onValueChange={(v) => {
+            onChange("brand", v)
+            onChange("model", "")
+          }}
         >
           <SelectTrigger
             id="brand"
@@ -59,7 +64,7 @@ export function ProductFormFields({
             <SelectValue placeholder="e.g. Patek Philippe" />
           </SelectTrigger>
           <SelectContent>
-            {BRANDS.map((b) => (
+            {ALL_BRANDS.map((b) => (
               <SelectItem key={b} value={b}>
                 {b}
               </SelectItem>
@@ -122,14 +127,30 @@ export function ProductFormFields({
         <Label htmlFor="model" className="text-sm text-[#edeef0]">
           Model
         </Label>
-        <Input
-          id="model"
+        <Select
           name="model"
-          placeholder="e.g. Nautilus Perpetual"
           value={values.model}
-          onChange={(e) => onChange("model", e.target.value)}
-          className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
-        />
+          onValueChange={(v) => onChange("model", v)}
+          disabled={models.length === 0}
+        >
+          <SelectTrigger
+            id="model"
+            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
+          >
+            <SelectValue
+              placeholder={
+                models.length === 0 ? "Select brand first" : "Select model"
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {models.map((m) => (
+              <SelectItem key={m} value={m}>
+                {m}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex flex-col gap-2">

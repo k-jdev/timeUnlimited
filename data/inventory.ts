@@ -18,11 +18,18 @@ export const BRANDS = [
   "A. Lange & Söhne",
   "Audemars Piguet",
   "Cartier",
+  "Chopard",
+  "F.P. Journe",
+  "Hublot",
   "IWC",
   "Omega",
+  "Panerai",
   "Patek Philippe",
   "Richard Mille",
   "Rolex",
+  "Tudor",
+  "Vacheron Constantin",
+  "Zenith",
 ] as const
 
 export const CONDITIONS = ["New", "Pre-owned"] as const
