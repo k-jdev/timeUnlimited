@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     fetch("/api/auth/me")
       .then((res) => {
-        setIsAuthenticated(res.ok);
+        setIsAuthenticated(res.ok)
       })
       .catch(() => {
-        setIsAuthenticated(false);
+        setIsAuthenticated(false)
       })
       .finally(() => {
-        setIsLoaded(true);
-      });
-  }, []);
+        setIsLoaded(true)
+      })
+  }, [])
 
   async function login(email: string, password: string) {
     try {
@@ -25,22 +25,22 @@ export function useAuth() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-      });
+      })
 
       if (!res.ok) {
-        return false;
+        return false
       }
 
-      setIsAuthenticated(true);
-      return true;
+      setIsAuthenticated(true)
+      return true
     } catch (e) {
-      return false;
+      return false
     }
   }
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setIsAuthenticated(false);
+    await fetch("/api/auth/logout", { method: "POST" })
+    setIsAuthenticated(false)
   }
 
   return {
@@ -48,5 +48,5 @@ export function useAuth() {
     isLoaded,
     login,
     logout,
-  };
+  }
 }

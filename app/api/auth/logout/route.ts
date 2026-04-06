@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.json({ success: true })
 
   response.cookies.set("token", "", {
     httpOnly: true,
@@ -9,7 +9,7 @@ export async function POST() {
     sameSite: "lax",
     path: "/",
     maxAge: 0,
-  });
+  })
 
-  return response;
+  return response
 }
