@@ -1,6 +1,6 @@
 "use client"
 
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { RiArrowRightLine, RiEyeLine, RiEyeOffLine } from "@remixicon/react"
 import { useAuth } from "@/hooks/useAuth"
@@ -14,9 +14,14 @@ export function LoginView() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
-  if (isLoaded && isAuthenticated) {
-    router.replace("/admin/inventory")
-    return null
+  useEffect(() => {
+    if (isLoaded && isAuthenticated) {
+      window.location.href = "/admin/inventory"
+    }
+  }, [isLoaded, isAuthenticated])
+
+  if (!isLoaded) {
+    return <div className="h-120 w-full max-w-120" />
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -31,14 +36,10 @@ export function LoginView() {
     const success = await login(email, password)
 
     if (success) {
-      router.push("/admin/inventory")
+      window.location.href = "/admin/inventory"
     } else {
       setError("Invalid email or password")
     }
-  }
-
-  if (!isLoaded) {
-    return <div className="h-120 w-full max-w-120" />
   }
 
   return (
