@@ -56,11 +56,13 @@ interface ProductFormProps {
 
 function generateReferenceNumber() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-  const part1 = Array.from({ length: 4 }, () =>
-    chars[Math.floor(Math.random() * chars.length)]
+  const part1 = Array.from(
+    { length: 4 },
+    () => chars[Math.floor(Math.random() * chars.length)]
   ).join("")
-  const part2 = Array.from({ length: 4 }, () =>
-    chars[Math.floor(Math.random() * chars.length)]
+  const part2 = Array.from(
+    { length: 4 },
+    () => chars[Math.floor(Math.random() * chars.length)]
   ).join("")
   return `TU-${part1}-${part2}`
 }
@@ -75,7 +77,9 @@ export function ProductForm({
   const [additionalImages, setAdditionalImages] = useState<File[]>([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
   const [referenceNumber, setReferenceNumber] = useState<string>(
-    () => initialData?.referenceNumber ?? (mode === "add" ? generateReferenceNumber() : "")
+    () =>
+      initialData?.referenceNumber ??
+      (mode === "add" ? generateReferenceNumber() : "")
   )
 
   const [fieldValues, setFieldValues] = useState<
@@ -144,17 +148,71 @@ export function ProductForm({
         "caseSize",
         "dial",
       ] as const
+      let updatedValues: Partial<typeof fieldValues> = {}
       setFieldValues((prev) => {
         const updates: Partial<typeof prev> = {}
         for (const field of analyzeFields) {
           if (data[field]) updates[field] = data[field]
         }
+        updatedValues = updates
         return { ...prev, ...updates }
       })
+
+      // auto-generate description with analyzed fields
+      const merged = { ...fieldValues, ...updatedValues }
+      const descRes = await authFetch("/api/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brand: merged.brand,
+          model: merged.model,
+          condition: merged.condition,
+          caseMaterial: merged.caseMaterial,
+          caseSize: merged.caseSize,
+          dial: merged.dial,
+          completeSet: merged.completeSet,
+        }),
+      })
+      if (descRes.ok) {
+        const descData = await descRes.json()
+        if (descData.description) {
+          handleFieldChange("description", descData.description)
+        }
+      }
     } catch (err) {
       console.error("[handleAnalyze]", err)
     } finally {
       setIsAnalyzing(false)
+    }
+  }
+
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false)
+
+  const handleGenerateDescription = async () => {
+    setIsGeneratingDesc(true)
+    try {
+      const res = await authFetch("/api/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brand: fieldValues.brand,
+          model: fieldValues.model,
+          condition: fieldValues.condition,
+          caseMaterial: fieldValues.caseMaterial,
+          caseSize: fieldValues.caseSize,
+          dial: fieldValues.dial,
+          completeSet: fieldValues.completeSet,
+        }),
+      })
+      if (!res.ok) throw new Error("Generation failed")
+      const data = await res.json()
+      if (data.description) {
+        handleFieldChange("description", data.description)
+      }
+    } catch (err) {
+      console.error("[handleGenerateDescription]", err)
+    } finally {
+      setIsGeneratingDesc(false)
     }
   }
 
