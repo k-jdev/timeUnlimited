@@ -1,6 +1,6 @@
 "use client"
 
-import { type FormEvent, useEffect, useState } from "react"
+import { type FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { RiArrowRightLine, RiEyeLine, RiEyeOffLine } from "@remixicon/react"
 import { useAuth } from "@/hooks/useAuth"
@@ -14,13 +14,8 @@ export function LoginView() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => {
-    if (isLoaded && isAuthenticated) {
-      router.replace("/admin/inventory")
-    }
-  }, [isLoaded, isAuthenticated, router])
-
   if (isLoaded && isAuthenticated) {
+    router.replace("/admin/inventory")
     return null
   }
 
