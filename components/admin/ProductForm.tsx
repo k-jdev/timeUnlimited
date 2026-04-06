@@ -59,8 +59,6 @@ export function ProductForm({
   onSave,
   mode = "add",
 }: ProductFormProps) {
-
-
   const router = useRouter()
   const [mainImage, setMainImage] = useState<File | null>(null)
   const [additionalImages, setAdditionalImages] = useState<File[]>([])
@@ -135,7 +133,7 @@ export function ProductForm({
           if (!Array.isArray(imgs)) return
           setExistingImages(imgs)
         })
-        .catch(() => { })
+        .catch(() => {})
     }
   }, [mode, initialData?.id])
 
@@ -361,61 +359,6 @@ export function ProductForm({
                   className="resize-none rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
                 />
               </div>
-            </div>
-
-
-            <div className="flex flex-col gap-2 md:col-span-1">
-              <Label
-                htmlFor="referenceNumber"
-                className="text-sm text-[#edeef0]"
-              >
-                Reference Number
-              </Label>
-              <Input
-                id="referenceNumber"
-                name="referenceNumber"
-                placeholder="Enter reference"
-                defaultValue={defaultValues.referenceNumber}
-                className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2 md:col-span-1">
-              <Label
-                htmlFor="referenceNumber"
-                className="text-sm text-[#edeef0]"
-              >
-                Show on main
-              </Label>
-              <input
-                type="checkbox"
-                id="show_on_main"
-                name="show_on_main"
-                checked={fieldValues.show_on_main}
-                onChange={(e) =>
-                  setFieldValues({
-                    ...fieldValues,
-                    show_on_main: e.target.checked,
-                  })
-                }
-              />       
-            </div>
-
-            <div className="flex flex-col gap-2 md:col-span-1">
-              <Label
-                htmlFor="referenceNumber"
-                className="text-sm text-[#edeef0]"
-              >
-                Show order
-              </Label>
-              <Input
-                id="show_order"
-                name="show_order"
-                type="number"
-                placeholder="Enter show order"
-                defaultValue={defaultValues.show_order}
-                className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
-              />
             </div>
 
             <ProductFormActions
