@@ -128,6 +128,7 @@ export function ProductFormFields({
           Model
         </Label>
         <Select
+          key={values.brand}
           name="model"
           value={values.model}
           onValueChange={(v) => onChange("model", v)}

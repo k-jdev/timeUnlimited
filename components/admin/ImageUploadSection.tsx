@@ -7,6 +7,7 @@ import {
   RiCloseLine,
   RiContrastDropLine,
   RiLoader4Line,
+  RiSparklingLine,
 } from "@remixicon/react"
 
 interface ImageUploadSectionProps {
@@ -19,6 +20,8 @@ interface ImageUploadSectionProps {
   onExistingMainImageRemove?: () => Promise<void> | void
   onExistingAdditionalImagesChange?: (urls: string[]) => Promise<void> | void
   initialHoverColor?: string
+  onAnalyze?: () => void
+  isAnalyzing?: boolean
 }
 
 function UploadZone({
@@ -133,6 +136,8 @@ export function ImageUploadSection({
   onExistingMainImageRemove,
   onExistingAdditionalImagesChange,
   initialHoverColor,
+  onAnalyze,
+  isAnalyzing = false,
 }: ImageUploadSectionProps) {
   const colorPickerRef = useRef<HTMLInputElement>(null)
   const colorButtonRef = useRef<HTMLButtonElement>(null)
@@ -247,6 +252,27 @@ export function ImageUploadSection({
           form="product-form"
         />
       </div>
+
+      {onAnalyze && (
+        <button
+          type="button"
+          onClick={onAnalyze}
+          disabled={!mainPreview || isAnalyzing}
+          className="mt-0.5 flex h-10 w-full items-center justify-center gap-2 bg-[#0d1f35] text-sm text-[#5eb1ef] transition-colors duration-200 hover:bg-[#112847] hover:text-[#7ec8ff] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {isAnalyzing ? (
+            <>
+              <RiLoader4Line className="size-4 animate-spin" />
+              Analyzing...
+            </>
+          ) : (
+            <>
+              <RiSparklingLine className="size-4" />
+              Analyze with AI
+            </>
+          )}
+        </button>
+      )}
 
       <div className="mt-0.5 grid grid-cols-2 gap-0.5">
         {filledSlots.map(({ key, preview, onRemove }) => (

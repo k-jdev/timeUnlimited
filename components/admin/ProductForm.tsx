@@ -91,6 +91,59 @@ export function ProductForm({
     (v) => String(v).trim() !== ""
   )
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+
+  const handleAnalyze = async () => {
+    let fileToAnalyze: File | null = mainImage
+
+    if (!fileToAnalyze && existingMainImage) {
+      try {
+        const blobRes = await fetch(existingMainImage)
+        const blob = await blobRes.blob()
+        fileToAnalyze = new File([blob], "watch.jpg", {
+          type: blob.type || "image/jpeg",
+        })
+      } catch {
+        console.error("Failed to fetch existing image for analysis")
+        return
+      }
+    }
+
+    if (!fileToAnalyze) return
+
+    setIsAnalyzing(true)
+    try {
+      const fd = new FormData()
+      fd.append("file", fileToAnalyze)
+      const res = await authFetch("/api/analyze-watch", {
+        method: "POST",
+        body: fd,
+      })
+      if (!res.ok) throw new Error("Analysis failed")
+      const data = await res.json()
+
+      const analyzeFields = [
+        "brand",
+        "model",
+        "condition",
+        "caseMaterial",
+        "caseSize",
+        "dial",
+      ] as const
+      setFieldValues((prev) => {
+        const updates: Partial<typeof prev> = {}
+        for (const field of analyzeFields) {
+          if (data[field]) updates[field] = data[field]
+        }
+        return { ...prev, ...updates }
+      })
+    } catch (err) {
+      console.error("[handleAnalyze]", err)
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [progress, setProgress] = useState(0)
   const [progressLabel, setProgressLabel] = useState("")
@@ -312,6 +365,8 @@ export function ProductForm({
                 if (removed) return markImageForDelete(removed)
               }}
               initialHoverColor={initialData?.hoverColor}
+              onAnalyze={handleAnalyze}
+              isAnalyzing={isAnalyzing}
             />
           </div>
 
