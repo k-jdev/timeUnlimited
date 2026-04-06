@@ -54,6 +54,17 @@ interface ProductFormProps {
   mode?: "add" | "edit"
 }
 
+function generateReferenceNumber() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  const part1 = Array.from({ length: 4 }, () =>
+    chars[Math.floor(Math.random() * chars.length)]
+  ).join("")
+  const part2 = Array.from({ length: 4 }, () =>
+    chars[Math.floor(Math.random() * chars.length)]
+  ).join("")
+  return `TU-${part1}-${part2}`
+}
+
 export function ProductForm({
   initialData,
   onSave,
@@ -63,6 +74,9 @@ export function ProductForm({
   const [mainImage, setMainImage] = useState<File | null>(null)
   const [additionalImages, setAdditionalImages] = useState<File[]>([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
+  const [referenceNumber, setReferenceNumber] = useState<string>(
+    () => initialData?.referenceNumber ?? (mode === "add" ? generateReferenceNumber() : "")
+  )
 
   const [fieldValues, setFieldValues] = useState<
     ProductFieldValues & { description: string }
@@ -388,7 +402,8 @@ export function ProductForm({
                   id="referenceNumber"
                   name="referenceNumber"
                   placeholder="Enter reference"
-                  defaultValue={defaultValues.referenceNumber}
+                  value={referenceNumber}
+                  onChange={(e) => setReferenceNumber(e.target.value)}
                   className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
                 />
               </div>
