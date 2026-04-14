@@ -4,7 +4,7 @@ export interface DBProduct {
   id: string
   brand: string
   model: string
-  price: number | string
+  price: number | string | null
   reference_number: string | null
   description: string | null
   condition: string | null
@@ -25,19 +25,21 @@ export interface DBProduct {
   }>
 }
 
-function formatPrice(price: number | string): string {
+function formatPrice(price: number | string | null): string {
+  if (!price) return "Price on request"
   const cleaned =
     typeof price === "string" ? price.replace(/[^0-9.]/g, "") : price
   const num = Number(cleaned)
-  if (isNaN(num) || num === 0) return "$0"
+  if (isNaN(num) || num === 0) return "Price on request"
   return `$${Math.round(num)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
 }
 
+const FALLBACK_COLOR = "#60646c"
+
 export function mapProductToWatch(p: DBProduct): InventoryWatch {
   const mainImage = p.images?.find((img) => img.is_main) ?? p.images?.[0]
-  const fallbackColor = "#60646c"
 
   return {
     id: p.id,
@@ -47,8 +49,8 @@ export function mapProductToWatch(p: DBProduct): InventoryWatch {
     size: p.case_size ?? "",
     price: formatPrice(p.price),
     image: mainImage?.image_url ?? "",
-    glowColor: p.hover_color ?? fallbackColor,
-    borderColor: p.hover_color ?? fallbackColor,
+    glowColor: p.hover_color ?? FALLBACK_COLOR,
+    borderColor: p.hover_color ?? FALLBACK_COLOR,
     condition: p.condition ?? "",
     braceletMaterial: p.case_material ?? "",
     dialColor: p.dial_color ?? "",

@@ -10,12 +10,9 @@ export async function GET(req: NextRequest) {
   const caseMaterial = searchParams.get("caseMaterial")
   const dialColor = searchParams.get("dialColor")
   const size = searchParams.get("size")
-
   const minPrice = searchParams.get("minPrice")
   const maxPrice = searchParams.get("maxPrice")
-
   const sort = searchParams.get("sort") || "new"
-
   const page = Number(searchParams.get("page") ?? "1")
   const limit = Number(searchParams.get("limit") ?? "100")
   const offset = (page - 1) * limit
@@ -25,51 +22,40 @@ export async function GET(req: NextRequest) {
   let i = 1
 
   if (search) {
-    whereClause += ` AND (
-      brand ILIKE $${i}
-      OR model ILIKE $${i}
-      OR reference_number ILIKE $${i}
-    )`
+    whereClause += ` AND (brand ILIKE $${i} OR model ILIKE $${i} OR reference_number ILIKE $${i})`
     values.push(`%${search}%`)
     i++
   }
-
   if (brand) {
     whereClause += ` AND brand = $${i}`
     values.push(brand)
     i++
   }
-
   if (condition) {
     whereClause += ` AND condition = $${i}`
     values.push(condition)
     i++
   }
-
   if (caseMaterial) {
     whereClause += ` AND case_material = $${i}`
     values.push(caseMaterial)
     i++
   }
-
   if (dialColor) {
     whereClause += ` AND dial_color = $${i}`
     values.push(dialColor)
     i++
   }
-
   if (size) {
     whereClause += ` AND case_size = $${i}`
     values.push(size)
     i++
   }
-
   if (minPrice) {
     whereClause += ` AND price >= $${i}`
     values.push(minPrice)
     i++
   }
-
   if (maxPrice) {
     whereClause += ` AND price <= $${i}`
     values.push(maxPrice)
@@ -77,25 +63,20 @@ export async function GET(req: NextRequest) {
   }
 
   let orderClause = "ORDER BY created_at DESC"
-  if (sort === "price_asc") orderClause = "ORDER BY price ASC"
-  else if (sort === "price_desc") orderClause = "ORDER BY price DESC"
+  if (sort === "price_asc") orderClause = "ORDER BY price ASC NULLS LAST"
+  else if (sort === "price_desc") orderClause = "ORDER BY price DESC NULLS LAST"
 
   try {
     const countValues = [...values]
-    const countRes = await pool.query(
-      `SELECT COUNT(*) AS total FROM products WHERE ${whereClause}`,
-      countValues
-    )
-    const total = Number(countRes.rows[0].total)
+    const [countRes, productsRes] = await Promise.all([
+      pool.query(`SELECT COUNT(*) AS total FROM products WHERE ${whereClause}`, countValues),
+      pool.query(
+        `SELECT * FROM products WHERE ${whereClause} ${orderClause} LIMIT $${i} OFFSET $${i + 1}`,
+        [...values, limit, offset]
+      ),
+    ])
 
-    values.push(limit, offset)
-    const productQuery = `
-      SELECT * FROM products
-      WHERE ${whereClause}
-      ${orderClause}
-      LIMIT $${i} OFFSET $${i + 1}
-    `
-    const productsRes = await pool.query(productQuery, values)
+    const total = Number(countRes.rows[0].total)
     const products = productsRes.rows
 
     if (products.length === 0) {
@@ -104,9 +85,7 @@ export async function GET(req: NextRequest) {
 
     const productIds = products.map((p: any) => p.id)
     const imagesRes = await pool.query(
-      `SELECT * FROM product_images
-       WHERE product_id = ANY($1::uuid[])
-       ORDER BY created_at DESC`,
+      `SELECT * FROM product_images WHERE product_id = ANY($1::uuid[]) ORDER BY created_at DESC`,
       [productIds]
     )
 
@@ -125,9 +104,6 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     console.error(err)
     const message = err instanceof Error ? err.message : "Unknown error"
-    return NextResponse.json(
-      { error: "DB error", details: message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "DB error", details: message }, { status: 500 })
   }
 }

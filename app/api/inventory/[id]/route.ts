@@ -20,9 +20,7 @@ export async function GET(
     const product = productRes.rows[0]
 
     const imagesRes = await pool.query(
-      `SELECT * FROM product_images
-       WHERE product_id = $1
-       ORDER BY created_at DESC`,
+      `SELECT * FROM product_images WHERE product_id = $1 ORDER BY created_at DESC`,
       [id]
     )
 
@@ -33,9 +31,6 @@ export async function GET(
   } catch (err) {
     console.error(err)
     const message = err instanceof Error ? err.message : "Unknown error"
-    return NextResponse.json(
-      { error: "DB error", details: message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "DB error", details: message }, { status: 500 })
   }
 }
