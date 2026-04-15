@@ -11,6 +11,7 @@ import {
   RiFlashlightFill,
   RiSearchLine,
   RiUpload2Line,
+  RiLoaderLine,
 } from "@remixicon/react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
@@ -316,7 +317,8 @@ function Step1Search({
     onNext()
   }
 
-  const showResults = results.length > 0 && data.searchQuery.trim().length > 0
+  const showResults =
+    (loading || results.length > 0) && data.searchQuery.trim().length > 0
 
   return (
     <div className="flex min-h-75 flex-col justify-between gap-8">
@@ -344,7 +346,9 @@ function Step1Search({
                 onChange={handleInput}
                 autoComplete="off"
               />
-              {data.searchQuery && (
+              {loading ? (
+                <RiLoaderLine className="mr-2 size-4 shrink-0 animate-spin text-[#8b8d98]" />
+              ) : data.searchQuery ? (
                 <button
                   type="button"
                   onClick={handleClear}
@@ -353,7 +357,7 @@ function Step1Search({
                 >
                   <RiCloseLine className="size-4" />
                 </button>
-              )}
+              ) : null}
             </div>
 
             {/* Search results dropdown */}
@@ -361,7 +365,7 @@ function Step1Search({
               <div className="absolute top-full right-0 left-0 z-10 mt-0.5 border border-[#2e3135] bg-[#111113]">
                 <ScrollArea className="h-80">
                   {loading ? (
-                    <div className="px-4 py-3 text-[13px] text-[#8b8d98]">
+                    <div className="px-4 py-6 text-center text-[15px] text-[#8b8d98]">
                       Searching…
                     </div>
                   ) : (
