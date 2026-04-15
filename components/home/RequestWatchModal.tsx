@@ -132,7 +132,7 @@ function Step1Search({
     setLoading(true)
     try {
       const res = await fetch(
-        `/api/inventary?search=${encodeURIComponent(q)}&limit=6`
+        `/api/inventary/search?search=${encodeURIComponent(q)}&limit=6`
       )
       if (!res.ok) throw new Error("Search failed")
       const json = await res.json()
