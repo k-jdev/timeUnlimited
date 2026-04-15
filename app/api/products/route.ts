@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const limit = Number(url.searchParams.get("limit") ?? "15")
     const offset = (page - 1) * limit
 
-    let whereClause = "own = true"
+    let whereClause = "1 = 1"
     const values: any[] = []
 
     if (status !== "all") {
