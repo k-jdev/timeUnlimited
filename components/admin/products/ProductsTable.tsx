@@ -64,7 +64,7 @@ export function ProductsTable({
               Status
             </TableHead>
             <TableHead className="text-sm font-medium text-[#edeef0]">
-              Serial number
+              Reference number
             </TableHead>
             <TableHead className="text-sm font-medium text-[#edeef0]">
               Price
@@ -125,9 +125,9 @@ export function ProductsTable({
                 <ProductStatusBadge status={product.status} />
               </TableCell>
 
-              {/* Serial Number (если есть) */}
+              {/* Reference Number */}
               <TableCell className="py-3 text-xs font-medium text-[#b0b4ba]">
-                {product.serial_number || "—"}
+                {product.reference_number || "—"}
               </TableCell>
 
               {/* Price */}

@@ -10,6 +10,7 @@ import {
   RiSearchLine,
   RiTimeLine,
 } from "@remixicon/react"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   FormField,
   FooterButtons,
@@ -61,14 +62,6 @@ const EMPTY_FORM: FormData = {
   contactMethod: "",
 }
 
-const QUICK_CHIPS = [
-  "Rolex Daytona",
-  "Patek Nautilus",
-  "AP Royal Oak",
-  "Richard Mille",
-  "Lange Zeitwerk",
-]
-
 function Step1Search({
   data,
   onQueryChange,
@@ -84,6 +77,7 @@ function Step1Search({
 }) {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
+  const [chips, setChips] = useState<string[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const chipsRef = useRef<HTMLDivElement>(null)
@@ -93,6 +87,13 @@ function Step1Search({
     scrollLeft: 0,
     moved: false,
   })
+
+  useEffect(() => {
+    fetch("/api/inventary/search/brands")
+      .then((r) => (r.ok ? r.json() : { brands: [] }))
+      .then((json) => setChips((json.brands ?? []).slice(0, 8)))
+      .catch(() => {})
+  }, [])
 
   function onChipsMouseDown(e: React.MouseEvent) {
     const el = chipsRef.current
@@ -132,7 +133,7 @@ function Step1Search({
     setLoading(true)
     try {
       const res = await fetch(
-        `/api/inventary/search?search=${encodeURIComponent(q)}&limit=6`
+        `/api/inventary/search?search=${encodeURIComponent(q)}&limit=20`
       )
       if (!res.ok) throw new Error("Search failed")
       const json = await res.json()
@@ -233,48 +234,50 @@ function Step1Search({
             {/* Search results dropdown */}
             {showResults && (
               <div className="absolute top-full right-0 left-0 z-10 mt-0.5 border border-[#2e3135] bg-[#111113]">
-                {loading ? (
-                  <div className="px-4 py-3 text-[13px] text-[#8b8d98]">
-                    Searching…
-                  </div>
-                ) : (
-                  results.map((watch, i) => (
-                    <button
-                      key={watch.id}
-                      type="button"
-                      onClick={() => handleSelectResult(watch)}
-                      className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left transition-colors hover:bg-white/5 ${
-                        i % 2 === 1 ? "bg-white/2" : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        {watch.imageUrl ? (
-                          <img
-                            src={watch.imageUrl}
-                            alt={watch.name}
-                            className="size-15 shrink-0 object-cover"
-                          />
-                        ) : (
-                          <div className="size-15 shrink-0 bg-[#1a1a1c]" />
-                        )}
-                        <div className="flex flex-col">
-                          <span className="text-[14px] leading-5 text-[#8b8d98]">
-                            {watch.brand}
-                          </span>
-                          <span className="text-[16px] leading-6 text-[#edeef0]">
-                            {watch.name}
-                          </span>
-                          {watch.reference_number && (
-                            <span className="text-[12px] leading-4 tracking-[0.04px] text-[#8b8d98]">
-                              {watch.reference_number}
-                            </span>
+                <ScrollArea className="h-80">
+                  {loading ? (
+                    <div className="px-4 py-3 text-[13px] text-[#8b8d98]">
+                      Searching…
+                    </div>
+                  ) : (
+                    results.map((watch, i) => (
+                      <button
+                        key={watch.id}
+                        type="button"
+                        onClick={() => handleSelectResult(watch)}
+                        className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left transition-colors hover:bg-white/5 ${
+                          i % 2 === 1 ? "bg-white/2" : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          {watch.imageUrl ? (
+                            <img
+                              src={watch.imageUrl}
+                              alt={watch.name}
+                              className="size-15 shrink-0 object-cover"
+                            />
+                          ) : (
+                            <div className="size-15 shrink-0 bg-[#1a1a1c]" />
                           )}
+                          <div className="flex flex-col">
+                            <span className="text-[14px] leading-5 text-[#8b8d98]">
+                              {watch.brand}
+                            </span>
+                            <span className="text-[16px] leading-6 text-[#edeef0]">
+                              {watch.name}
+                            </span>
+                            {watch.reference_number && (
+                              <span className="text-[12px] leading-4 tracking-[0.04px] text-[#8b8d98]">
+                                {watch.reference_number}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <RiArrowRightLine className="size-4 shrink-0 text-[#8b8d98]" />
-                    </button>
-                  ))
-                )}
+                        <RiArrowRightLine className="size-4 shrink-0 text-[#8b8d98]" />
+                      </button>
+                    ))
+                  )}
+                </ScrollArea>
               </div>
             )}
           </div>
@@ -290,7 +293,7 @@ function Step1Search({
               onMouseLeave={onChipsEnd}
               onClick={onChipsClick}
             >
-              {QUICK_CHIPS.map((chip) => (
+              {chips.map((chip) => (
                 <button
                   key={chip}
                   type="button"

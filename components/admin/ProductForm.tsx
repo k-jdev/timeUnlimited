@@ -1,7 +1,8 @@
 ﻿"use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import { RiLoaderLine } from "@remixicon/react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,6 +14,21 @@ import { ProductCategoriesSection } from "./form/CategoriesSection"
 import { ProductFormActions } from "./form/ProductFormActions"
 import { ImageUploadSection } from "./ImageUploadSection"
 import { authFetch } from "@/lib/authFetch"
+
+// --- Reference number search result type ---
+interface RefSearchResult {
+  id: string
+  brand: string
+  model: string
+  reference_number: string | null
+  condition: string | null
+  case_material: string | null
+  case_size: string | null
+  dial_color: string | null
+  price: string | null
+  description: string | null
+  images?: Array<{ image_url: string; is_main: boolean }>
+}
 
 export interface ProductFormData {
   id: string
@@ -81,6 +97,84 @@ export function ProductForm({
       initialData?.referenceNumber ??
       (mode === "add" ? generateReferenceNumber() : "")
   )
+
+  // --- Reference number search state ---
+  const [refResults, setRefResults] = useState<RefSearchResult[]>([])
+  const [refLoading, setRefLoading] = useState(false)
+  const [refDropdownOpen, setRefDropdownOpen] = useState(false)
+  const refDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const refWrapperRef = useRef<HTMLDivElement>(null)
+
+  const searchByRef = useCallback(async (q: string) => {
+    if (!q.trim()) {
+      setRefResults([])
+      setRefDropdownOpen(false)
+      return
+    }
+    setRefLoading(true)
+    try {
+      const res = await authFetch(
+        `/api/products?search=${encodeURIComponent(q)}&limit=6`
+      )
+      if (!res.ok) throw new Error()
+      const json = await res.json()
+      const items: RefSearchResult[] = json.products ?? []
+      setRefResults(items)
+      setRefDropdownOpen(items.length > 0)
+    } catch {
+      setRefResults([])
+      setRefDropdownOpen(false)
+    } finally {
+      setRefLoading(false)
+    }
+  }, [])
+
+  function handleRefInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const q = e.target.value
+    setReferenceNumber(q)
+    if (refDebounceRef.current) clearTimeout(refDebounceRef.current)
+    refDebounceRef.current = setTimeout(() => searchByRef(q), 300)
+  }
+
+  function handleRefSelect(p: RefSearchResult) {
+    setReferenceNumber(p.reference_number ?? referenceNumber)
+    setFieldValues((prev) => ({
+      ...prev,
+      brand: p.brand ?? prev.brand,
+      model: p.model ?? prev.model,
+      condition: p.condition ?? prev.condition,
+      caseMaterial: p.case_material ?? prev.caseMaterial,
+      caseSize: p.case_size ?? prev.caseSize,
+      dial: p.dial_color ?? prev.dial,
+      price: p.price ?? prev.price,
+      description: p.description ?? prev.description,
+    }))
+    if (p.images && p.images.length > 0) {
+      const sorted = [...p.images].sort((a, b) => (b.is_main ? 1 : -1))
+      setExistingImages(
+        sorted.map((img, i) => ({
+          id: `ref-${p.id}-${i}`,
+          image_url: img.image_url,
+        }))
+      )
+    }
+    setRefResults([])
+    setRefDropdownOpen(false)
+  }
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (
+        refWrapperRef.current &&
+        !refWrapperRef.current.contains(e.target as Node)
+      ) {
+        setRefDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside)
+    return () => document.removeEventListener("mousedown", onClickOutside)
+  }, [])
 
   const [fieldValues, setFieldValues] = useState<
     ProductFieldValues & { description: string }
@@ -447,23 +541,64 @@ export function ProductForm({
               <ProductFormFields
                 values={fieldValues}
                 onChange={handleFieldChange}
+                onSelectProduct={handleRefSelect}
               />
 
-              <div className="flex flex-col gap-2 md:col-span-1">
+              <div
+                className="flex flex-col gap-2 md:col-span-1"
+                ref={refWrapperRef}
+              >
                 <Label
                   htmlFor="referenceNumber"
                   className="text-sm text-[#edeef0]"
                 >
                   Reference Number
                 </Label>
-                <Input
-                  id="referenceNumber"
-                  name="referenceNumber"
-                  placeholder="Enter reference"
-                  value={referenceNumber}
-                  onChange={(e) => setReferenceNumber(e.target.value)}
-                  className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
-                />
+                <div className="relative">
+                  <Input
+                    id="referenceNumber"
+                    name="referenceNumber"
+                    placeholder="Enter reference"
+                    value={referenceNumber}
+                    onChange={handleRefInput}
+                    onFocus={() => {
+                      if (refResults.length > 0) setRefDropdownOpen(true)
+                    }}
+                    autoComplete="off"
+                    className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
+                  />
+                  {refLoading && (
+                    <RiLoaderLine className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-[#8b8d98]" />
+                  )}
+                  {refDropdownOpen && refResults.length > 0 && (
+                    <div className="absolute top-full right-0 left-0 z-20 mt-0.5 border border-[#2e3135] bg-[#111113]">
+                      {refResults.map((p) => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onMouseDown={() => handleRefSelect(p)}
+                          className="flex w-full flex-col gap-0.5 px-3 py-2 text-left text-sm transition-colors hover:bg-white/5"
+                        >
+                          <span className="text-[#edeef0]">
+                            {p.brand} {p.model}
+                          </span>
+                          {p.reference_number && (
+                            <span className="text-xs text-[#5eb1ef]">
+                              {p.reference_number}
+                            </span>
+                          )}
+                          {(p.condition || p.case_material) && (
+                            <span className="text-xs text-[#8b8d98]">
+                              {[p.condition, p.case_material]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <ProductCategoriesSection

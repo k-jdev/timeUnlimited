@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
 
     if (search) {
       values.push(`%${search}%`)
-      whereClause += ` AND (brand ILIKE $${values.length} OR model ILIKE $${values.length})`
+      whereClause += ` AND (brand ILIKE $${values.length} OR model ILIKE $${values.length} OR reference_number ILIKE $${values.length})`
     }
 
     // --- Count total (filtered) ---
