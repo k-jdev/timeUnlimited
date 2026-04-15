@@ -13,12 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  CONDITIONS,
-  CASE_MATERIALS,
-  DIAL_COLORS,
-  SIZES,
-} from "@/data/inventory"
+import { CONDITIONS } from "@/data/inventory"
 
 interface ProductSearchResult {
   id: string
@@ -278,25 +273,15 @@ export function ProductFormFields({
         <Label htmlFor="caseMaterial" className="text-sm text-[#edeef0]">
           Case material
         </Label>
-        <Select
+        <Input
+          id="caseMaterial"
           name="caseMaterial"
+          type="text"
+          placeholder="e.g. Stainless Steel"
           value={values.caseMaterial}
-          onValueChange={(v) => onChange("caseMaterial", v)}
-        >
-          <SelectTrigger
-            id="caseMaterial"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
-          >
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent>
-            {CASE_MATERIALS.map((m) => (
-              <SelectItem key={m} value={m}>
-                {m}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          onChange={(e) => onChange("caseMaterial", e.target.value)}
+          className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
+        />
       </div>
 
       {/* Model */}
@@ -379,50 +364,30 @@ export function ProductFormFields({
         <Label htmlFor="caseSize" className="text-sm text-[#edeef0]">
           Case Size
         </Label>
-        <Select
+        <Input
+          id="caseSize"
           name="caseSize"
+          type="text"
+          placeholder="e.g. 40mm"
           value={values.caseSize}
-          onValueChange={(v) => onChange("caseSize", v)}
-        >
-          <SelectTrigger
-            id="caseSize"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
-          >
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent>
-            {SIZES.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          onChange={(e) => onChange("caseSize", e.target.value)}
+          className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
+        />
       </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="dial" className="text-sm text-[#edeef0]">
           Dial
         </Label>
-        <Select
+        <Input
+          id="dial"
           name="dial"
+          type="text"
+          placeholder="e.g. Black"
           value={values.dial}
-          onValueChange={(v) => onChange("dial", v)}
-        >
-          <SelectTrigger
-            id="dial"
-            className="w-full rounded-none border-[#2e3135] bg-transparent focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20 data-placeholder:text-[#dfebfd6e]"
-          >
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent>
-            {DIAL_COLORS.map((d) => (
-              <SelectItem key={d} value={d}>
-                {d}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          onChange={(e) => onChange("dial", e.target.value)}
+          className="rounded-none border-[#2e3135] bg-transparent placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
+        />
       </div>
 
       <div className="flex flex-col gap-2">
