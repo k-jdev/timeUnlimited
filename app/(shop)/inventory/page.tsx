@@ -34,6 +34,13 @@ export default function InventoryPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>("new-to-old")
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const sortDropdownRef = useRef<HTMLDivElement>(null)
+  const brandsRef = useRef<HTMLDivElement>(null)
+  const brandsDragRef = useRef({
+    active: false,
+    startX: 0,
+    scrollLeft: 0,
+    moved: false,
+  })
 
   useEffect(() => {
     if (!showSortDropdown) return
@@ -208,7 +215,41 @@ export default function InventoryPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="scrollbar-none flex flex-1 gap-1 overflow-x-auto">
+              <div
+                ref={brandsRef}
+                className="scrollbar-none flex flex-1 cursor-grab gap-1 overflow-x-auto select-none active:cursor-grabbing"
+                onMouseDown={(e) => {
+                  const el = brandsRef.current
+                  if (!el) return
+                  brandsDragRef.current = {
+                    active: true,
+                    startX: e.pageX - el.offsetLeft,
+                    scrollLeft: el.scrollLeft,
+                    moved: false,
+                  }
+                }}
+                onMouseMove={(e) => {
+                  const d = brandsDragRef.current
+                  if (!d.active) return
+                  const el = brandsRef.current
+                  if (!el) return
+                  const walk = e.pageX - el.offsetLeft - d.startX
+                  if (Math.abs(walk) > 4) d.moved = true
+                  el.scrollLeft = d.scrollLeft - walk
+                }}
+                onMouseUp={() => {
+                  brandsDragRef.current.active = false
+                }}
+                onMouseLeave={() => {
+                  brandsDragRef.current.active = false
+                }}
+                onClick={(e) => {
+                  if (brandsDragRef.current.moved) {
+                    e.stopPropagation()
+                    brandsDragRef.current.moved = false
+                  }
+                }}
+              >
                 {BRANDS.map((brand) => {
                   const isActive = activeBrandChips.includes(brand)
                   return (
