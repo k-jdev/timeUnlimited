@@ -114,7 +114,7 @@ export function FooterButtons({
 }: {
   onBack?: () => void
   onNext: () => void
-  nextLabel?: string
+  nextLabel?: React.ReactNode
   nextIcon?: React.ReactNode
   showBack?: boolean
   note?: React.ReactNode

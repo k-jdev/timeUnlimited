@@ -1,22 +1,23 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
+  RiArrowRightLine,
   RiArrowRightUpLine,
+  RiAuctionLine,
   RiCheckLine,
   RiCloseLine,
-  RiArrowLeftRightLine,
-  RiUpload2Line,
   RiFlashlightFill,
-  RiAuctionLine,
+  RiSearchLine,
+  RiUpload2Line,
 } from "@remixicon/react"
 import {
-  ModalHeader,
-  FormField,
-  ModalSelect,
-  ModalInput,
   FooterButtons,
+  FormField,
+  ModalHeader,
+  ModalInput,
+  ModalSelect,
 } from "@/components/modal/ModalPrimitives"
 import {
   BRAND_OPTIONS,
@@ -28,9 +29,20 @@ import {
 // --- Types ------------------------------------------------------------------
 
 type SellType = "outright" | "consignment" | "not-sure"
-type Step = 1 | 2 | 3 | "success"
+type Mode = "search" | "manual"
+type Step = 1 | 2 | 3 | 4 | 5 | "success"
+
+interface SearchResult {
+  id: string
+  brand: string
+  name: string
+  reference_number: string | null
+  imageUrl: string | null
+}
 
 interface FormData {
+  searchQuery: string
+  selectedWatch: SearchResult | null
   sellType: SellType
   brand: string
   watchReference: string
@@ -43,6 +55,8 @@ interface FormData {
 }
 
 const EMPTY_FORM: FormData = {
+  searchQuery: "",
+  selectedWatch: null,
   sellType: "outright",
   brand: "",
   watchReference: "",
@@ -53,6 +67,14 @@ const EMPTY_FORM: FormData = {
   paymentMethod: "",
   contactMethod: "",
 }
+
+const QUICK_CHIPS = [
+  "Rolex Daytona",
+  "Patek Nautilus",
+  "AP Royal Oak",
+  "Richard Mille",
+  "Lange Zeitwerk",
+]
 
 // --- Sell type options -------------------------------------------------------
 
@@ -96,21 +118,26 @@ const SELL_TYPES: {
   },
 ]
 
-function Step1SellType({
+// --- Step 2: Sell type ------------------------------------------------------
+
+function Step2SellType({
   value,
   onChange,
+  onBack,
   onNext,
 }: {
   value: SellType
   onChange: (v: SellType) => void
+  onBack: () => void
   onNext: () => void
 }) {
   return (
     <div className="flex flex-col gap-8">
       <ModalHeader
-        step={1}
+        step={2}
         title="Ready to let one go?"
         subtitle="Two ways to sell. One prioritizes speed, the other maximizes return"
+        totalSteps={5}
       />
 
       <div className="flex flex-col gap-3">
@@ -160,12 +187,351 @@ function Step1SellType({
         })}
       </div>
 
-      <FooterButtons onNext={onNext} showBack={false} />
+      <FooterButtons onBack={onBack} onNext={onNext} />
     </div>
   )
 }
 
-function Step2WatchDetails({
+// --- Step 1: Search ---------------------------------------------------------
+
+function Step1Search({
+  data,
+  onQueryChange,
+  onSelectWatch,
+  onEnterManually,
+  onNext,
+}: {
+  data: FormData
+  onQueryChange: (q: string) => void
+  onSelectWatch: (watch: SearchResult) => void
+  onEnterManually: () => void
+  onNext: () => void
+}) {
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [loading, setLoading] = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const chipsRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef({
+    active: false,
+    startX: 0,
+    scrollLeft: 0,
+    moved: false,
+  })
+
+  function onChipsMouseDown(e: React.MouseEvent) {
+    const el = chipsRef.current
+    if (!el) return
+    dragRef.current = {
+      active: true,
+      startX: e.pageX - el.offsetLeft,
+      scrollLeft: el.scrollLeft,
+      moved: false,
+    }
+  }
+  function onChipsMouseMove(e: React.MouseEvent) {
+    const d = dragRef.current
+    if (!d.active) return
+    const el = chipsRef.current
+    if (!el) return
+    const x = e.pageX - el.offsetLeft
+    const walk = x - d.startX
+    if (Math.abs(walk) > 4) d.moved = true
+    el.scrollLeft = d.scrollLeft - walk
+  }
+  function onChipsEnd() {
+    dragRef.current.active = false
+  }
+  function onChipsClick(e: React.MouseEvent) {
+    if (dragRef.current.moved) {
+      e.stopPropagation()
+      dragRef.current.moved = false
+    }
+  }
+
+  const search = useCallback(async (q: string) => {
+    if (!q.trim()) {
+      setResults([])
+      return
+    }
+    setLoading(true)
+    try {
+      const res = await fetch(
+        `/api/inventary?search=${encodeURIComponent(q)}&limit=6`
+      )
+      if (!res.ok) throw new Error("Search failed")
+      const json = await res.json()
+      const products: SearchResult[] = (json.products ?? json ?? []).map(
+        (p: {
+          id: string
+          brand: string
+          model: string
+          reference_number: string | null
+          images?: Array<{ image_url: string; is_main: boolean }>
+        }) => ({
+          id: p.id,
+          brand: p.brand ?? "",
+          name: p.model ?? "",
+          reference_number: p.reference_number ?? null,
+          imageUrl:
+            p.images?.find((img) => img.is_main)?.image_url ??
+            p.images?.[0]?.image_url ??
+            null,
+        })
+      )
+      setResults(products)
+    } catch {
+      setResults([])
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const q = e.target.value
+    onQueryChange(q)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => search(q), 300)
+  }
+
+  function handleClear() {
+    onQueryChange("")
+    setResults([])
+    inputRef.current?.focus()
+  }
+
+  function handleChip(chip: string) {
+    onQueryChange(chip)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => search(chip), 0)
+  }
+
+  function handleSelectResult(watch: SearchResult) {
+    onSelectWatch(watch)
+    onQueryChange(
+      `${watch.name}${watch.reference_number ? ` – ${watch.reference_number}` : ""}`
+    )
+    setResults([])
+    onNext()
+  }
+
+  const showResults = results.length > 0 && data.searchQuery.trim().length > 0
+
+  return (
+    <div className="flex min-h-75 flex-col justify-between gap-8">
+      <div className="flex flex-col gap-6">
+        <ModalHeader
+          step={1}
+          title="What are you selling?"
+          subtitle="Tell us as much or as little as you have."
+          totalSteps={5}
+        />
+
+        <div className="flex flex-col gap-3">
+          {/* Search input */}
+          <div className="relative">
+            <div className="flex h-8 items-center border border-[#2e3135] bg-[#111113]">
+              <div className="flex size-8 shrink-0 items-center justify-center text-[#8b8d98]">
+                <RiSearchLine className="size-4" />
+              </div>
+              <input
+                ref={inputRef}
+                type="text"
+                className="h-full flex-1 bg-transparent pr-2 text-[14px] text-[#edeef0] outline-none placeholder:text-[#8b8d98]"
+                placeholder="e.g. Submariner 126610LN or Nautilus 5711"
+                value={data.searchQuery}
+                onChange={handleInput}
+                autoComplete="off"
+              />
+              {data.searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="flex size-8 shrink-0 items-center justify-center text-[#8b8d98] transition-colors hover:text-[#edeef0]"
+                  aria-label="Clear"
+                >
+                  <RiCloseLine className="size-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Search results dropdown */}
+            {showResults && (
+              <div className="absolute top-full right-0 left-0 z-10 mt-0.5 border border-[#2e3135] bg-[#111113]">
+                {loading ? (
+                  <div className="px-4 py-3 text-[13px] text-[#8b8d98]">
+                    Searching…
+                  </div>
+                ) : (
+                  results.map((watch, i) => (
+                    <button
+                      key={watch.id}
+                      type="button"
+                      onClick={() => handleSelectResult(watch)}
+                      className={`flex w-full items-center justify-between gap-3 px-4 py-2 text-left transition-colors hover:bg-white/5 ${
+                        i % 2 === 1 ? "bg-white/2" : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {watch.imageUrl ? (
+                          <img
+                            src={watch.imageUrl}
+                            alt={watch.name}
+                            className="size-15 shrink-0 object-cover"
+                          />
+                        ) : (
+                          <div className="size-15 shrink-0 bg-[#1a1a1c]" />
+                        )}
+                        <div className="flex flex-col">
+                          <span className="text-[14px] leading-5 text-[#8b8d98]">
+                            {watch.brand}
+                          </span>
+                          <span className="text-[16px] leading-6 text-[#edeef0]">
+                            {watch.name}
+                          </span>
+                          {watch.reference_number && (
+                            <span className="text-[12px] leading-4 tracking-[0.04px] text-[#8b8d98]">
+                              {watch.reference_number}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <RiArrowRightLine className="size-4 shrink-0 text-[#8b8d98]" />
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Quick chips */}
+          <div className="relative overflow-hidden">
+            <div
+              ref={chipsRef}
+              className="scrollbar-hide flex cursor-grab gap-2 overflow-x-auto select-none active:cursor-grabbing"
+              onMouseDown={onChipsMouseDown}
+              onMouseMove={onChipsMouseMove}
+              onMouseUp={onChipsEnd}
+              onMouseLeave={onChipsEnd}
+              onClick={onChipsClick}
+            >
+              {QUICK_CHIPS.map((chip) => (
+                <button
+                  key={chip}
+                  type="button"
+                  onClick={() => handleChip(chip)}
+                  className="flex h-8 shrink-0 items-center justify-center bg-white/6 px-3 text-[14px] font-medium text-[#edeef0] transition-colors hover:bg-white/10"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-r from-transparent to-[#111113]" />
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-end gap-3">
+        <button
+          type="button"
+          onClick={onEnterManually}
+          className="flex h-8 items-center justify-center bg-white/6 px-3 text-[14px] font-medium text-[#edeef0] transition-colors hover:bg-white/10"
+        >
+          Enter manually
+        </button>
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={!data.searchQuery.trim()}
+          className="flex h-8 items-center justify-center gap-2 bg-[#edeef0] px-3 text-[14px] font-medium text-[#020208] transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Next
+          <RiArrowRightLine className="size-4" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// --- Step 2a: Watch details after search selection --------------------------
+
+function Step2SearchSelected({
+  data,
+  onChange,
+  onBack,
+  onNext,
+}: {
+  data: FormData
+  onChange: (field: keyof FormData, value: string) => void
+  onBack: () => void
+  onNext: () => void
+}) {
+  const w = data.selectedWatch
+  return (
+    <div className="flex flex-col gap-8">
+      <ModalHeader
+        step={3}
+        title="Tell us about your watch"
+        subtitle="Add your watch details to get a more precise valuation"
+        totalSteps={5}
+      />
+
+      <div className="flex flex-col gap-4">
+        {/* Selected watch card */}
+        {w && (
+          <div className="border border-[#2e3135] bg-[#0d0d0e] p-4">
+            <p className="mb-2 text-[12px] leading-4 text-[#8b8d98]">
+              Selected watch
+            </p>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-serif text-[22px] leading-7 text-[#edeef0]">
+                {w.name}
+              </span>
+              {w.reference_number && (
+                <span className="text-[12px] leading-4 tracking-[0.04px] text-[#8b8d98]">
+                  {w.reference_number}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        <FormField label="Condition">
+          <ModalSelect
+            placeholder="Select condition"
+            options={CONDITION_OPTIONS_SELL}
+            value={data.condition}
+            onChange={(v) => onChange("condition", v)}
+          />
+        </FormField>
+
+        <FormField label="Box & Papers?">
+          <ModalSelect
+            placeholder="Select an option"
+            options={PAPERS_OPTIONS}
+            value={data.boxAndPapers}
+            onChange={(v) => onChange("boxAndPapers", v)}
+          />
+        </FormField>
+
+        <FormField label="Year of production (optional)">
+          <ModalInput
+            placeholder="e.g. 2019"
+            value={data.yearOfProduction}
+            onChange={(e) => onChange("yearOfProduction", e.target.value)}
+          />
+        </FormField>
+      </div>
+
+      <FooterButtons onBack={onBack} onNext={onNext} />
+    </div>
+  )
+}
+
+// --- Step 2b: Watch details manual entry ------------------------------------
+
+function Step2Manual({
   data,
   onChange,
   onBack,
@@ -179,9 +545,10 @@ function Step2WatchDetails({
   return (
     <div className="flex flex-col gap-8">
       <ModalHeader
-        step={2}
+        step={3}
         title="Tell us about your watch"
         subtitle="Add your watch details to get a more precise valuation"
+        totalSteps={5}
       />
 
       <div className="flex flex-col gap-4">
@@ -220,7 +587,7 @@ function Step2WatchDetails({
           />
         </FormField>
 
-        <FormField label="Year of Production (optional)">
+        <FormField label="Year of production (optional)">
           <ModalInput
             placeholder="e.g. 2019"
             value={data.yearOfProduction}
@@ -234,20 +601,22 @@ function Step2WatchDetails({
   )
 }
 
-function Step3FinalDetails({
+// --- Step 4: Final details --------------------------------------------------
+
+function Step4FinalDetails({
   data,
   onChange,
   photos,
   onPhotos,
   onBack,
-  onSubmit,
+  onNext,
 }: {
   data: FormData
   onChange: (field: keyof FormData, value: string) => void
   photos: File[]
   onPhotos: (files: File[]) => void
   onBack: () => void
-  onSubmit: () => void
+  onNext: () => void
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
@@ -260,9 +629,10 @@ function Step3FinalDetails({
   return (
     <div className="flex flex-col gap-8">
       <ModalHeader
-        step={3}
+        step={4}
         title="Final details"
         subtitle="Set your expectations and tell us how to reach you"
+        totalSteps={5}
       />
 
       <div className="flex flex-col gap-4">
@@ -274,20 +644,12 @@ function Step3FinalDetails({
           />
         </FormField>
 
-        <FormField label="How do you want to pay?">
+        <FormField label="How do you want to be paid?">
           <ModalSelect
             placeholder="Select payment method"
             options={PAYMENT_OPTIONS}
             value={data.paymentMethod}
             onChange={(v) => onChange("paymentMethod", v)}
-          />
-        </FormField>
-
-        <FormField label="Best way to reach you">
-          <ModalInput
-            placeholder="WhatsApp number, email, or Twitter handle"
-            value={data.contactMethod}
-            onChange={(e) => onChange("contactMethod", e.target.value)}
           />
         </FormField>
 
@@ -329,6 +691,43 @@ function Step3FinalDetails({
         </FormField>
       </div>
 
+      <FooterButtons onBack={onBack} onNext={onNext} />
+    </div>
+  )
+}
+
+// --- Step 5: Secure this piece ----------------------------------------------
+
+function Step5SecurePiece({
+  data,
+  onChange,
+  onBack,
+  onSubmit,
+}: {
+  data: FormData
+  onChange: (field: keyof FormData, value: string) => void
+  onBack: () => void
+  onSubmit: () => void
+}) {
+  return (
+    <div className="flex flex-col gap-8">
+      <ModalHeader
+        step={5}
+        title="Secure this piece"
+        subtitle="Tell us how you'd like to proceed — we'll take care of the rest."
+        totalSteps={5}
+      />
+
+      <div className="flex flex-col gap-4">
+        <FormField label="Best way to reach you">
+          <ModalInput
+            placeholder="WhatsApp number, email, or Twitter handle"
+            value={data.contactMethod}
+            onChange={(e) => onChange("contactMethod", e.target.value)}
+          />
+        </FormField>
+      </div>
+
       <FooterButtons
         onBack={onBack}
         onNext={onSubmit}
@@ -339,6 +738,8 @@ function Step3FinalDetails({
     </div>
   )
 }
+
+// --- Success screen ---------------------------------------------------------
 
 function SuccessScreen({
   requestNumber,
@@ -378,7 +779,7 @@ function SuccessScreen({
   )
 }
 
-//  Main Component
+// --- Main Component ---------------------------------------------------------
 
 interface SellWatchModalProps {
   isOpen: boolean
@@ -387,17 +788,32 @@ interface SellWatchModalProps {
 
 export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
   const [step, setStep] = useState<Step>(1)
+  const [mode, setMode] = useState<Mode>("search")
   const [formData, setFormData] = useState<FormData>(EMPTY_FORM)
+
   const [photos, setPhotos] = useState<File[]>([])
   const [requestNumber, setRequestNumber] = useState("")
 
   useEffect(() => {
     if (!isOpen) {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         setStep(1)
+        setMode("search")
         setFormData(EMPTY_FORM)
         setPhotos([])
       }, 300)
+      return () => clearTimeout(t)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
     }
   }, [isOpen])
 
@@ -414,7 +830,22 @@ export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
+  function handleEnterManually() {
+    setMode("manual")
+    setStep(3)
+  }
+
+  function handleStep1Next() {
+    setMode("search")
+    setStep(3)
+  }
+
+  function handleSelectWatch(watch: SearchResult) {
+    setFormData((prev) => ({ ...prev, selectedWatch: watch }))
+  }
+
   function handleSubmit() {
+    const w = formData.selectedWatch
     const purposeParts = [
       `Sell type: ${formData.sellType}`,
       formData.boxAndPapers ? `Box & Papers: ${formData.boxAndPapers}` : "",
@@ -426,10 +857,16 @@ export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
     const payload = {
       created_date: new Date().toISOString(),
       status: "new",
-      client_name: formData.watchReference || "",
+      client_name:
+        mode === "search"
+          ? w
+            ? `${w.name}${w.reference_number ? ` – ${w.reference_number}` : ""}`
+            : formData.searchQuery
+          : formData.watchReference,
       email: "",
       phone: formData.contactMethod || "",
-      brand_preferences: formData.brand || "",
+      brand_preferences:
+        mode === "search" ? (w?.brand ?? "") : (formData.brand ?? ""),
       budget_range: formData.askingPrice || "",
       material: formData.condition || "",
       timeframe: formData.paymentMethod || "",
@@ -464,11 +901,11 @@ export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 sm:px-0"
       onClick={onClose}
     >
       <div
-        className="relative w-150 bg-[#111113] p-10"
+        className="relative w-full max-w-150 bg-[#111113] p-10"
         style={{ boxShadow: "0 8px 40px 0 rgba(0,0,0,0.8)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -476,36 +913,67 @@ export function SellWatchModal({ isOpen, onClose }: SellWatchModalProps) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-0 right-0 flex size-12 items-center justify-center text-[#8b8d98] transition-colors hover:text-[#edeef0]"
+          className="absolute top-0 right-0 flex size-8 items-center justify-center text-[#8b8d98] transition-colors hover:text-[#edeef0]"
           aria-label="Close"
         >
-          <RiCloseLine className="size-5" />
+          <RiCloseLine className="size-4" />
         </button>
 
         {step === 1 && (
-          <Step1SellType
-            value={formData.sellType}
-            onChange={(v) => setFormData((prev) => ({ ...prev, sellType: v }))}
+          <Step1Search
+            data={formData}
+            onQueryChange={(q) =>
+              setFormData((prev) => ({ ...prev, searchQuery: q }))
+            }
+            onSelectWatch={handleSelectWatch}
+            onEnterManually={handleEnterManually}
             onNext={() => setStep(2)}
           />
         )}
 
         {step === 2 && (
-          <Step2WatchDetails
-            data={formData}
-            onChange={setField}
+          <Step2SellType
+            value={formData.sellType}
+            onChange={(v) => setFormData((prev) => ({ ...prev, sellType: v }))}
             onBack={() => setStep(1)}
-            onNext={() => setStep(3)}
+            onNext={handleStep1Next}
           />
         )}
 
-        {step === 3 && (
-          <Step3FinalDetails
+        {step === 3 && mode === "search" && (
+          <Step2SearchSelected
+            data={formData}
+            onChange={setField}
+            onBack={() => setStep(2)}
+            onNext={() => setStep(4)}
+          />
+        )}
+
+        {step === 3 && mode === "manual" && (
+          <Step2Manual
+            data={formData}
+            onChange={setField}
+            onBack={() => setStep(2)}
+            onNext={() => setStep(4)}
+          />
+        )}
+
+        {step === 4 && (
+          <Step4FinalDetails
             data={formData}
             onChange={setField}
             photos={photos}
             onPhotos={setPhotos}
-            onBack={() => setStep(2)}
+            onBack={() => setStep(3)}
+            onNext={() => setStep(5)}
+          />
+        )}
+
+        {step === 5 && (
+          <Step5SecurePiece
+            data={formData}
+            onChange={setField}
+            onBack={() => setStep(4)}
             onSubmit={handleSubmit}
           />
         )}
