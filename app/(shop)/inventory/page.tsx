@@ -1,12 +1,13 @@
-﻿"use client"
+"use client"
 
-import Link from "next/link"
 import { useState, useMemo, useEffect, useRef } from "react"
 import {
   RiSearchLine,
   RiArrowDownSLine,
   RiFilterLine,
   RiCheckLine,
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
 } from "@remixicon/react"
 import { BRANDS } from "@/data/inventory"
 import type { InventoryWatch } from "@/data/inventory"
@@ -25,16 +26,22 @@ import { SellWatchModal } from "@/components/home/SellWatchModal"
 
 type SortOrder = "new-to-old" | "old-to-new" | "price-high" | "price-low"
 
+const PAGE_SIZE = 12
+
 export default function InventoryPage() {
   const [search, setSearch] = useState("")
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS)
-  const handleFiltersChange = (key: keyof FilterState, items: string[]) =>
+  const handleFiltersChange = (key: keyof FilterState, items: string[]) => {
     setFilters((prev) => ({ ...prev, [key]: items }))
+    setCurrentPage(1)
+  }
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000])
   const [sortOrder, setSortOrder] = useState<SortOrder>("new-to-old")
   const [showSortDropdown, setShowSortDropdown] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   const sortDropdownRef = useRef<HTMLDivElement>(null)
   const brandsRef = useRef<HTMLDivElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
   const brandsDragRef = useRef({
     active: false,
     startX: 0,
@@ -165,12 +172,41 @@ export default function InventoryPage() {
     return result
   }, [watches, search, filters, priceRange, sortOrder])
 
+  const totalPages = Math.max(1, Math.ceil(filteredWatches.length / PAGE_SIZE))
+
+  const pagedWatches = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE
+    return filteredWatches.slice(start, start + PAGE_SIZE)
+  }, [filteredWatches, currentPage])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, priceRange, sortOrder])
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page)
+    gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
   const sortLabels: Record<SortOrder, string> = {
     "new-to-old": "New to Old",
     "old-to-new": "Old to New",
     "price-high": "High to Low",
     "price-low": "Low to High",
   }
+
+  const pageNumbers = useMemo(() => {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+    const pages: (number | "...")[] = []
+    pages.push(1)
+    if (currentPage > 3) pages.push("...")
+    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+      pages.push(i)
+    }
+    if (currentPage < totalPages - 2) pages.push("...")
+    pages.push(totalPages)
+    return pages
+  }, [totalPages, currentPage])
 
   return (
     <div className="min-h-screen bg-[#020208]">
@@ -375,13 +411,14 @@ export default function InventoryPage() {
           </div>
 
           <div
+            ref={gridRef}
             className="grid gap-1 lg:pr-0"
             style={{
               gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             }}
           >
             {isLoading
-              ? Array.from({ length: 8 }).map((_, i) => (
+              ? Array.from({ length: PAGE_SIZE }).map((_, i) => (
                   <div
                     key={i}
                     className="relative h-[493px] overflow-hidden bg-[#111113]"
@@ -402,10 +439,53 @@ export default function InventoryPage() {
                     </div>
                   </div>
                 ))
-              : filteredWatches.map((watch) => (
+              : pagedWatches.map((watch) => (
                   <InventoryWatchCard key={watch.id} watch={watch} />
                 ))}
           </div>
+
+          {!isLoading && totalPages > 1 && (
+            <div className="flex items-center justify-center gap-1 px-4 py-12">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex h-10 w-10 items-center justify-center text-[#60646c] transition-colors hover:text-[#edeef0] disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <RiArrowLeftSLine className="size-5" />
+              </button>
+
+              {pageNumbers.map((page, idx) =>
+                page === "..." ? (
+                  <span
+                    key={`ellipsis-${idx}`}
+                    className="flex h-10 w-10 items-center justify-center text-[13px] text-[#60646c]"
+                  >
+                    ···
+                  </span>
+                ) : (
+                  <button
+                    key={page}
+                    onClick={() => goToPage(page as number)}
+                    className={`flex h-10 w-10 items-center justify-center text-[13px] transition-colors ${
+                      currentPage === page
+                        ? "bg-[rgba(255,255,255,0.08)] text-[#edeef0]"
+                        : "text-[#60646c] hover:text-[#edeef0]"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="flex h-10 w-10 items-center justify-center text-[#60646c] transition-colors hover:text-[#edeef0] disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <RiArrowRightSLine className="size-5" />
+              </button>
+            </div>
+          )}
         </div>
         <div className="pb-16 lg:pb-32" />
         <div className="mx-auto max-w-[1440px]">
