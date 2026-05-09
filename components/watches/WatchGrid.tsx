@@ -169,7 +169,7 @@ function WatchCardItem({
         loading="lazy"
         decoding="async"
         className={cn(
-          "absolute left-1/2 w-auto -translate-x-1/2 object-contain",
+          "absolute inset-0 h-full w-full object-contain",
           watch.imageClassName ?? ""
         )}
         animate={{
