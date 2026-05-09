@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useMemo, useEffect, useRef } from "react"
 import {
@@ -196,11 +196,16 @@ export default function InventoryPage() {
   }
 
   const pageNumbers = useMemo(() => {
-    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+    if (totalPages <= 7)
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
     const pages: (number | "...")[] = []
     pages.push(1)
     if (currentPage > 3) pages.push("...")
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    ) {
       pages.push(i)
     }
     if (currentPage < totalPages - 2) pages.push("...")
@@ -449,7 +454,7 @@ export default function InventoryPage() {
               <button
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="flex h-10 w-10 items-center justify-center text-[#60646c] transition-colors hover:text-[#edeef0] disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center text-[#60646c] transition-colors hover:text-[#edeef0] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <RiArrowLeftSLine className="size-5" />
               </button>
@@ -480,7 +485,7 @@ export default function InventoryPage() {
               <button
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="flex h-10 w-10 items-center justify-center text-[#60646c] transition-colors hover:text-[#edeef0] disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center text-[#60646c] transition-colors hover:text-[#edeef0] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <RiArrowRightSLine className="size-5" />
               </button>
