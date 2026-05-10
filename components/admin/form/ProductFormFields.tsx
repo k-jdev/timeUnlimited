@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { RiLoaderLine, RiArrowRightLine } from "@remixicon/react"
+import { Switch } from "@/components/ui/switch"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { authFetch } from "@/lib/authFetch"
 import {
@@ -39,6 +40,7 @@ export interface ProductFieldValues {
   caseSize: string
   dial: string
   price: string
+  priceOnRequest: boolean
   completeSet: string
   show_on_main: boolean
   show_order: number
@@ -46,7 +48,7 @@ export interface ProductFieldValues {
 
 interface ProductFormFieldsProps {
   values: ProductFieldValues
-  onChange: (field: keyof ProductFieldValues, value: string) => void
+  onChange: (field: keyof ProductFieldValues, value: string | boolean) => void
   onSelectProduct?: (p: ProductSearchResult) => void
 }
 
@@ -391,23 +393,46 @@ export function ProductFormFields({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="price" className="text-sm text-[#edeef0]">
-          Price
-        </Label>
-        <div className="relative flex items-center">
-          <span className="absolute left-3 text-sm text-[#8b8d98]">$</span>
-          <Input
-            id="price"
-            name="price"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0.00"
-            value={values.price}
-            onChange={(e) => onChange("price", e.target.value)}
-            className="rounded-none border-[#2e3135] bg-transparent pl-7 placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
-          />
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-[#edeef0]">Price</span>
+          <div className="flex items-center gap-2">
+            <span style={{ color: "#ffffff", fontSize: "12px" }}>
+              Price on request
+            </span>
+            <Switch
+              checked={values.priceOnRequest}
+              onCheckedChange={(checked: boolean) => {
+                onChange("priceOnRequest", checked)
+                if (checked) onChange("price", "0")
+              }}
+              className="scale-90"
+            />
+          </div>
         </div>
+        {!values.priceOnRequest && (
+          <div className="relative flex items-center">
+            <span className="absolute left-3 text-sm text-[#8b8d98]">$</span>
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={values.price}
+              onChange={(e) => onChange("price", e.target.value)}
+              className="rounded-none border-[#2e3135] bg-transparent pl-7 placeholder:text-[#dfebfd6e] focus-visible:border-[#5eb1ef] focus-visible:ring-[#5eb1ef]/20"
+            />
+          </div>
+        )}
+        {values.priceOnRequest && (
+          <>
+            <input type="hidden" name="price" value="0" />
+            <div className="flex h-9 items-center justify-center border border-[#2e3135]">
+              <span className="text-sm text-[#edeef0]">Price on request</span>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">

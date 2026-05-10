@@ -186,6 +186,7 @@ export function ProductForm({
     caseSize: initialData?.caseSize ?? "",
     dial: initialData?.dial ?? "",
     price: initialData?.price ?? "",
+    priceOnRequest: !initialData?.price || Number(initialData?.price) === 0,
     completeSet: initialData?.completeSet ?? "",
     description: initialData?.description ?? "",
     show_on_main: initialData?.show_on_main ?? false,
@@ -194,7 +195,7 @@ export function ProductForm({
 
   const handleFieldChange = (
     field: keyof typeof fieldValues,
-    value: string
+    value: string | boolean
   ) => {
     setFieldValues((prev) => ({ ...prev, [field]: value }))
   }
