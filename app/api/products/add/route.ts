@@ -66,9 +66,12 @@ export async function POST(req: NextRequest) {
 
   try {
     await pool.query(query, values)
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to insert product:", err)
-    return NextResponse.json({ error: "Database error" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Database error", detail: err?.message, code: err?.code },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({ id })

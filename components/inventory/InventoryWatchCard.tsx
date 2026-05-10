@@ -130,7 +130,7 @@ export function InventoryWatchCard({ watch }: InventoryWatchCardProps) {
         transition={{ duration: 0.4 }}
       />
 
-      <div className="absolute top-[325px] left-1/2 flex w-[243px] -translate-x-1/2 flex-col items-center gap-4">
+      <div className="absolute top-[355px] left-1/2 flex w-[243px] -translate-x-1/2 flex-col items-center gap-4">
         <div className="flex w-full flex-col items-start gap-[11px]">
           <div className="flex w-full flex-col items-start gap-1 text-center">
             <p className="w-full font-serif text-[16px] leading-[19px] tracking-[0.32px] text-[rgba(237,238,240,0.62)] uppercase">
@@ -144,9 +144,11 @@ export function InventoryWatchCard({ watch }: InventoryWatchCardProps) {
             <Badge className="h-auto rounded-none border-0 bg-[rgba(255,255,255,0.06)] px-1.5 py-0.5 text-[12px] leading-4 font-medium tracking-[0.04px] text-[rgba(237,238,240,0.62)]">
               {watch.ref}
             </Badge>
-            <Badge className="h-auto rounded-none border-0 bg-[rgba(255,255,255,0.06)] px-1.5 py-0.5 text-[12px] leading-4 font-medium tracking-[0.04px] text-[rgba(237,238,240,0.62)]">
-              {watch.size}
-            </Badge>
+            {watch.size && (
+              <Badge className="h-auto rounded-none border-0 bg-[rgba(255,255,255,0.06)] px-1.5 py-0.5 text-[12px] leading-4 font-medium tracking-[0.04px] text-[rgba(237,238,240,0.62)]">
+                {watch.size}
+              </Badge>
+            )}
           </div>
         </div>
         <p className="w-full text-center font-serif text-[26px] leading-none tracking-[-0.1px] text-[#edeef0]">
