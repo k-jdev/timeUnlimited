@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabaseServer"
+import { requireAuth } from "@/lib/authHelpers"
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<Response> {
+  const authResult = requireAuth(req)
+  if (authResult instanceof Response) return authResult
+
   const { id } = await params
   const imageId = id
   if (!imageId) {

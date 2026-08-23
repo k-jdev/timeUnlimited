@@ -7,9 +7,12 @@ function generateCode() {
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()
-  if (!email) return NextResponse.json({ error: "Email required" }, { status: 400 })
+  if (!email)
+    return NextResponse.json({ error: "Email required" }, { status: 400 })
 
-  const userRes = await pool.query(`SELECT id FROM users WHERE email = $1`, [email])
+  const userRes = await pool.query(`SELECT id FROM users WHERE email = $1`, [
+    email,
+  ])
   if (userRes.rowCount === 0) {
     return NextResponse.json({ error: "User not found" }, { status: 404 })
   }
@@ -17,14 +20,17 @@ export async function POST(req: NextRequest) {
   const code = generateCode()
   const userId = userRes.rows[0].id
 
-
   await pool.query(
     `INSERT INTO reset_codes (user_id, code, expires_at)
      VALUES ($1, $2, NOW() + interval '15 minutes')`,
     [userId, code]
   )
 
-  console.log(`Verification code for ${email}: ${code}`)
+  // Email delivery is not wired up yet — the code is surfaced in the server
+  // log during local development only, never in production.
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`[dev] Verification code for ${email}: ${code}`)
+  }
 
   return NextResponse.json({ message: "Verification code sent" })
 }

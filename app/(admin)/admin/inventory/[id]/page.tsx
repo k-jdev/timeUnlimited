@@ -39,7 +39,7 @@ export default function EditProductPage() {
         hoverColor: product.hover_color ?? "",
         status: product.status ?? "",
         show_on_main: product.show_on_main ?? false,
-        show_order: product.show_order ?? 0 ,
+        show_order: product.show_order ?? 0,
       }
     : undefined
 

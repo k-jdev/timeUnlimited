@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { RiAddLine } from "@remixicon/react"
-import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb"
 import { authFetch } from "@/lib/authFetch"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProductsToolbar } from "./ProductsToolbar"
@@ -26,13 +25,6 @@ export function ProductsView() {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(15)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [counts, setCounts] = useState<{ [key in ProductTab]: number }>({
-    all: 0,
-    active: 0,
-    archived: 0,
-    featured: 0,
-  })
-
   // --- Fetch products from API ---
   useEffect(() => {
     if (activeTab === "featured") return
@@ -50,15 +42,6 @@ export function ProductsView() {
 
         setProducts(data.products ?? [])
         setTotal(data.total ?? 0)
-
-        if (data.counts) {
-          setCounts({
-            all: data.counts.all ?? 0,
-            active: data.counts.active ?? 0,
-            archived: data.counts.archived ?? 0,
-            featured: data.counts.featured ?? 0,
-          })
-        }
       } catch (err) {
         console.error("Error fetching products:", err)
         setProducts([])

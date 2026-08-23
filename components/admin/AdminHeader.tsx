@@ -9,7 +9,6 @@ import { useState } from "react"
 const NAV_LINKS = [
   { label: "Inventory", href: "/admin/inventory" },
   { label: "Requests", href: "/admin/requests" },
-  // { label: "Categories", href: "/admin/categories" },
 ]
 
 export function AdminHeader() {

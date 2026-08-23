@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
-// build
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
@@ -15,10 +14,9 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: "Time Unlimited",
-  icons: {
-    icon: "/vite.svg",
-  },
+  title: "Time Unlimited — Luxury Watch Marketplace",
+  description:
+    "Buy, source, and sell luxury watches. Browse the inventory or tell us what you are looking for and we will find it.",
 }
 
 export default function RootLayout({

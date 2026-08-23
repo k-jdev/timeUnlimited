@@ -66,10 +66,15 @@ export async function POST(req: NextRequest) {
 
   try {
     await pool.query(query, values)
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Failed to insert product:", err)
+    const detail = err instanceof Error ? err.message : "Unknown error"
+    const code =
+      typeof err === "object" && err !== null && "code" in err
+        ? String((err as { code: unknown }).code)
+        : undefined
     return NextResponse.json(
-      { error: "Database error", detail: err?.message, code: err?.code },
+      { error: "Database error", detail, code },
       { status: 500 }
     )
   }

@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 })
     }
 
-    // 🔒 validate file
     if (!file.type.startsWith("image/")) {
       return NextResponse.json(
         { error: "Only images allowed" },
@@ -30,17 +29,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Max 5MB" }, { status: 400 })
     }
 
-    // имя файла и путь
     const fileExt = file.name.split(".").pop()
     const fileName = `${uuidv4()}.${fileExt}`
     const filePath = `products/${productId}/${fileName}`
 
-    // upload в Supabase Storage
     const { error: uploadError } = await supabaseServer.storage
       .from("images")
       .upload(filePath, file)
-
-    console.log("Upload result:", { filePath, uploadError })
 
     if (uploadError) {
       return NextResponse.json(
@@ -49,7 +44,6 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // получить publicUrl
     const { data } = supabaseServer.storage
       .from("images")
       .getPublicUrl(filePath)

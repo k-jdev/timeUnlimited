@@ -8,7 +8,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 })
   }
 
-  const userRes = await pool.query(`SELECT id FROM users WHERE email = $1`, [email])
+  const userRes = await pool.query(`SELECT id FROM users WHERE email = $1`, [
+    email,
+  ])
   if (userRes.rowCount === 0) {
     return NextResponse.json({ error: "User not found" }, { status: 404 })
   }
@@ -21,14 +23,22 @@ export async function POST(req: NextRequest) {
   )
 
   if (codeRes.rowCount === 0) {
-    return NextResponse.json({ error: "Invalid or expired code" }, { status: 400 })
+    return NextResponse.json(
+      { error: "Invalid or expired code" },
+      { status: 400 }
+    )
   }
 
   const hashed = await bcrypt.hash(newPassword, 10)
 
-  await pool.query(`UPDATE users SET password = $1 WHERE id = $2`, [hashed, userId])
+  await pool.query(`UPDATE users SET password = $1 WHERE id = $2`, [
+    hashed,
+    userId,
+  ])
 
-  await pool.query(`UPDATE reset_codes SET used = true WHERE id = $1`, [codeRes.rows[0].id])
+  await pool.query(`UPDATE reset_codes SET used = true WHERE id = $1`, [
+    codeRes.rows[0].id,
+  ])
 
   return NextResponse.json({ message: "Password updated successfully" })
 }

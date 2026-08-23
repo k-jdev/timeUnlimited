@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { pool } from "@/lib/db"
+import { pool, type SqlValue } from "@/lib/db"
+import type { ProductImage } from "@/types/image"
 import { requireAuth } from "@/lib/authHelpers"
 
 export async function GET(req: NextRequest) {
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
     const offset = (page - 1) * limit
 
     let whereClause = "1 = 1"
-    const values: any[] = []
+    const values: SqlValue[] = []
 
     if (status !== "all") {
       values.push(status)
@@ -62,14 +63,14 @@ export async function GET(req: NextRequest) {
     }
 
     const productIds = products.map((p) => p.id)
-    const imagesRes = await pool.query(
+    const imagesRes = await pool.query<ProductImage>(
       `SELECT * FROM product_images 
        WHERE product_id = ANY($1::uuid[])
        ORDER BY created_at DESC`,
       [productIds]
     )
 
-    const imagesMap: Record<string, any[]> = {}
+    const imagesMap: Record<string, ProductImage[]> = {}
     imagesRes.rows.forEach((img) => {
       if (!imagesMap[img.product_id]) imagesMap[img.product_id] = []
       imagesMap[img.product_id].push(img)

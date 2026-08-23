@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-    setIsLoaded(true);
-  }, []);
+    const token = localStorage.getItem("token")
+    setIsAuthenticated(!!token)
+    setIsLoaded(true)
+  }, [])
 
- 
   async function login(email: string, password: string) {
     try {
       const res = await fetch("/api/auth/login", {
@@ -19,27 +18,27 @@ export function useAuth() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
 
       if (!res.ok) {
-        return false;
+        return false
       }
 
-      // сохраняем токен
-      localStorage.setItem("token", data.token);
+      // Persist the token for subsequent authenticated requests
+      localStorage.setItem("token", data.token)
 
-      setIsAuthenticated(true);
-      return true;
-    } catch (e) {
-      return false;
+      setIsAuthenticated(true)
+      return true
+    } catch {
+      return false
     }
   }
 
   function logout() {
-    localStorage.removeItem("token");
-    setIsAuthenticated(false);
+    localStorage.removeItem("token")
+    setIsAuthenticated(false)
   }
 
   return {
@@ -47,5 +46,5 @@ export function useAuth() {
     isLoaded,
     login,
     logout,
-  };
+  }
 }

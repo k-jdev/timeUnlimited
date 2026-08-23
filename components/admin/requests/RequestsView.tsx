@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb"
 import { useRequests, type RequestTab } from "@/hooks/useRequests"
 import { EMPTY_FILTERS, type RequestFilters, type RequestStatus } from "@/types"
 import { cn } from "@/lib/utils"

@@ -48,25 +48,8 @@ export interface ProductFormData {
   show_order?: number
 }
 
-const EMPTY_FORM: ProductFormData = {
-  id: "",
-  brand: "",
-  model: "",
-  price: "",
-  referenceNumber: "",
-  description: "",
-  condition: "",
-  caseMaterial: "",
-  caseSize: "",
-  dial: "",
-  completeSet: "",
-  hoverColor: "",
-  status: "",
-}
-
 interface ProductFormProps {
   initialData?: Partial<ProductFormData>
-  onSave?: (data: ProductFormData) => void
   mode?: "add" | "edit"
 }
 
@@ -83,11 +66,7 @@ function generateReferenceNumber() {
   return `TU-${part1}-${part2}`
 }
 
-export function ProductForm({
-  initialData,
-  onSave,
-  mode = "add",
-}: ProductFormProps) {
+export function ProductForm({ initialData, mode = "add" }: ProductFormProps) {
   const router = useRouter()
   const [mainImage, setMainImage] = useState<File | null>(null)
   const [additionalImages, setAdditionalImages] = useState<File[]>([])
@@ -281,36 +260,6 @@ export function ProductForm({
     }
   }
 
-  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false)
-
-  const handleGenerateDescription = async () => {
-    setIsGeneratingDesc(true)
-    try {
-      const res = await authFetch("/api/generate-description", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          brand: fieldValues.brand,
-          model: fieldValues.model,
-          condition: fieldValues.condition,
-          caseMaterial: fieldValues.caseMaterial,
-          caseSize: fieldValues.caseSize,
-          dial: fieldValues.dial,
-          completeSet: fieldValues.completeSet,
-        }),
-      })
-      if (!res.ok) throw new Error("Generation failed")
-      const data = await res.json()
-      if (data.description) {
-        handleFieldChange("description", data.description)
-      }
-    } catch (err) {
-      console.error("[handleGenerateDescription]", err)
-    } finally {
-      setIsGeneratingDesc(false)
-    }
-  }
-
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [progress, setProgress] = useState(0)
   const [progressLabel, setProgressLabel] = useState("")
@@ -481,8 +430,6 @@ export function ProductForm({
     animateTo(100)
     setTimeout(() => router.push("/admin/inventory"), 400)
   }
-
-  const defaultValues = { ...EMPTY_FORM, ...initialData }
 
   return (
     <>

@@ -67,10 +67,7 @@ export async function PUT(
     const result = await pool.query(query, values)
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Product not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
 
     return NextResponse.json(result.rows[0])
@@ -130,4 +127,3 @@ export async function DELETE(
     return NextResponse.json({ error: "Database error" }, { status: 500 })
   }
 }
-

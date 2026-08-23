@@ -8,7 +8,7 @@ export interface Product {
   model: string
   price: string
   status: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export function useProducts() {
@@ -35,7 +35,7 @@ export function useProducts() {
 
   const deleteProducts = (ids: string[]) => {
     setProducts((prev) => prev.filter((p) => !ids.includes(p.id)))
-    // Можно добавить DELETE API
+    // TODO: call DELETE /api/products/[id] once bulk delete is wired up
   }
 
   const getFilteredProducts = (tab: ProductTab, search: string) => {

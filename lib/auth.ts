@@ -1,15 +1,19 @@
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken"
+import type { SafeUser } from "@/types/user"
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+/** Claims carried inside the app's JWTs. */
+export type AuthTokenPayload = SafeUser
 
-export function signToken(payload: any) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
+const JWT_SECRET = process.env.JWT_SECRET!
+
+export function signToken(payload: AuthTokenPayload) {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" })
 }
 
-export function verifyToken(token: string) {
+export function verifyToken(token: string): AuthTokenPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET) as AuthTokenPayload
   } catch {
-    return null;
+    return null
   }
 }

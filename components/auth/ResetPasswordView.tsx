@@ -1,6 +1,6 @@
 "use client"
 
-import { type FormEvent, useState, useEffect } from "react"
+import { type FormEvent, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { RiEyeLine, RiEyeOffLine } from "@remixicon/react"
 
@@ -9,7 +9,7 @@ export function ResetPasswordView() {
   const searchParams = useSearchParams()
   const emailParam = searchParams.get("email") || ""
 
-  const [email, setEmail] = useState(emailParam)
+  const [email] = useState(emailParam)
   const [code, setCode] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -51,7 +51,7 @@ export function ResetPasswordView() {
 
       setLoading(false)
       router.push("/login")
-    } catch (err) {
+    } catch {
       setError("Failed to update password")
       setLoading(false)
     }

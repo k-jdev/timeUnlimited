@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { RequestWatchModal } from "@/components/home/RequestWatchModal"
 import { SellWatchModal } from "@/components/home/SellWatchModal"
 import {
-  RiUploadLine,
   RiMailLine,
   RiMenuFill,
   RiCloseFill,

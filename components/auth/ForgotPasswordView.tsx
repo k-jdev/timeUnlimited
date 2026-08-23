@@ -7,7 +7,6 @@ export function ForgotPasswordView() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [error, setError] = useState("")
-  const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
@@ -36,12 +35,11 @@ export function ForgotPasswordView() {
         return
       }
 
-      setSubmitted(true)
       setLoading(false)
 
-      // переход на страницу ввода кода
+      // Move on to the code-entry step
       router.push(`/login/reset-password?email=${encodeURIComponent(email)}`)
-    } catch (err) {
+    } catch {
       setError("Failed to send verification code")
       setLoading(false)
     }

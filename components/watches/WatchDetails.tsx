@@ -6,7 +6,6 @@ import {
   RiArrowDownSLine,
   RiArrowUpSLine,
   RiInformationLine,
-  RiMailLine,
   RiShieldCheckLine,
   RiFlightTakeoffFill,
 } from "@remixicon/react"

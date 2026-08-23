@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
-import { pool } from "@/lib/db"
+import { pool, type SqlValue } from "@/lib/db"
 import { requireAuth } from "@/lib/authHelpers"
+
+/** Shape of a row in the `requests` table. */
+interface RequestRow {
+  id: string
+  created_date: string
+  status: string
+  client_name: string | null
+  email: string | null
+  phone: string | null
+  budget_range: string | null
+  timeframe: string | null
+  brand_preferences: string | null
+  purpose: string | null
+  material: string | null
+  region: string | null
+}
 
 export async function GET(req: NextRequest) {
   const authResult = requireAuth(req)
@@ -10,7 +26,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
 
     const filters: string[] = []
-    const values: any[] = []
+    const values: SqlValue[] = []
 
     const budget = searchParams.get("budget_range")
     const timeframe = searchParams.get("timeframe")
@@ -48,9 +64,9 @@ export async function GET(req: NextRequest) {
     const whereClause = filters.length ? `WHERE ${filters.join(" AND ")}` : ""
     const query = `SELECT * FROM requests ${whereClause} ORDER BY created_date DESC`
 
-    const res = await pool.query(query, values)
+    const res = await pool.query<RequestRow>(query, values)
 
-    const mapped = res.rows.map((r: any) => ({
+    const mapped = res.rows.map((r) => ({
       id: r.id,
       requestNumber: r.id,
       createdAt: r.created_date,

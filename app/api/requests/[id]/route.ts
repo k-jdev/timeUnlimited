@@ -6,7 +6,6 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
   const authResult = requireAuth(req)
   if (authResult instanceof Response) return authResult
 
@@ -29,7 +28,6 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
   const authResult = requireAuth(req)
   if (authResult instanceof Response) return authResult
 

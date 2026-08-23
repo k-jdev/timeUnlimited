@@ -1,3 +1,5 @@
+import type { ProductImage } from "@/types/image"
+
 export interface Watch {
   id: string
   brand: string
@@ -30,18 +32,18 @@ export interface AdminProduct {
   description?: string
   galleryImages?: string[]
   hoverColor?: string
-  model?: string,
-  reference_number?: string,
-  case_material?: string,
-  case_size?: string,
-  dial?: string,
-  hover_color?: string,
-  complete_set?: boolean,
-  images?: object[],
-  serial_number?: string,
+  model?: string
+  reference_number?: string
+  case_material?: string
+  case_size?: string
+  dial?: string
+  hover_color?: string
+  complete_set?: boolean
+  images?: ProductImage[]
+  serial_number?: string
   dial_color?: string
-  show_on_main?: boolean,
-  show_order?: number,
+  show_on_main?: boolean
+  show_order?: number
 }
 
 export interface NavItem {

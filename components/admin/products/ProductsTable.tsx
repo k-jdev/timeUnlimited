@@ -104,10 +104,7 @@ export function ProductsTable({
                   <div className="relative size-10 shrink-0 overflow-hidden bg-[#0d0f16]">
                     {product.images && product.images[0] ? (
                       <Image
-                        src={
-                          (product.images[0] as any)?.image_url ||
-                          "/placeholder.png"
-                        }
+                        src={product.images[0]?.image_url || "/placeholder.png"}
                         alt={`${product.brand} ${product.model}`}
                         fill
                         className="object-cover"

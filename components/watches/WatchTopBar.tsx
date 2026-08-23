@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
-import { BrandLogo } from "@/components/layout/BrandLogo"
 import type { InventoryWatch } from "@/data/inventory"
 
 interface WatchTopBarProps {
